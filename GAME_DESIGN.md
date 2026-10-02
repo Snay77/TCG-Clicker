@@ -1,8 +1,10 @@
 # TCG Clicker — Game Design Document
 
+**État actuel — Phase 6 (2 octobre 2026) : Set 01 complet, recharge de boosters et sauvegarde v3. Les sections antérieures constituent l’historique ; la section Phase 6 décrit le comportement actuel.**
+
 ## Concept
 
-État au 2 octobre 2026 : phase 3, boucle de progression jouable. Le périmètre reste limité à neuf créatures temporaires ; les 60 cartes sont un objectif ultérieur.
+Le Set 01 complet est disponible ; ses effets et affinités alimentent les systèmes de progression Phase 3.
 
 TCG Clicker est un jeu de clicker centré sur la collection de créatures à travers des boosters.
 
@@ -60,7 +62,7 @@ Ambiance :
 
 ## Set 01
 
-Le premier set complet prévoit 60 cartes. Le prototype en contient neuf, décrites dans `SET_01_FAERIE.md`.
+Le premier set contient 60 cartes jouables, décrites dans `SET_01_FAERIE.md`.
 
 Les cartes représentent principalement des créatures vivantes.
 
@@ -142,7 +144,7 @@ Cela permet au joueur de créer différents builds.
 
 Obtenir plusieurs fois la même carte doit rester utile.
 
-Les niveaux 1 à 5 demandent 1, 3, 6, 10 et 15 copies cumulées. Les effets valent respectivement ×1, ×1,2, ×1,5, ×1,8 et ×2. Les copies ne sont jamais consommées. Chaque doublon rapporte immédiatement 1 éclat, augmenté par les effets `duplicateBonus` du deck. Aucun recyclage, poussière ni craft.
+Une carte découverte commence au niveau 1. Les niveaux 2 à 5 coûtent respectivement 2, 3, 4 et 5 doublons de la même carte, consommés manuellement dans le classeur ; une copie reste conservée. Les effets valent respectivement ×1, ×1,2, ×1,5, ×1,8 et ×2. Chaque doublon rapporte immédiatement 1 éclat, augmenté par les effets `duplicateBonus` du deck. Aucun recyclage, poussière ni craft.
 
 ## Direction artistique
 
@@ -245,7 +247,7 @@ Les sept familles sont configurées dans `lib/progression.ts`. Coût du niveau s
 
 | Famille | Coût initial | Croissance | Limite | Gain par niveau |
 | --- | ---: | ---: | ---: | --- |
-| Amplificateur sylvestre | 75 | 1,17 | 100 | +2 / clic |
+| Amplificateur sylvestre | 75 | 1,17 | 100 | +1 / clic |
 | Luciole mécanique | 60 | 1,20 | 100 | +1,5 / sec |
 | Lentille lunaire | 180 | 1,35 | 25 | +1 point critique |
 | Prisme de résonance | 250 | 1,30 | 30 | +0,15 multiplicateur critique |
@@ -255,13 +257,13 @@ Les sept familles sont configurées dans `lib/progression.ts`. Coût du niveau s
 
 Chaque achat d'Amplificateur sylvestre augmente le niveau de machine d'un cran ; les autres familles améliorent ses statistiques. Le champ `level` conserve ce compteur historique ; le niveau affiché vaut `level + 1`. Paliers visuels cumulatifs : niveau 1 portail initial, 5 cristaux accordés, 10 lianes et fleurs intégrées au cadre, 20 runes, 35 anneaux et stabilisateurs dimensionnels, 50 cœur lumineux renforcé. Ils restent entièrement en SVG/CSS. Ce lien à la progression du clic évite de parcourir tous les paliers visuels en achetant seulement les premiers niveaux peu coûteux des sept familles.
 
-Le combo gagne 4 points par clic, plafonné à 100. Après 1 seconde sans clic, il perd 18 points par seconde. Son multiplicateur continu vaut `1 + charge/100 × min(1, 0,5 × (1 + bonusCombo))`, soit ×1,5 initialement et ×2 au maximum. Les paliers 25/50/75/100 ont un retour visuel. Le passif ne dépend jamais du combo ; le combo n'est pas sauvegardé.
+Le combo gagne 4 points par clic, plafonné à 100. Après 1 seconde sans clic, il perd 18 points par seconde. Son multiplicateur continu vaut `1 + charge/100 × min(1, bonusCombo)`, soit ×1 initialement et ×2 au maximum. Les paliers 25/50/75/100 ont un retour visuel. Le passif ne dépend jamais du combo ; le combo n'est pas sauvegardé.
 
 ## Effets, builds et synergies
 
 `lib/effects.ts` centralise le cumul de `clickFlat`, `clickMultiplier`, `autoFlat`, `autoMultiplier`, `critChance`, `critMultiplier`, `boosterDiscount`, `comboMultiplier`, `faerieBonus`, `rareChance`, `duplicateBonus`, `energyMultiplier`. Les pourcentages se cumulent par catégorie ; 0,1 représente +10 %. Le niveau de carte multiplie toutes ses contributions. Les synergies ont un bonus fixe.
 
-Clic = `(5 + clics plats) × (1 + bonus clic) × (1 + énergie globale) × (1 + Faerie)`. Passif = `passif plat × (1 + bonus passif) × (1 + énergie globale) × (1 + Faerie)`. Critique initial : 5 % et ×3 ; chance plafonnée à 75 %. Réduction booster plafonnée à 50 %. `rareChance` augmente les poids de Rare à Mythique, avec un maximum de +75 %, puis renormalise toutes les probabilités. La cinquième carte reste Peu commune ou mieux. Les probabilités exactes du deck sont affichées en boutique.
+Clic = `(1 + clics plats) × (1 + bonus clic) × (1 + énergie globale) × (1 + Faerie)`. Passif = `passif plat × (1 + bonus passif) × (1 + énergie globale) × (1 + Faerie)`. Critique initial : 0 % ; multiplicateur ×3 une fois la chance débloquée ; chance plafonnée à 75 %. Réduction booster plafonnée à 50 %. `rareChance` augmente les poids de Rare à Mythique, avec un maximum de +75 %, puis renormalise toutes les probabilités. La cinquième carte reste Peu commune ou mieux. Les probabilités exactes du deck sont affichées en boutique.
 
 Les trois propositions de six compagnons dans `lib/synergies.ts` utilisent les neuf cartes existantes : Clic privilégie Flamèche et les deux Lune ; Idle privilégie Chantignon, Roséclair et Auralis ; Collection combine les deux évolutions Sylve/Astral, Noctipapille et Auralis pour les doublons, les tirages et une production d'appoint. Les builds partagent certains compagnons : c'est volontaire avec seulement neuf espèces. Les améliorations permanentes complètent leur spécialisation.
 
@@ -276,3 +278,160 @@ Moussillon → Sylvérêve → Éon de la clairière ; Lunailée → Noctipapill
 Sauvegarde v2 : anciens champs conservés, ajout de `upgrades` (sept niveaux) et `extraDeckSlots`. Les niveaux de carte dérivent de `owned`. La clé `tcg-faerie-v1` reste identique pour retrouver les parties existantes. Migration automatique : ancien `level` conservé et reporté dans `upgrades.click`, nouvelles familles à zéro, cartes/deck/énergie/clics/boosters/ouverture préservés. Une copie brute v1 est gardée sous `tcg-faerie-v1-backup` avant écriture v2. Les évolutions déjà équipées en v1 restent actives ; les prérequis s'appliquent aux nouveaux équipements. Une sauvegarde illisible ou future est conservée sans écrasement, avec message visible et session temporaire non persistée.
 
 `Game.tsx` garde orchestration, timers, persistance et scène principale ; `components/game/` contient `CollectionView`, `DeckView`, `UpgradesView`, `ComboBar`. Les composants de cartes et boosters gardent leurs chemins pour limiter le refactor. Aucun asset, image IA ou dépendance ajouté. Les interactions souris/tactiles/clavier, Web Audio, animations réduites, sprites déterministes et `/dev` restent pris en charge.
+
+## Phase 4 — Contenu du Set 01
+
+Le roster complet est une couche de design séparée dans `design/set01-faerie.json`, exposée uniquement dans l'atelier. Ses identifiants `F01-001` à `F01-060` ne remplacent pas les neuf identifiants du jeu. Les effets, rôles et six familles de conditions futures sont des propositions déclaratives : type équipé, type absent, lignée équipée, combo minimum, espèces découvertes, chaque nième clic. Aucune n'est branchée sur le calcul des statistiques ou le tirage actuel.
+
+Les 12 lignées de trois cartes, 8 lignées de deux cartes et 8 uniques totalisent 60 espèces : 24 Communes, 14 Peu communes, 10 Rares, 6 Épiques, 4 Légendaires et 2 Mythiques. Douze échantillons servent à valider les silhouettes et les évolutions avant la production des 48 autres. `SET_01_FAERIE.md` reste la référence complète. Les paramètres Phase 3 de clic, combo, prix, améliorations, machine, deck, sauvegarde et ouverture ne changent pas.
+
+## Points à tester en playtest
+
+La simulation optimiste Phase 3 suggère une machine autour de 28 à 5 minutes, 44 à 15 minutes et 53 à 30 minutes, avec jusqu'à environ 89 boosters en 30 minutes. Ces chiffres ne représentent pas une session humaine ; aucune valeur n'est modifiée à ce stade.
+
+- Vitesse réelle de progression de la machine et perception de ses paliers visuels.
+- Fréquence réelle d'achat des boosters, selon clics, passif et pauses.
+- Fatigue liée aux ouvertures répétées et souhait de les accélérer.
+- Valeur ressentie des doublons : énergie, niveaux et utilité après saturation.
+- Frustration lorsqu'une évolution arrive avant son parent et compréhension du prérequis.
+- Temps nécessaire pour compléter six emplacements, puis construire un deck spécialisé.
+
+L'équilibrage sera revu à partir de vraies sessions après stabilisation du Set 01.
+
+
+## Phase 5 — Set 01 complet
+
+60 cartes produites et intégrées : 12 références préservées exactement et 48 nouvelles recettes. 24 Communes, 14 Peu communes, 10 Rares, 6 Épiques, 4 Légendaires et 2 Mythiques. Structure : 12 lignées de trois, 8 lignées de deux, 8 uniques. Types : Sylve, Mycète, Lune, Rosée, Étincelle, Aurore, Astral.
+
+Le booster utilise les 60 identités, cinq cartes par achat et une cinquième Peu commune ou mieux. Les poids de rareté, prix, améliorations, combo, machine et gestes d’ouverture restent ceux de Phase 3. Les cartes gardent leurs niveaux et évolutions indépendantes ; découvrir le parent immédiat autorise un nouvel équipement.
+
+La sauvegarde conserve sa clé et son format v2. Les neuf IDs historiques sont liés aux designs par `LEGACY_DESIGN_IDS` ; les 51 nouveaux IDs utilisent `F01-xxx`. Le numéro du classeur est indépendant de l’ID de sauvegarde. Copies, deck déjà équipé et ouverture partielle v1/v2 restent conservés. Aucune migration d’identité n’est nécessaire. La migration v1 → v2 et sa copie de secours restent disponibles. Les valeurs des effets et raretés suivent le contenu final.
+
+Les effets simples sont actifs, les six familles de conditions restent déclaratives. La collection affiche les 60 rencontres, leurs silhouettes inconnues, filtres et vingt lignées repliables. Le deck accepte toutes les raretés. `/dev` → **Set 01 — Full Roster** compare les 60 sprites en 48/64/80/112/160 px avec filtres type, rareté, anatomie et habitat, puis les lignées, cartes et décors. **Style Validation** conserve les douze références et les études hors set.
+
+### Affinités retenues
+
+| Type | Cartes distinctes requises | Bonus |
+| --- | ---: | --- |
+| Sylve | 2 | +10 % énergie globale |
+| Lune | 2 | +5 points critique |
+| Mycète | 2 | +12 % passif · +0.5 éclats / doublon |
+| Rosée | 2 | +12 % passif |
+| Étincelle | 2 | +10 % clic · +10 % combo |
+| Aurore | 2 | +8 % énergie globale |
+| Astral | 2 | +8 % poids Rare+ · +0.5 éclats / doublon |
+
+### Builds indicatifs
+
+- **Clic** : Somnouchat · Croissombre · Songegarde · Luciolot · Lanterlume · Cortélampe. Chats de lune et lanternes : critiques, cadence et combo.
+- **Idle** : Chantignon · Sporelle · Mycoralie · Roséclair · Ruisselet · Vasqueroy. Chœur mycélien et bassin de rosée : production passive.
+- **Collection** : Chantignon · Mycélisseur · Nouétoile · Anneleau · Horlogrève · Velours d’Entre-mondes. Mycète et Astral : boosters, rencontres rares et doublons.
+
+Premier réglage de contenu : les effets simples sont ceux des fiches validées, les synergies à une seule carte sont remplacées par deux compagnons distincts. Les tests confirment les spécialités des trois builds. Un équilibrage de sessions de 30–60 minutes reste à faire : rythme des boosters, valeur des doublons, rendement aux niveaux 4/5, intérêt de deck 7/8 et fatigue d’ouverture. Aucun nouveau système conditionnel n’est activé.
+
+
+## Phase 6 — Recharge et économie des boosters
+
+Une nouvelle partie commence à **0/2 boosters gratuits**, zéro énergie et une machine de niveau 1. Le premier booster acheté coûte 100 éclats ; le premier gratuit arrive après dix minutes. Aucune carte supplémentaire n’est ajoutée.
+
+### Recharge et stockage
+
+Un cycle vaut `600000` ms. Le calcul utilise la date sauvegardée, jamais le nombre de ticks d’interface : `cycles = floor((maintenant − débutDuCycle) / intervalle)`, puis `stock = min(capacité, stock + cycles)`. Tant que le stock reste inférieur à la capacité, le timestamp avance du nombre de cycles complets et conserve le reliquat.
+
+Quand le stockage devient plein, le timestamp devient `null` : recharge suspendue, affichage **Stockage plein**, aucun temps accumulé. Consommer une réserve pleine relance exactement dix minutes à la date de consommation. Consommer une réserve partielle conserve le cycle courant. Agrandir une réserve pleine démarre un nouveau cycle ; agrandir une réserve partielle conserve son reliquat. Un recul de l’horloge locale relance le cycle sans attribuer de booster.
+
+Au chargement, au retour de visibilité et avant une consommation, le jeu recalcule la recharge. Le jeu fermé peut remplir la réserve jusqu’à sa capacité ; il ne produit ni énergie ni cartes hors ligne. À capacité 2, une absence de 35 minutes depuis 0/2 donne 2/2. Une absence de 12 minutes depuis 1/2 donne 2/2.
+
+Le **Sac dimensionnel** augmente la capacité de 2 à 10, avec huit achats d’énergie. Il n’accélère pas la recharge et ne débloque aucun emplacement de deck.
+
+| Capacité | Coût en éclats |
+| --- | ---: |
+| 2 → 3 | 500 |
+| 3 → 4 | 1 200 |
+| 4 → 5 | 2 800 |
+| 5 → 6 | 6 500 |
+| 6 → 7 | 15 000 |
+| 7 → 8 | 34 000 |
+| 8 → 9 | 76 000 |
+| 9 → 10 | 170 000 |
+
+### Prix payant retenu
+
+Pour `n` boosters déjà achetés avec l’énergie et une réduction `d` : **`prix = ceil(100 × 1.12^n × (1 − clamp(d, 0, 0.5)))`**. Le calcul applique d’abord la croissance brute, puis la réduction du deck plafonnée à 50 %, puis l’arrondi supérieur. Les imprécisions décimales JavaScript sont neutralisées à quatorze chiffres significatifs ; un plafond numérique à `Number.MAX_SAFE_INTEGER` évite l’infini aux compteurs extrêmes. Aucun plafond de prix jouable ni remise à zéro quotidienne n’est ajouté.
+
+Seuls les achats avec l’énergie augmentent `paidBoostersPurchased`. La consommation gratuite ne débite aucune énergie, ne change ni ce compteur ni le prix suivant. Les deux sources utilisent exactement le même tirage de cinq cartes, les mêmes probabilités du deck et la même garantie Peu commune+ en cinquième position.
+
+Comparaison préalable, prix bruts sans discount (numéro d’achat, et non compteur avant achat) :
+
+| Courbe | 1 | 2 | 5 | 10 | 20 | 30 | 50 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| ×1.08 | 100 | 108 | 137 | 200 | 432 | 932 | 4 343 |
+| ×1.10 | 100 | 110 | 147 | 236 | 612 | 1 587 | 10 672 |
+| ×1.12 | 100 | 112 | 158 | 278 | 862 | 2 675 | 25 804 |
+| ×1.15 | 100 | 115 | 175 | 352 | 1 424 | 5 758 | 94 232 |
+
+×1,08 laisse environ 134 boosters totaux au profil actif optimisé sur deux heures ; ×1,15 rend le 50e achat quatre fois plus cher que ×1,12. ×1,12 est retenu comme compromis initial : les dix premiers achats restent accessibles, mais l’investissement croît ensuite. Ce choix est destiné au playtest, pas considéré comme un équilibre définitif.
+
+### Boutique et ouverture
+
+La boutique distingue **Ouvrir un booster disponible** (une réserve gratuite) et **Acheter et ouvrir** (prix d’énergie explicite). Le stock, sa capacité et le compte à rebours restent visibles. Le bouton gratuit devient principal lorsqu’il est disponible.
+
+L’ouverture indique discrètement sa provenance et le stock restant. Le récapitulatif conserve les cinq cartes et propose, par priorité : **Ouvrir le booster suivant** si une réserve gratuite reste ; sinon **Acheter et ouvrir un autre** avec son prix si l’énergie suffit. Cette action est absente lorsque les deux ressources manquent. **Retour à la machine** et **Voir ma collection** sont toujours disponibles. Aucune redirection automatique vers Collection.
+
+Une ouverture successive clôt proprement le booster terminé et lance le suivant dans la même transition d’état. Une ouverture incomplète ne peut être remplacée ; les doubles actions ne consomment pas deux ressources. Chaque booster conserve présentation/choix, déchirure, cinq révélations et résumé. Aucun mode rapide ni ouverture multiple instantanée.
+
+### Sauvegarde v3 et nouvelle partie de test
+
+La clé `tcg-faerie-v1` reste conservée. La v3 ajoute `freeBoosters`, `freeBoosterCapacity`, `freeBoosterTimerStartedAt`, `paidBoostersPurchased` et `pendingSource`. Les migrations v1/v2 préservent énergie, collection, copies, deck équipé, niveaux, améliorations, clics et ouverture partielle. Les anciens boosters étant tous achetés, le compteur payant reprend `floor(packs)` et une ouverture historique reçoit la provenance payée. Aucun prix antérieur n’est débité rétroactivement.
+
+Les anciennes parties commencent avec une réserve 0/2 et un cycle démarré à la migration ; aucun passé gratuit n’est inventé sans timestamp fiable. Une copie brute v1 reste sous `tcg-faerie-v1-backup`, une copie brute v2 sous `tcg-faerie-v1-backup-v2`, avant la première écriture v3. Une sauvegarde future ou invalide reste conservée sans écrasement.
+
+Dans `/dev`, **Réinitialiser complètement la sauvegarde** demande confirmation, puis crée une vraie nouvelle partie v3 et efface les copies de secours connues. Annuler laisse la progression intacte. Ce contrôle n’apparaît pas dans la partie normale. Le jeu conserve la limite pratique d’un seul onglet actif pour une sauvegarde locale.
+
+### Simulations préparatoires
+
+Reproduction : `npm run simulate:economy`. Source : `scripts/simulate-booster-economy.ts` ; données : `design/phase6-economy-simulation.json`. Les quatre courbes sont testées sur 30/60/120 minutes, deux profils et trois seeds (41, 128, 902), soit 72 trajectoires.
+
+Actif : deux clics/seconde hors ouverture. Mixte : deux minutes actives sur cinq, puis passif. Les critiques sont moyennés ; le combo utilise les règles réelles. Une ouverture dure douze secondes, sans clics, avec passif maintenu. Décisions toutes les dix secondes : meilleur rendement marginal d’amélioration par coût, priorité au booster abordable toutes les vingt secondes, puis composition automatique du deck à six cartes. Stockage maintenu à deux pour comparer les courbes. Les fonctions réelles de tirage, niveaux, effets, consommation et améliorations sont utilisées ; seul le coût payant varie entre candidats.
+
+Moyennes des trois seeds, courbe ×1,12. Les boosters payants accessibles sont ceux effectivement achetés selon cette stratégie ; ils ne représentent pas toutes les dépenses alternatives possibles. Les occasions gratuites perdues sont les cycles théoriques sans place de stockage, pas une monnaie réellement générée puis retirée.
+
+| Profil | Durée | Gratuits | Occasions perdues | Payants | Total | Prix suivant après discount | Machine niv. | Énergie restante | Espèces |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Actif | 30 min | 3 | 0 | 53 | 56 | 40 603 | 26 | 19 752,7 | 58/60 |
+| Actif | 60 min | 6 | 0 | 68,7 | 74,7 | 241 088 | 51,7 | 171 280,3 | 59/60 |
+| Actif | 120 min | 12 | 0 | 86,3 | 98,3 | 1 777 393 | 65,7 | 1 405 424,7 | 59,7/60 |
+| Mixte | 30 min | 3 | 0 | 43,3 | 46,3 | 13 596 | 25,7 | 3 091,3 | 56,7/60 |
+| Mixte | 60 min | 6 | 0 | 57 | 63 | 64 163,3 | 42,3 | 24 649,7 | 59/60 |
+| Mixte | 120 min | 12 | 0 | 71,7 | 83,7 | 337 212,7 | 54,3 | 267 565 | 59/60 |
+
+Profil retour, départ 0/2 et aucune production active :
+
+| Absence | Boosters stockés | Occasions non stockées | Payants accessibles | Prix suivant | Machine | Énergie | Collection avant ouverture | Estimation après ouverture des réserves |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 10 min | 1 | 0 | 0 | 100 | 1 | 0 | 0/60 | 4.8/60 |
+| 30 min | 2 | 1 | 0 | 100 | 1 | 0 | 0/60 | 9.2/60 |
+| 60 min | 2 | 4 | 0 | 100 | 1 | 0 | 0/60 | 9.2/60 |
+| 180 min | 2 | 16 | 0 | 100 | 1 | 0 | 0/60 | 9.2/60 |
+
+Le premier achat survient à vingt secondes dans ces profils automatisés. Les résultats sont optimistes : deck choisi immédiatement, décisions efficaces, aucune hésitation humaine et ouverture estimée à douze secondes. Le bot découvre déjà environ 57–58 espèces en trente minutes, ce qui signale une saturation rapide potentielle à surveiller. Aucun gain de collection n’est attribué avant d’ouvrir les réserves au retour. Leur estimation après ouverture utilise les probabilités exactes de chaque espèce et de la cinquième carte garantie, sans bonus de deck.
+
+### Playtest humain à réaliser
+
+Nouvelle partie, trente minutes sans triche, puis éventuellement une heure. Noter le nombre de boosters gratuits/payants, les prix et les choix entre amélioration et booster ; les moments d’ennui ou de manque/surplus d’énergie ; la satisfaction des doublons et les changements de deck ; la durée ressentie des dix minutes.
+
+Mesurer après combien d’ouvertures successives les gestes deviennent répétitifs. Examiner ensuite l’intérêt d’étapes plus courtes, d’un mode rapide ou d’une ouverture multiple ; aucune de ces solutions n’est implémentée maintenant. Tester aussi les huit coûts de stockage, la visibilité de la provenance, l’impact du compteur historique des sauvegardes migrées et la saturation de collection. Les slots Deck 7/8 restent sans moyen de déblocage.
+
+
+### Ajustement de progression — clic et consommation des doublons
+
+Une partie neuve commence à exactement 1 éclat par clic. Aucun critique ni combo multiplicatif avant acquisition des bonus. L’amplificateur donne +1 par niveau (1 → 2 → 3…).
+
+Les niveaux de carte sont désormais persistés séparément des copies (sauvegarde v4). Amélioration manuelle dans le classeur : 2, 3, 4, puis 5 doublons de la même carte consommés. Une copie est toujours conservée ; carte équipée, découverte et prérequis d’évolution restent valides. Effets permanents : ×1 / ×1,2 / ×1,5 / ×1,8 / ×2 aux niveaux 1–5. Un nouveau doublon ne monte plus automatiquement le niveau. Migration v1–v3 : niveaux déjà acquis et copies conservés, sauvegarde brute de secours.
+
+Les mesures de simulation Phase 6 ci-dessus sont historiques (base de clic 5) ; elles ne valident pas l’équilibrage actuel. Le script utilise désormais la base 1 et le combo acquis.
+
+
+### Illustrations de prestige archivées
+
+À la demande du joueur, les six illustrations peintes et leur habillage sont conservés dans `design/archive/2026-10-02-prestige-art/` pour plus tard. Le rendu actif revient aux sprites et habitats en pixels, avec les cadres et titres de capacités précédents. Les améliorations de progression restent actives.

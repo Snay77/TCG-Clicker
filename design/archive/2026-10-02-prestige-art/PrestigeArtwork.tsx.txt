@@ -1,0 +1,25 @@
+import Image from "next/image";
+import type { Creature } from "../../lib/cards";
+
+const ARTWORK: Record<string, string> = {
+  "F01-003": "eon", "F01-009": "floreale", "F01-050": "nacreveil",
+  "F01-058": "auralis", "F01-059": "horlogreve", "F01-060": "velours",
+};
+
+export default function PrestigeArtwork({ card, animated }: { card: Creature; animated: boolean }) {
+  const name = ARTWORK[card.design?.id || ""];
+  if (!name) return null;
+  return <div className={`card-art prestige-art prestige-${name} ${animated ? "art-animated" : "art-still"}`}>
+    <Image src={`/art/prestige/${name}.png`} alt={`Illustration de ${card.name}`} fill sizes="(max-width: 700px) 85vw, 400px" style={{ objectFit: "cover" }} />
+    <div className="prestige-art-vignette" aria-hidden="true" />
+    <svg className="prestige-art-engraving" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <path d="M7 57V18Q7 7 18 7h39M143 7h39q11 0 11 11v39M193 143v39q0 11-11 11h-39M57 193H18q-11 0-11-11v-39" />
+      {[0, 90, 180, 270].map(angle => <g key={angle} transform={`rotate(${angle} 100 100)`}>
+        <path d="M13 39V13h26M14 14l13 5-8 8zM33 13l5 7 5-7M13 33l7 5-7 5" />
+        <circle cx="25" cy="25" r="2" />
+      </g>)}
+      <path d="M80 190l20-6 20 6-20 6zM97 190h6" />
+    </svg>
+    <span className="prestige-edition">{card.rarity === 5 ? "✧ RELIQUE DES MONDES ✧" : "✦ LÉGENDE DE FAERIE ✦"}</span>
+  </div>;
+}

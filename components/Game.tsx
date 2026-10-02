@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CARDS, RARITIES, byId } from "../lib/cards";
 import {
-  buyPack,
+  openPack,
+  chainPack,
+  finishPack,
+  buyStorage,
+  upgradeCard,
+  savedCardLevel,
+  type PackSource,
   drawPack,
   changeDeck,
   deckCapacity,
@@ -17,6 +23,8 @@ import {
   Save,
   stats,
 } from "../lib/game";
+import { rechargeFreePacks, freePackRemaining } from "../lib/booster-economy";
+import BoosterShop from "./game/BoosterShop";
 import Sprite from "./Sprite";
 import Machine from "./Machine";
 import BoosterPack from "./BoosterPack";
@@ -25,12 +33,13 @@ import CollectionView from "./game/CollectionView";
 import DeckView, { statImpact } from "./game/DeckView";
 import UpgradesView from "./game/UpgradesView";
 import ComboBar from "./game/ComboBar";
-import { advanceCombo, decayCombo, comboFactor, initialCombo, machineTier, leveledEffect, cardLevel } from "../lib/progression";
+import { advanceCombo, decayCombo, comboFactor, initialCombo, machineTier, leveledEffect } from "../lib/progression";
 import { describeEffect } from "../lib/effects";
-const KEY = "tcg-faerie-v1";
+import {SAVE_KEY as KEY} from "../lib/save-storage";
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
-  const [save, setSave] = useState<Save>(initialSave);
+  const [save, setSave] = useState<Save>(() => initialSave());
+  const [wallTime,setWallTime]=useState(0);
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState("machine");
   const [notice, setNotice] = useState("");
@@ -43,16 +52,17 @@ export default function Game() {
   >([]);
   const serial = useRef(0);
   const latest = useRef(save);
-  const buyButton = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) {
         const migrated = parseSave(raw);
         setSave(migrated);
-        if (JSON.parse(raw).version === 1) {
-          localStorage.setItem(`${KEY}-backup`, raw);
-          setNotice("Sauvegarde migrée en v2. Votre progression et le booster en cours sont conservés ; une copie v1 est gardée.");
+        const previousVersion=JSON.parse(raw).version;
+        if (previousVersion<4) {
+          localStorage.setItem(previousVersion===1 ? `${KEY}-backup` : `${KEY}-backup-v${previousVersion}`, raw);
+          setNotice(`Sauvegarde migrée en v4. Niveaux de carte et copies conservés. Progression et booster en cours conservés ; copie v${previousVersion} gardée.`);
         }
       }
     } catch {
@@ -62,6 +72,7 @@ export default function Game() {
         "La sauvegarde est illisible ou inaccessible. Elle est conservée sans écrasement ; cette session ne sera pas sauvegardée.",
       );
     }
+    setWallTime(Date.now());
     setReady(true);
   }, []);
   useEffect(() => {
@@ -90,18 +101,27 @@ export default function Game() {
     let last = performance.now();
     const t = setInterval(() => {
       const now = performance.now();
+      const epoch = Date.now();
       const elapsed = Math.min((now - last) / 1000, 5);
       last = now;
       const nextCombo = decayCombo(comboRef.current, now);
       comboRef.current = nextCombo;
       setCombo(previous => previous.charge === nextCombo.charge ? previous : nextCombo);
       setSave((s) => {
-        const passive = stats(s).auto;
-        return passive ? { ...s, energy: s.energy + passive * elapsed } : s;
+        const current=rechargeFreePacks(s,epoch);
+        const passive = stats(current).auto;
+        return passive ? { ...current, energy: current.energy + passive * elapsed } : current;
       });
     }, 200);
     return () => clearInterval(t);
   }, [ready]);
+  useEffect(() => {
+    if(!ready)return;
+    const update=()=>{const now=Date.now();setWallTime(now);setSave(s=>rechargeFreePacks(s,now));};
+    const timer=setInterval(update,1000);
+    window.addEventListener("focus",update);document.addEventListener("visibilitychange",update);
+    return ()=>{clearInterval(timer);window.removeEventListener("focus",update);document.removeEventListener("visibilitychange",update);};
+  },[ready]);
   useEffect(() => {
     const t = setInterval(
       () => setSparks((s) => s.filter((x) => Date.now() - x.id < 950)),
@@ -144,6 +164,16 @@ export default function Game() {
     setNotice(`${byId(id).name} · ${statImpact(stats(save), stats(next))}`);
     setSave((s) => changeDeck(s, id, replaceId));
   }
+  function startPack(source:PackSource,chain=false) {
+    const now=Date.now();
+    const cards=drawPack(Math.random,stats(latest.current).rareChance);
+    setSave(s=>{
+      const current=rechargeFreePacks(s,now);
+      return chain ? chainPack(current,cards,source,now) : openPack(current,cards,source,now);
+    });
+  }
+  const available=rechargeFreePacks(save,wallTime || Date.now());
+  const nextSource:PackSource|null=available.freeBoosters>0?"free":available.energy>=price(available)?"paid":null;
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -169,7 +199,7 @@ export default function Game() {
             >
               <span>{icon}</span>
               {label}
-              {id === "collection" && <small>{discovered}/9</small>}
+              {id === "collection" && <small>{discovered}/{CARDS.length}</small>}
               {id === "deck" && <small>{save.deck.length}/{deckCapacity(save)}</small>}
             </button>
           ))}
@@ -185,6 +215,7 @@ export default function Game() {
             </p>
           </div>
           <Link href="/dev">⌘ Atelier des sprites ↗</Link>
+          <Link className="playtest-reset-link" href="/dev#playtest-reset">↺ Réinitialiser la sauvegarde · test</Link>
           <small>PROGRESSION · v0.3</small>
         </div>
       </aside>
@@ -361,29 +392,7 @@ export default function Game() {
                     <br />
                     <strong>Une peu commune ou mieux garantie.</strong>
                   </p>
-                  <button
-                    ref={buyButton}
-                    className="primary buy-button"
-                    disabled={!ready || save.energy < price(save) || opening}
-                    onClick={() => {
-                      const cards = drawPack(Math.random, stats(latest.current).rareChance);
-                      setSave((s) => buyPack(s, cards));
-                    }}
-                  >
-                    Ouvrir un booster <span>{price(save)} ✦</span>
-                  </button>
-                  <div className="progress-track">
-                    <i
-                      style={{
-                        width: `${Math.min(100, (save.energy / price(save)) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                  <small className="shop-hint">
-                    {save.energy < price(save)
-                      ? `Encore ${Math.ceil(price(save) - save.energy)} éclats pour votre prochaine découverte`
-                      : "Votre prochaine rencontre est à portée de main."}
-                  </small>
+                  <BoosterShop save={available} ready={ready} opening={opening} remaining={ready?freePackRemaining(available,wallTime):null} onOpen={source=>startPack(source)} />
                   <details>
                     <summary>Probabilités des raretés</summary>
                     <p>
@@ -398,7 +407,7 @@ export default function Game() {
                   </details>
                 </section>
               </div>
-              <UpgradesView save={save} ready={ready} onBuy={id => setSave(s => buyUpgrade(s, id))} />
+              <UpgradesView save={save} ready={ready} onBuy={id => setSave(s => buyUpgrade(s, id))} onBuyStorage={()=>setSave(s=>buyStorage(s))} />
               <section className="deck-panel">
                 <div className="section-title">
                   <div>
@@ -426,7 +435,7 @@ export default function Game() {
                       >
                         <Sprite creature={c} />
                         <strong>{c.name}</strong>
-                        <small>Niv. {cardLevel(save.owned[c.id])} · {describeEffect(leveledEffect(c.effect, save.owned[c.id]))}</small>
+                        <small>Niv. {savedCardLevel(save, c.id)} · {describeEffect(leveledEffect(c.effect, savedCardLevel(save, c.id)))}</small>
                         <span>Retirer −</span>
                       </button>
                     ) : (
@@ -442,10 +451,13 @@ export default function Game() {
           ) : tab === "deck" ? (
             <DeckView save={save} onEquip={toggle} />
           ) : (
-            <CollectionView save={save} onEquip={toggle} />
+            <CollectionView save={save} onEquip={toggle} onUpgrade={id => setSave(s => upgradeCard(s, id))} />
           )}
           <Link className="mobile-dev-link" href="/dev">
             ⌘ Atelier des sprites ↗
+          </Link>
+          <Link className="mobile-dev-link playtest-reset-link" href="/dev#playtest-reset">
+            ↺ Réinitialiser la sauvegarde · test
           </Link>
           <footer className="page-footer">
             <span>✧ Une petite machine pour de grandes découvertes.</span>
@@ -460,9 +472,11 @@ export default function Game() {
           key={save.packs}
           save={save}
           onReveal={() => setSave(reveal)}
-          onClose={() => {
-            setSave((s) => ({ ...s, pending: [], revealed: 0 }));
-            setTab("collection");
+          economy={{freeBoosters:available.freeBoosters,capacity:available.freeBoosterCapacity,price:price(available),nextSource}}
+          onNext={source=>startPack(source,true)}
+          onClose={destination => {
+            setSave(finishPack);
+            setTab(destination || "machine");
           }}
         />
       )}

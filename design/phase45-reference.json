@@ -1,0 +1,362 @@
+[
+  {
+    "id": "F01-001",
+    "recipe": {
+      "bodyVariant": "bulb",
+      "headVariant": "round",
+      "ears": "leaf",
+      "horns": "none",
+      "wings": "none",
+      "tail": "sprig",
+      "crown": "splitLeaf",
+      "markings": "freckles",
+      "accessory": "none",
+      "aura": "none",
+      "idle": "seedBounce",
+      "posture": "curled",
+      "proportions": {
+        "head": 1.2,
+        "width": 0.78,
+        "height": 0.8
+      },
+      "face": {
+        "eyes": "round",
+        "spacing": 12,
+        "mouth": "smile",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "9be9bcde3d024e80a7912af89c0bd7a52131ea0c2ba8b959f1076460c77dc1d3"
+  },
+  {
+    "id": "F01-002",
+    "recipe": {
+      "bodyVariant": "slender",
+      "headVariant": "long",
+      "ears": "leaf",
+      "horns": "branch",
+      "wings": "none",
+      "tail": "leaf",
+      "crown": "buds",
+      "markings": "freckles",
+      "accessory": "leafScarf",
+      "aura": "none",
+      "idle": "leafSway",
+      "posture": "quadruped",
+      "proportions": {
+        "head": 0.78,
+        "width": 0.84,
+        "height": 1
+      },
+      "face": {
+        "eyes": "almond",
+        "spacing": 9,
+        "mouth": "muzzle",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "d12db20cbb8aa0d9d8fe65aabd65312c4d7c893af6ffacf1039b3f895210324a"
+  },
+  {
+    "id": "F01-003",
+    "recipe": {
+      "bodyVariant": "portalTree",
+      "headVariant": "portal",
+      "ears": "leaf",
+      "horns": "branch",
+      "wings": "none",
+      "tail": "roots",
+      "crown": "canopy",
+      "markings": "runes",
+      "accessory": "seedCore",
+      "aura": "rootPulse",
+      "idle": "rootPulse",
+      "posture": "rooted",
+      "proportions": {
+        "head": 1,
+        "width": 1,
+        "height": 1
+      },
+      "face": {
+        "eyes": "none",
+        "spacing": 0,
+        "mouth": "none",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "858223e63bcfa4c33b8935070317305ea54e5bfe5f4037839378ea4847b8c9b2"
+  },
+  {
+    "id": "F01-005",
+    "recipe": {
+      "bodyVariant": "seated",
+      "headVariant": "round",
+      "ears": "long",
+      "horns": "none",
+      "wings": "none",
+      "tail": "pom",
+      "crown": "buds",
+      "markings": "freckles",
+      "accessory": "leafScarf",
+      "aura": "none",
+      "idle": "earTwitch",
+      "posture": "seated",
+      "proportions": {
+        "head": 1.15,
+        "width": 0.95,
+        "height": 0.95
+      },
+      "face": {
+        "eyes": "round",
+        "spacing": 17,
+        "mouth": "muzzle",
+        "mask": false,
+        "asymmetric": true
+      }
+    },
+    "hash": "1f584bbebe92f030f806f67d20ccb02d42552a4d7f93226ebef24735307bfaf1"
+  },
+  {
+    "id": "F01-010",
+    "recipe": {
+      "bodyVariant": "shortStem",
+      "headVariant": "cap",
+      "ears": "none",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "crown": "scallopCap",
+      "markings": "spores",
+      "accessory": "ruff",
+      "aura": "none",
+      "idle": "sporeFall",
+      "posture": "leaning",
+      "proportions": {
+        "head": 1,
+        "width": 0.9,
+        "height": 0.9
+      },
+      "face": {
+        "eyes": "narrow",
+        "spacing": 9,
+        "mouth": "none",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "851c43df4c065d448d7bd20956a2cbf2da5d26fbe94630cbc3c597e6c6265a2f"
+  },
+  {
+    "id": "F01-023",
+    "recipe": {
+      "bodyVariant": "ribbon",
+      "headVariant": "wide",
+      "ears": "gills",
+      "horns": "none",
+      "wings": "none",
+      "tail": "ribbon",
+      "crown": "none",
+      "markings": "scales",
+      "accessory": "none",
+      "aura": "none",
+      "idle": "tailWave",
+      "posture": "turned",
+      "proportions": {
+        "head": 1.1,
+        "width": 1,
+        "height": 1
+      },
+      "face": {
+        "eyes": "almond",
+        "spacing": 15,
+        "mouth": "muzzle",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "85d34b1d2e19572925eda06a4198002eb09e5e11f25de8ba12a393b84e4e85d4"
+  },
+  {
+    "id": "F01-026",
+    "recipe": {
+      "bodyVariant": "lantern",
+      "headVariant": "small",
+      "ears": "antennae",
+      "horns": "none",
+      "wings": "glass",
+      "tail": "none",
+      "crown": "none",
+      "markings": "pollen",
+      "accessory": "lantern",
+      "aura": "firelight",
+      "idle": "lanternPulse",
+      "posture": "suspended",
+      "proportions": {
+        "head": 0.7,
+        "width": 0.78,
+        "height": 0.9
+      },
+      "face": {
+        "eyes": "luminous",
+        "spacing": 4,
+        "mouth": "none",
+        "mask": true,
+        "asymmetric": false
+      }
+    },
+    "hash": "01f10d21bdcfee4a8966817b2c14e6a39db9358d8c15298482af26b959f9e406"
+  },
+  {
+    "id": "F01-028",
+    "recipe": {
+      "bodyVariant": "perched",
+      "headVariant": "beaked",
+      "ears": "none",
+      "horns": "none",
+      "wings": "feather",
+      "tail": "forked",
+      "crown": "crest",
+      "markings": "feathers",
+      "accessory": "scarf",
+      "aura": "none",
+      "idle": "birdPeek",
+      "posture": "standing",
+      "proportions": {
+        "head": 1.22,
+        "width": 0.78,
+        "height": 0.82
+      },
+      "face": {
+        "eyes": "profile",
+        "spacing": 0,
+        "mouth": "beak",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "e5bde216f17b608608d14d9a9cda1a6f43dbd58c4eb9e43fadab991d00a6bdbb"
+  },
+  {
+    "id": "F01-037",
+    "recipe": {
+      "bodyVariant": "moonWings",
+      "headVariant": "round",
+      "ears": "antennae",
+      "horns": "none",
+      "wings": "crescent",
+      "tail": "none",
+      "crown": "none",
+      "markings": "moonDust",
+      "accessory": "medallion",
+      "aura": "none",
+      "idle": "moonFlutter",
+      "posture": "openWings",
+      "proportions": {
+        "head": 1.12,
+        "width": 0.83,
+        "height": 0.84
+      },
+      "face": {
+        "eyes": "crescent",
+        "spacing": 12,
+        "mouth": "none",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "3a6011fd2d2a41cb988875f7061215e443cdd73156263f5be3ffc50d247699c9"
+  },
+  {
+    "id": "F01-038",
+    "recipe": {
+      "bodyVariant": "oracle",
+      "headVariant": "long",
+      "ears": "antennae",
+      "horns": "none",
+      "wings": "curtain",
+      "tail": "none",
+      "crown": "none",
+      "markings": "ocelli",
+      "accessory": "medallion",
+      "aura": "moonHalo",
+      "idle": "wingBeat",
+      "posture": "openWings",
+      "proportions": {
+        "head": 0.82,
+        "width": 1,
+        "height": 1
+      },
+      "face": {
+        "eyes": "luminous",
+        "spacing": 8,
+        "mouth": "none",
+        "mask": true,
+        "asymmetric": true
+      }
+    },
+    "hash": "933244357059d5b071e21116329eb1c549049ce3db8511a7b8d52c7c8fe8369c"
+  },
+  {
+    "id": "F01-059",
+    "recipe": {
+      "bodyVariant": "gateFrame",
+      "headVariant": "orb",
+      "ears": "none",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "crown": "clockHands",
+      "markings": "runes",
+      "accessory": "pendulum",
+      "aura": "clockHalo",
+      "idle": "clockTick",
+      "posture": "floating",
+      "proportions": {
+        "head": 1,
+        "width": 1,
+        "height": 1
+      },
+      "face": {
+        "eyes": "single",
+        "spacing": 0,
+        "mouth": "none",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "b764bc076123f10b40a9c9119a6b9a6586ead9ec2630f10c5f2812bd71870551"
+  },
+  {
+    "id": "F01-060",
+    "recipe": {
+      "bodyVariant": "openMantle",
+      "headVariant": "seed",
+      "ears": "none",
+      "horns": "none",
+      "wings": "cloth",
+      "tail": "mobius",
+      "crown": "none",
+      "markings": "constellations",
+      "accessory": "seedCore",
+      "aura": "foldOrbit",
+      "idle": "foldOrbit",
+      "posture": "floating",
+      "proportions": {
+        "head": 1,
+        "width": 1,
+        "height": 1
+      },
+      "face": {
+        "eyes": "none",
+        "spacing": 0,
+        "mouth": "none",
+        "mask": false,
+        "asymmetric": false
+      }
+    },
+    "hash": "e797555322f94ea18b8c5fa077e2a5daee381a3de528e2db09236354d1814adc"
+  }
+]

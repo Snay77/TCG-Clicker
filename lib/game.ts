@@ -1,21 +1,33 @@
+import { initialFreePacks, rechargeFreePacks, progressivePackPrice, storageCost, MAX_FREE_CAPACITY, type FreePackState } from "./booster-economy";
 import { byId, CARDS } from "./cards";
 import { resolveEffects } from "./effects";
-import { initialUpgrades, leveledEffect, UPGRADES, upgradeCost, upgradeEffects, UpgradeId, UpgradeLevels } from "./progression";
+import { cardLevel, cardUpgradeCost, initialUpgrades, leveledEffect, UPGRADES, upgradeCost, upgradeEffects, UpgradeId, UpgradeLevels } from "./progression";
 import { synergies } from "./synergies";
-export type Save = {
-  version: 2; energy: number; owned: Record<string, number>; deck: string[];
+export type PackSource = "free" | "paid";
+export type Save = FreePackState & {
+  version: 4; energy: number; owned: Record<string, number>; cardLevels: Record<string, number>; deck: string[];
   level: number; clicks: number; packs: number; pending: string[]; revealed: number;
   upgrades: UpgradeLevels; extraDeckSlots: number;
+  paidBoostersPurchased: number; pendingSource: PackSource | null;
 };
-export const initialSave = (): Save => ({
-  version: 2, energy: 0, owned: {}, deck: [], level: 0, clicks: 0, packs: 0,
+export const initialSave = (now = Date.now()): Save => ({
+  version: 4, energy: 0, owned: {}, cardLevels: {}, deck: [], level: 0, clicks: 0, packs: 0,
   pending: [], revealed: 0, upgrades: initialUpgrades(), extraDeckSlots: 0,
+  ...initialFreePacks(now), paidBoostersPurchased: 0, pendingSource: null,
 });
 export const BASE_DECK_CAPACITY = 6;
 export const deckCapacity = (s: Save) => BASE_DECK_CAPACITY + s.extraDeckSlots;
+export const savedCardLevel = (s: Save, id: string) => s.owned[id] ? s.cardLevels[id] || 1 : 0;
+export function upgradeCard(s: Save, id: string): Save {
+  if (!byId(id) || !s.owned[id] || s.pending.length) return s;
+  const level = savedCardLevel(s, id), cost = cardUpgradeCost(level);
+  if (cost === null || s.owned[id] - 1 < cost) return s;
+  return { ...s, owned: { ...s.owned, [id]: s.owned[id] - cost },
+    cardLevels: { ...s.cardLevels, [id]: level + 1 } };
+}
 export function deckEffects(s: Save) {
   return resolveEffects([
-    ...s.deck.map(id => leveledEffect(byId(id).effect, s.owned[id] || 1)),
+    ...s.deck.map(id => leveledEffect(byId(id).effect, savedCardLevel(s, id))),
     ...synergies(s.deck).filter(x => x.active).map(x => x.effect),
   ]);
 }
@@ -23,9 +35,9 @@ export function stats(s: Save) {
   const e = resolveEffects([deckEffects(s), ...upgradeEffects(s.upgrades)]);
   const global = (1 + e.energyMultiplier) * (1 + e.faerieBonus);
   return {
-    click: (5 + e.clickFlat) * (1 + e.clickMultiplier) * global,
+    click: (1 + e.clickFlat) * (1 + e.clickMultiplier) * global,
     auto: e.autoFlat * (1 + e.autoMultiplier) * global,
-    crit: Math.min(0.75, 0.05 + e.critChance),
+    crit: Math.min(0.75, e.critChance),
     critMultiplier: 3 + e.critMultiplier,
     discount: Math.min(0.5, e.boosterDiscount),
     comboBonus: e.comboMultiplier,
@@ -33,7 +45,7 @@ export function stats(s: Save) {
     duplicateBonus: 1 + e.duplicateBonus,
   };
 }
-export const price = (s: Save) => Math.ceil(100 * (1 - stats(s).discount));
+export const price = (s: Save) => progressivePackPrice(s.paidBoostersPurchased, stats(s).discount);
 export const upgradePrice = (s: Save) => upgradeCost("click", s.upgrades);
 export function buyUpgrade(s: Save, id: UpgradeId): Save {
   const u = UPGRADES.find(u => u.id === id)!;
@@ -55,9 +67,34 @@ export function drawPack(random: () => number = Math.random, rareChance = 0): st
     return (allowed.find(c => (roll -= probabilities[c.rarity] / CARDS.filter(x => x.rarity === c.rarity).length) < 0) || allowed.at(-1)!).id;
   });
 }
-export function buyPack(s: Save, cards: string[]): Save {
-  if (s.pending.length || s.energy < price(s) || cards.length !== 5 || cards.some(id => !byId(id))) return s;
-  return { ...s, energy: s.energy - price(s), packs: s.packs + 1, pending: [...cards], revealed: 0 };
+export function buyPack(s: Save, cards: string[], now = Date.now()): Save {
+  return openPack(s, cards, "paid", now);
+}
+export function openPack(s: Save, cards: string[], source: PackSource, now = Date.now()): Save {
+  if (s.pending.length || cards.length !== 5 || cards.some(id => !byId(id))) return s;
+  const current = rechargeFreePacks(s, now);
+  if (source === "free" ? current.freeBoosters < 1 : current.energy < price(current)) return s;
+  const full = current.freeBoosters === current.freeBoosterCapacity;
+  return {...current,energy:current.energy-(source === "paid" ? price(current) : 0),
+    freeBoosters:current.freeBoosters-(source === "free" ? 1 : 0),
+    freeBoosterTimerStartedAt:source === "free" && full ? now : current.freeBoosterTimerStartedAt,
+    paidBoostersPurchased:current.paidBoostersPurchased+(source === "paid" ? 1 : 0),
+    packs:current.packs+1,pending:[...cards],revealed:0,pendingSource:source};
+}
+export function finishPack(s: Save): Save {
+  return s.pending.length && s.revealed === 5 ? {...s,pending:[],revealed:0,pendingSource:null}:s;
+}
+export function chainPack(s: Save, cards: string[], source: PackSource, now = Date.now()): Save {
+  if (s.pending.length !== 5 || s.revealed !== 5) return s;
+  const closed=finishPack(s), next=openPack(closed,cards,source,now);
+  return next===closed?s:next;
+}
+export function buyStorage(s: Save, now = Date.now()): Save {
+  const cost=storageCost(s);
+  if (cost === null || s.freeBoosterCapacity >= MAX_FREE_CAPACITY || s.energy < cost) return s;
+  const current=rechargeFreePacks(s,now);
+  return {...current,energy:current.energy-cost,freeBoosterCapacity:current.freeBoosterCapacity+1,
+    freeBoosterTimerStartedAt:current.freeBoosters===current.freeBoosterCapacity?now:current.freeBoosterTimerStartedAt};
 }
 export function reveal(s: Save): Save {
   if (s.revealed >= s.pending.length) return s;
@@ -82,10 +119,10 @@ export function changeDeck(s: Save, id: string, replaceId?: string): Save {
   if (equipBlockedReason(candidate, id)) return s;
   return equip(candidate, id);
 }
-export function parseSave(raw: string): Save {
+export function parseSave(raw: string, now = Date.now()): Save {
   const s = JSON.parse(raw);
   const num = (n: unknown) => typeof n === "number" && Number.isFinite(n) && n >= 0;
-  if (!s || (s.version !== 1 && s.version !== 2) || !num(s.energy) || !Number.isSafeInteger(s.level) || s.level < 0 || s.level > (s.version === 1 ? 100 : 500) || !num(s.clicks) || !num(s.packs) || !s.owned || typeof s.owned !== "object" || Array.isArray(s.owned) || !Array.isArray(s.deck) || !Array.isArray(s.pending)) throw Error("Sauvegarde invalide ou version non prise en charge");
+  if (!s || (s.version !== 1 && s.version !== 2 && s.version !== 3 && s.version !== 4) || !num(s.energy) || !Number.isSafeInteger(s.level) || s.level < 0 || s.level > (s.version === 1 ? 100 : 500) || !num(s.clicks) || !num(s.packs) || !s.owned || typeof s.owned !== "object" || Array.isArray(s.owned) || !Array.isArray(s.deck) || !Array.isArray(s.pending)) throw Error("Sauvegarde invalide ou version non prise en charge");
   const owned: Record<string, number> = {};
   for (const c of CARDS) if (Number.isSafeInteger(s.owned[c.id]) && s.owned[c.id] > 0) owned[c.id] = s.owned[c.id];
   const pending = s.pending;
@@ -100,8 +137,26 @@ export function parseSave(raw: string): Save {
       upgrades[u.id] = value;
     }
   }
-  const migrated: Save = { version: 2, energy: s.energy, level: s.level, clicks: s.clicks, packs: s.packs, pending: [...pending], revealed: s.revealed, owned, deck: [], upgrades, extraDeckSlots: s.version === 1 ? 0 : s.extraDeckSlots };
+  const migrated: Save = { version: 4, cardLevels: {}, energy: s.energy, level: s.level, clicks: s.clicks, packs: s.packs, pending: [...pending], revealed: s.revealed, owned, deck: [], upgrades, extraDeckSlots: s.version === 1 ? 0 : s.extraDeckSlots, ...initialFreePacks(now), paidBoostersPurchased: Math.floor(s.packs), pendingSource:pending.length?"paid":null };
+  if (s.version >= 3) {
+    const capacity=s.freeBoosterCapacity,count=s.freeBoosters,timer=s.freeBoosterTimerStartedAt;
+    if (!Number.isInteger(capacity)||capacity<2||capacity>10||!Number.isInteger(count)||count<0||count>capacity
+      || (timer!==null&&(!Number.isSafeInteger(timer)||timer<0)) || (count<capacity&&timer===null)
+      || (count===capacity&&timer!==null) || !Number.isSafeInteger(s.paidBoostersPurchased)||s.paidBoostersPurchased<0
+      || s.paidBoostersPurchased>s.packs || (pending.length ? !["free","paid"].includes(s.pendingSource) : s.pendingSource!==null)) throw Error("Économie booster invalide");
+    Object.assign(migrated,{freeBoosters:count,freeBoosterCapacity:capacity,freeBoosterTimerStartedAt:timer,paidBoostersPurchased:s.paidBoostersPurchased,pendingSource:s.pendingSource});
+  }
+  if (s.version === 4) {
+    if (!s.cardLevels || typeof s.cardLevels !== "object" || Array.isArray(s.cardLevels)) throw Error("Niveaux de carte invalides");
+    for (const [id, level] of Object.entries(s.cardLevels)) {
+      if (!byId(id) || !owned[id] || !Number.isInteger(level) || (level as number) < 1 || (level as number) > 5) throw Error("Niveau de carte invalide");
+      migrated.cardLevels[id] = level as number;
+    }
+  } else {
+    // Preserve earned levels and copies; upgrades now spend only future duplicates.
+    for (const [id, copies] of Object.entries(owned)) migrated.cardLevels[id] = cardLevel(copies);
+  }
   // Keep already-equipped v1 evolutions: prerequisites apply to future equipment.
   migrated.deck = [...new Set<string>(s.deck.filter((id: unknown) => typeof id === "string" && owned[id]))].slice(0, deckCapacity(migrated));
-  return migrated;
+  return rechargeFreePacks(migrated,now);
 }

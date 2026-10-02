@@ -1,0 +1,4025 @@
+{
+  "lineages": [
+    {
+      "id": "L01",
+      "name": "Mémoire des graines",
+      "concept": "Une graine transporte les souvenirs de la clairière.",
+      "transformation": "Bulbe sur pattes → cervidé ramifié → arbre-portail enraciné.",
+      "personality": "Timide → curieux et protecteur → patient et accueillant.",
+      "gimmick": "Feuille bifide devenue arche vivante.",
+      "marker": "Deux oreilles-feuilles, yeux en amande, bourgeon ivoire.",
+      "faerie": "Mémoire végétale",
+      "palette": [
+        "#91df78",
+        "#479e78",
+        "#eaffb1"
+      ],
+      "habitat": "ancient-tree",
+      "type": "Sylve",
+      "cardIds": [
+        "F01-001",
+        "F01-002",
+        "F01-003"
+      ]
+    },
+    {
+      "id": "L02",
+      "name": "Oreilles du printemps",
+      "concept": "Un lapereau sème les chemins qu’il explore.",
+      "transformation": "Graine à oreilles → lapin jardinier → lièvre à manteau de ramilles.",
+      "personality": "Hésitant → joueur → intrépide et généreux.",
+      "gimmick": "Oreilles longues à nervure rose.",
+      "marker": "Deux oreilles asymétriques et trois boutons roses.",
+      "faerie": "Sentiers en fleurs",
+      "palette": [
+        "#c6e987",
+        "#649d80",
+        "#ffd7c4"
+      ],
+      "habitat": "meadow",
+      "type": "Sylve",
+      "cardIds": [
+        "F01-004",
+        "F01-005",
+        "F01-006"
+      ]
+    },
+    {
+      "id": "L03",
+      "name": "Jardin des saluts",
+      "concept": "Une fleur apprend à répondre aux voix de la forêt.",
+      "transformation": "Bouton au ras du sol → fleur danseuse → immense bouquet vivant.",
+      "personality": "Réservé → sociable → bienveillant et théâtral.",
+      "gimmick": "Pétales en forme de mains qui saluent.",
+      "marker": "Cœur corail et trois pétales levés.",
+      "faerie": "Floraison musicale",
+      "palette": [
+        "#ffb6cb",
+        "#b96397",
+        "#fff0b2"
+      ],
+      "habitat": "meadow",
+      "type": "Sylve",
+      "cardIds": [
+        "F01-007",
+        "F01-008",
+        "F01-009"
+      ]
+    },
+    {
+      "id": "L04",
+      "name": "Chœur du sous-bois",
+      "concept": "Un champignon accorde les sons captés par son chapeau.",
+      "transformation": "Pied chanteur → trompettes jumelles → orchestre de corolles.",
+      "personality": "Bavard → attentif → chef d’orchestre encourageant.",
+      "gimmick": "Chapeau rose à trois taches crème en triangle.",
+      "marker": "Collerette ivoire et signature à trois taches.",
+      "faerie": "Spores sonores",
+      "palette": [
+        "#fd8aaf",
+        "#b14478",
+        "#ffe9bd"
+      ],
+      "habitat": "fungal-forest",
+      "type": "Mycète",
+      "cardIds": [
+        "F01-010",
+        "F01-011",
+        "F01-012"
+      ]
+    },
+    {
+      "id": "L05",
+      "name": "Broches du mycélium",
+      "concept": "Un scarabée recoud les passages entre les champignons.",
+      "transformation": "Petite broche ronde → scarabée bijou → artisan aux élytres-jardin.",
+      "personality": "Appliqué → fier → attentionné.",
+      "gimmick": "Élytres cousus d’un X lumineux.",
+      "marker": "Six petites pattes et couture en X.",
+      "faerie": "Mycélium réparateur",
+      "palette": [
+        "#bc99ec",
+        "#6457a1",
+        "#f4ddad"
+      ],
+      "habitat": "understory",
+      "type": "Mycète",
+      "cardIds": [
+        "F01-013",
+        "F01-014",
+        "F01-015"
+      ]
+    },
+    {
+      "id": "L06",
+      "name": "Coussins de lune",
+      "concept": "Un félin porte les rêves sans les réveiller.",
+      "transformation": "Chaton au croissant → félin au tapis de nuit → gardien des songes.",
+      "personality": "Somnolent → espiègle → rassurant.",
+      "gimmick": "Queue en croissant et paupières étoilées.",
+      "marker": "Croissant de queue et oreilles rondes à pointe claire.",
+      "faerie": "Rêves tranquilles",
+      "palette": [
+        "#b8b4f3",
+        "#615787",
+        "#ffe2b7"
+      ],
+      "habitat": "star-night",
+      "type": "Lune",
+      "cardIds": [
+        "F01-016",
+        "F01-017",
+        "F01-018"
+      ]
+    },
+    {
+      "id": "L07",
+      "name": "Couronnes de source",
+      "concept": "Une grenouille transporte les premières gouttes du matin.",
+      "transformation": "Grenouille-goutte → marcheur de rivière → gardien de vasque.",
+      "personality": "Enjoué → serviable → contemplatif.",
+      "gimmick": "Trois gouttes formant une couronne.",
+      "marker": "Yeux hauts et couronne à trois pointes.",
+      "faerie": "Eau recueillie",
+      "palette": [
+        "#78e8db",
+        "#369bab",
+        "#d3fff1"
+      ],
+      "habitat": "pond",
+      "type": "Rosée",
+      "cardIds": [
+        "F01-019",
+        "F01-020",
+        "F01-021"
+      ]
+    },
+    {
+      "id": "L08",
+      "name": "Rubans de cascade",
+      "concept": "Une salamandre tisse le courant autour des pierres.",
+      "transformation": "Petit ruban mouillé → nageur frangé → salamandre aux nageoires-voiles.",
+      "personality": "Discret → vif → accueillant.",
+      "gimmick": "Franges corail et queue en ruban noué.",
+      "marker": "Trois branchies corail de chaque côté du visage.",
+      "faerie": "Cascade tissée",
+      "palette": [
+        "#77cfd5",
+        "#376e9c",
+        "#ffccad"
+      ],
+      "habitat": "waterfall",
+      "type": "Rosée",
+      "cardIds": [
+        "F01-022",
+        "F01-023",
+        "F01-024"
+      ]
+    },
+    {
+      "id": "L09",
+      "name": "Lanternes de pollen",
+      "concept": "Une luciole réchauffe les fleurs sans les brûler.",
+      "transformation": "Point lumineux → lanternier ailé → cortège de lumières.",
+      "personality": "Curieux → généreux → rassembleur.",
+      "gimmick": "Abdomen en goutte-lanterne fendu par une nervure.",
+      "marker": "Deux antennes recourbées et ampoule en poire.",
+      "faerie": "Feu doux",
+      "palette": [
+        "#ffd678",
+        "#be7954",
+        "#fff6ce"
+      ],
+      "habitat": "ember-orchard",
+      "type": "Étincelle",
+      "cardIds": [
+        "F01-025",
+        "F01-026",
+        "F01-027"
+      ]
+    },
+    {
+      "id": "L10",
+      "name": "Messagers du jour",
+      "concept": "Un oiseau recueille la lumière avant l’aube.",
+      "transformation": "Oisillon à écharpe → hirondelle à rubans → messager aux ailes vitrail.",
+      "personality": "Confiant → audacieux → délicat.",
+      "gimmick": "Queue en deux rubans et petite écharpe crème.",
+      "marker": "Queue bifide et plume frontale en losange.",
+      "faerie": "Première lumière",
+      "palette": [
+        "#ffcb85",
+        "#b77776",
+        "#fff4c1"
+      ],
+      "habitat": "dawn",
+      "type": "Aurore",
+      "cardIds": [
+        "F01-028",
+        "F01-029",
+        "F01-030"
+      ]
+    },
+    {
+      "id": "L11",
+      "name": "Nœuds des étoiles",
+      "concept": "Un serpent apprend à relier des constellations.",
+      "transformation": "Ruban noué → serpent portant des anneaux → pont stellaire vivant.",
+      "personality": "Distrait → joueur → attentif.",
+      "gimmick": "Nœud ivoire à la nuque, transformé en anneau.",
+      "marker": "Tête ovale et nœud clair derrière le visage.",
+      "faerie": "Constellations reliées",
+      "palette": [
+        "#9aa4f2",
+        "#51568a",
+        "#d9ffe4"
+      ],
+      "habitat": "astral",
+      "type": "Astral",
+      "cardIds": [
+        "F01-031",
+        "F01-032",
+        "F01-033"
+      ]
+    },
+    {
+      "id": "L12",
+      "name": "Petits remparts",
+      "concept": "Une motte aide les plantes à tenir debout.",
+      "transformation": "Motte trapue → golem de pierres jardinières → rempart mobile à jardins.",
+      "personality": "Dévoué → méthodique → serein.",
+      "gimmick": "Carré de terre au front et bras en branches fourchues.",
+      "marker": "Front carré et deux mains fourchues.",
+      "faerie": "Terre accueillante",
+      "palette": [
+        "#adb68c",
+        "#637a67",
+        "#e4dcb7"
+      ],
+      "habitat": "ruins",
+      "type": "Sylve",
+      "cardIds": [
+        "F01-034",
+        "F01-035",
+        "F01-036"
+      ]
+    },
+    {
+      "id": "L13",
+      "name": "Ailes du souvenir",
+      "concept": "Un papillon porte les rêves recueillis par la lune.",
+      "transformation": "Papillon aux croissants → oracle aux ailes tentures.",
+      "personality": "Curieux → calme, écoute les songes oubliés.",
+      "gimmick": "Deux ailes lunaires devenant quatre panneaux ocellés.",
+      "marker": "Antennes en gouttes et médaillon au thorax.",
+      "faerie": "Souvenirs de nuit",
+      "palette": [
+        "#c0adff",
+        "#7666ca",
+        "#ffe0fa"
+      ],
+      "habitat": "star-night",
+      "type": "Lune",
+      "cardIds": [
+        "F01-037",
+        "F01-038"
+      ]
+    },
+    {
+      "id": "L14",
+      "name": "Flammes câlines",
+      "concept": "Un renard abrite une flamme qui réchauffe ses amis.",
+      "transformation": "Renardeau à queue-bougie → canidé à manteau de braise.",
+      "personality": "Joueur → protecteur.",
+      "gimmick": "Queue flamme retournée comme un point d’interrogation.",
+      "marker": "Grandes oreilles triangulaires et pointe de queue crème.",
+      "faerie": "Braise sans brûlure",
+      "palette": [
+        "#ffbf78",
+        "#ce7156",
+        "#fff0bb"
+      ],
+      "habitat": "ember-orchard",
+      "type": "Étincelle",
+      "cardIds": [
+        "F01-039",
+        "F01-040"
+      ]
+    },
+    {
+      "id": "L15",
+      "name": "Escaliers d’écorce",
+      "concept": "Une limace construit des escaliers avec les feuilles mortes.",
+      "transformation": "Limace feuille → escargot à cabane spiralée.",
+      "personality": "Paisible → hospitalier.",
+      "gimmick": "Deux antennes terminées en feuilles rondes.",
+      "marker": "Antennes rondes et patin de mousse.",
+      "faerie": "Écorce habitée",
+      "palette": [
+        "#9fcea7",
+        "#587f74",
+        "#edcfa3"
+      ],
+      "habitat": "understory",
+      "type": "Sylve",
+      "cardIds": [
+        "F01-041",
+        "F01-042"
+      ]
+    },
+    {
+      "id": "L16",
+      "name": "Miroirs de mare",
+      "concept": "Un poisson apprend à lire le ciel dans l’eau.",
+      "transformation": "Poisson rond à bulle → poisson aux nageoires de roseaux.",
+      "personality": "Rêveur → inventif.",
+      "gimmick": "Bulle portée au front et nageoire en feuille.",
+      "marker": "Bulle frontale et queue à deux feuilles.",
+      "faerie": "Reflets inversés",
+      "palette": [
+        "#b4e8e8",
+        "#628da7",
+        "#ffd5da"
+      ],
+      "habitat": "river",
+      "type": "Rosée",
+      "cardIds": [
+        "F01-043",
+        "F01-044"
+      ]
+    },
+    {
+      "id": "L17",
+      "name": "Gardes du pollen",
+      "concept": "Un scarabée veille sur les fleurs endormies.",
+      "transformation": "Scarabée doré → sentinelle aux ailes-vitrail.",
+      "personality": "Sérieux → tendre derrière sa carapace.",
+      "gimmick": "Carapace en bouclier à fente solaire.",
+      "marker": "Fente centrale et antennes en demi-cercle.",
+      "faerie": "Pollen protégé",
+      "palette": [
+        "#e6c675",
+        "#947459",
+        "#fff1b9"
+      ],
+      "habitat": "canopy",
+      "type": "Aurore",
+      "cardIds": [
+        "F01-045",
+        "F01-046"
+      ]
+    },
+    {
+      "id": "L18",
+      "name": "Veilleurs de cristal",
+      "concept": "Une chauve-souris rapporte les notes qui résonnent sous terre.",
+      "transformation": "Chauve-souris ronde → oreillard aux ailes géodes.",
+      "personality": "Sensible → musicien généreux.",
+      "gimmick": "Grandes oreilles en cuillère et ventre triangulaire clair.",
+      "marker": "Oreilles cuillères et bijou ventral.",
+      "faerie": "Résonance minérale",
+      "palette": [
+        "#aab1e8",
+        "#62699d",
+        "#d1fff1"
+      ],
+      "habitat": "crystal-cave",
+      "type": "Lune",
+      "cardIds": [
+        "F01-047",
+        "F01-048"
+      ]
+    },
+    {
+      "id": "L19",
+      "name": "Marées de nacre",
+      "concept": "Un petit poisson apprend à porter un lac entier.",
+      "transformation": "Poisson-perle → baleine de brume suspendue.",
+      "personality": "Souriant → paisible et protecteur.",
+      "gimmick": "Perle frontale et nageoires comme des manches.",
+      "marker": "Perle ivoire au front et deux nageoires arrondies.",
+      "faerie": "Marée suspendue",
+      "palette": [
+        "#8ebfd9",
+        "#607ca7",
+        "#fff0d1"
+      ],
+      "habitat": "sanctuary",
+      "type": "Rosée",
+      "cardIds": [
+        "F01-049",
+        "F01-050"
+      ]
+    },
+    {
+      "id": "L20",
+      "name": "Écharpes des brumes",
+      "concept": "Un esprit échange ses écharpes avec les voyageurs.",
+      "transformation": "Goutte flottante → esprit aux deux rubans de brume.",
+      "personality": "Distrait → attentionné.",
+      "gimmick": "Nœud de tissu corail sous le visage.",
+      "marker": "Nœud corail et yeux en petites virgules.",
+      "faerie": "Brume accueillante",
+      "palette": [
+        "#c5dbdd",
+        "#7796a2",
+        "#ffd1c0"
+      ],
+      "habitat": "clearing",
+      "type": "Rosée",
+      "cardIds": [
+        "F01-051",
+        "F01-052"
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "id": "F01-001",
+      "number": 1,
+      "name": "Moussillon",
+      "lineage": "L01",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-002",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Sylve",
+      "anatomy": "seed",
+      "silhouette": "Goutte basse, deux oreilles latérales et feuille bifide.",
+      "palette": {
+        "primary": "#91df78",
+        "secondary": "#479e78",
+        "light": "#eaffb1"
+      },
+      "habitat": "ancient-tree",
+      "personality": "Timide, cache ses graines dans la mousse.",
+      "visual": "Bulbe à ventre ivoire, racines-pattes, coiffe à deux feuilles.",
+      "role": "Clic",
+      "plannedEffects": {
+        "clickFlat": 1
+      },
+      "flavor": "Il emporte un printemps entier dans sa fourrure.",
+      "seed": 1037,
+      "sharedMarkers": "Deux oreilles-feuilles, yeux en amande, bourgeon ivoire.",
+      "conditions": [],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "bulb",
+        "headVariant": "round",
+        "ears": "leaf",
+        "horns": "none",
+        "wings": "none",
+        "tail": "sprig",
+        "crown": "splitLeaf",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "seedBounce",
+        "posture": "curled",
+        "proportions": {
+          "head": 1.2,
+          "width": 0.78,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 12,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        }
+      }
+    },
+    {
+      "id": "F01-002",
+      "number": 2,
+      "name": "Sylvérêve",
+      "lineage": "L01",
+      "evolvesFrom": "F01-001",
+      "evolvesTo": "F01-003",
+      "stage": 1,
+      "rarity": 2,
+      "type": "Sylve",
+      "anatomy": "deer",
+      "silhouette": "Profil de cervidé élancé, ramures ouvertes en V.",
+      "palette": {
+        "primary": "#91df78",
+        "secondary": "#479e78",
+        "light": "#eaffb1"
+      },
+      "habitat": "ancient-tree",
+      "personality": "Curieux, guide les enfants hors des ronces.",
+      "visual": "Quatre jambes fines, collerette de feuilles, ramure à bourgeons ivoire.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "faerieBonus": 0.06
+      },
+      "flavor": "Les sentiers oubliés refleurissent sous ses pas.",
+      "seed": 1074,
+      "sharedMarkers": "Deux oreilles-feuilles, yeux en amande, bourgeon ivoire.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Sylve",
+          "atLeast": 3,
+          "effect": {
+            "clickMultiplier": 0.2
+          }
+        }
+      ],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "slender",
+        "headVariant": "long",
+        "ears": "leaf",
+        "horns": "branch",
+        "wings": "none",
+        "tail": "leaf",
+        "crown": "buds",
+        "markings": "freckles",
+        "accessory": "leafScarf",
+        "aura": "none",
+        "idle": "leafSway",
+        "posture": "quadruped",
+        "proportions": {
+          "head": 0.78,
+          "width": 0.84,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 9,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        }
+      }
+    },
+    {
+      "id": "F01-003",
+      "number": 3,
+      "name": "Éon de la clairière",
+      "lineage": "L01",
+      "evolvesFrom": "F01-002",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 5,
+      "type": "Sylve",
+      "anatomy": "treeGuardian",
+      "silhouette": "Arche d’arbre creuse, canopée désaxée, branche latérale basse, racines et feuilles satellites.",
+      "palette": {
+        "primary": "#91df78",
+        "secondary": "#479e78",
+        "light": "#eaffb1"
+      },
+      "habitat": "ancient-tree",
+      "personality": "Patient, offre un abri aux souvenirs égarés.",
+      "visual": "Un arbre-portail sans visage classique. La canopée monte à gauche et descend à droite ; un cœur-graine lumineux flotte dans l’arche, entouré de feuilles détachées. Les deux branches en V et la feuille bifide rappellent ses premiers stades.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "faerieBonus": 0.08,
+        "duplicateBonus": 2
+      },
+      "flavor": "La clairière rêvait de lui avant la première étoile.",
+      "seed": 1111,
+      "sharedMarkers": "Deux oreilles-feuilles, yeux en amande, bourgeon ivoire.",
+      "conditions": [
+        {
+          "kind": "discoveredSpecies",
+          "perSpecies": {
+            "energyMultiplier": 0.01
+          },
+          "cap": 0.6
+        }
+      ],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "portalTree",
+        "headVariant": "portal",
+        "ears": "leaf",
+        "horns": "branch",
+        "wings": "none",
+        "tail": "roots",
+        "crown": "canopy",
+        "markings": "runes",
+        "accessory": "seedCore",
+        "aura": "rootPulse",
+        "idle": "rootPulse",
+        "posture": "rooted",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "none",
+          "spacing": 0,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        }
+      },
+      "signature": {
+        "composition": "Tronc ancré en bas, arche ouverte au centre, branches débordant en haut.",
+        "idle": "Racines qui respirent, noyau qui pulse, tronc stable.",
+        "habitatDetail": "Arbre ancien creux et racines en passerelles, souvenirs-lucioles.",
+        "aura": "Pulsation de racines ivoire, halo vert intérieur.",
+        "narrative": "Le premier arbre de Faerie accueille les souvenirs des mondes traversés."
+      }
+    },
+    {
+      "id": "F01-004",
+      "number": 4,
+      "name": "Semenotte",
+      "lineage": "L02",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-005",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Sylve",
+      "anatomy": "seed",
+      "silhouette": "Petit noyau vertical sous deux feuilles longues.",
+      "palette": {
+        "primary": "#c6e987",
+        "secondary": "#649d80",
+        "light": "#ffd7c4"
+      },
+      "habitat": "meadow",
+      "personality": "Prudent, écoute sous la terre.",
+      "visual": "Graine crème en coque verte, feuilles comme oreilles encore pliées.",
+      "role": "Clic",
+      "plannedEffects": {
+        "clickFlat": 1
+      },
+      "flavor": "Elle connaît le chemin avant le premier pas.",
+      "seed": 1148,
+      "sharedMarkers": "Deux oreilles asymétriques et trois boutons roses.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "kernel",
+        "headVariant": "round",
+        "posture": "curled",
+        "proportions": {
+          "head": 0.8,
+          "width": 0.7,
+          "height": 0.85
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 8,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "seedBounce"
+      }
+    },
+    {
+      "id": "F01-005",
+      "number": 5,
+      "name": "Lièvrille",
+      "lineage": "L02",
+      "evolvesFrom": "F01-004",
+      "evolvesTo": "F01-006",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Sylve",
+      "anatomy": "rabbit",
+      "silhouette": "Grandes oreilles verticales, corps assis court, queue ronde.",
+      "palette": {
+        "primary": "#c6e987",
+        "secondary": "#649d80",
+        "light": "#ffd7c4"
+      },
+      "habitat": "meadow",
+      "personality": "Joueur, distribue ses fleurs sans compter.",
+      "visual": "Lapin menthe, une oreille couchée, manchettes de feuilles et boutons roses.",
+      "role": "Clic",
+      "plannedEffects": {
+        "comboMultiplier": 0.15
+      },
+      "flavor": "Son oreille gauche a toujours une fleur d’avance.",
+      "seed": 1185,
+      "sharedMarkers": "Deux oreilles asymétriques et trois boutons roses.",
+      "conditions": [],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "seated",
+        "headVariant": "round",
+        "ears": "long",
+        "horns": "none",
+        "wings": "none",
+        "tail": "pom",
+        "crown": "buds",
+        "markings": "freckles",
+        "accessory": "leafScarf",
+        "aura": "none",
+        "idle": "earTwitch",
+        "posture": "seated",
+        "proportions": {
+          "head": 1.15,
+          "width": 0.95,
+          "height": 0.95
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 17,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": true
+        }
+      }
+    },
+    {
+      "id": "F01-006",
+      "number": 6,
+      "name": "Ramifleur",
+      "lineage": "L02",
+      "evolvesFrom": "F01-005",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Sylve",
+      "anatomy": "rabbit",
+      "silhouette": "Lièvre penché, oreilles en boucle, cape végétale triangulaire.",
+      "palette": {
+        "primary": "#c6e987",
+        "secondary": "#649d80",
+        "light": "#ffd7c4"
+      },
+      "habitat": "meadow",
+      "personality": "Intrépide, attend toujours le plus petit compagnon.",
+      "visual": "Oreilles devenues rubans de fleurs, grandes pattes et capeline de rameaux.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "clickFlat": 2
+      },
+      "flavor": "Il ouvre les haies sans casser une branche.",
+      "seed": 1222,
+      "sharedMarkers": "Deux oreilles asymétriques et trois boutons roses.",
+      "conditions": [
+        {
+          "kind": "comboAtLeast",
+          "value": 75,
+          "effect": {
+            "comboMultiplier": 0.2
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "runner",
+        "headVariant": "round",
+        "posture": "leaning",
+        "proportions": {
+          "head": 0.8,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 10,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "earTwitch"
+      }
+    },
+    {
+      "id": "F01-007",
+      "number": 7,
+      "name": "Boutonner",
+      "lineage": "L03",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-008",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Sylve",
+      "anatomy": "flower",
+      "silhouette": "Bouton rond sur tige très courte, deux feuilles-pieds.",
+      "palette": {
+        "primary": "#ffb6cb",
+        "secondary": "#b96397",
+        "light": "#fff0b2"
+      },
+      "habitat": "meadow",
+      "personality": "Réservé, s’ouvre aux compliments.",
+      "visual": "Pétales fermés corail, bouche en sourire dans une fente du bouton.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 0.8
+      },
+      "flavor": "Un bonjour suffit pour qu’il s’éveille.",
+      "seed": 1259,
+      "sharedMarkers": "Cœur corail et trois pétales levés.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "bud",
+        "headVariant": "round",
+        "posture": "rooted",
+        "proportions": {
+          "head": 1,
+          "width": 0.65,
+          "height": 0.7
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 8,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "petalDance"
+      }
+    },
+    {
+      "id": "F01-008",
+      "number": 8,
+      "name": "Coralève",
+      "lineage": "L03",
+      "evolvesFrom": "F01-007",
+      "evolvesTo": "F01-009",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Sylve",
+      "anatomy": "flower",
+      "silhouette": "Fleur debout, cinq pétales larges, tige souple en S.",
+      "palette": {
+        "primary": "#ffb6cb",
+        "secondary": "#b96397",
+        "light": "#fff0b2"
+      },
+      "habitat": "meadow",
+      "personality": "Sociable, danse pour les abeilles.",
+      "visual": "Visage pêche encadré de mains-pétales, feuille-écharpe.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoMultiplier": 0.12
+      },
+      "flavor": "Elle applaudit même les chansons les plus timides.",
+      "seed": 1296,
+      "sharedMarkers": "Cœur corail et trois pétales levés.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "dancer",
+        "headVariant": "round",
+        "posture": "leaning",
+        "proportions": {
+          "head": 1,
+          "width": 0.85,
+          "height": 1
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 11,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "petalDance"
+      }
+    },
+    {
+      "id": "F01-009",
+      "number": 9,
+      "name": "Floréale",
+      "lineage": "L03",
+      "evolvesFrom": "F01-008",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 4,
+      "type": "Sylve",
+      "anatomy": "flower",
+      "silhouette": "Éventail floral géant, trois corolles sur une tige arquée.",
+      "palette": {
+        "primary": "#ffb6cb",
+        "secondary": "#b96397",
+        "light": "#fff0b2"
+      },
+      "habitat": "meadow",
+      "personality": "Bienveillante, dirige les fêtes du sous-bois.",
+      "visual": "Bouquet à trois visages doux, corolle centrale comme une scène, rubans de pollen.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoFlat": 4,
+        "faerieBonus": 0.06
+      },
+      "flavor": "Tout le jardin se penche pour l’écouter.",
+      "seed": 1333,
+      "sharedMarkers": "Cœur corail et trois pétales levés.",
+      "conditions": [
+        {
+          "kind": "absentType",
+          "type": "Étincelle",
+          "effect": {
+            "autoMultiplier": 0.2
+          }
+        }
+      ],
+      "status": "produced",
+      "signature": {
+        "composition": "Direction prévue : corolle cérémonielle très large, tige fine penchée, deux pétales latéraux inégaux, stigmate masqué au centre ; aucun corps animal ajouté.",
+        "idle": "Direction prévue : la tige ploie lentement tandis que deux pétales satellites décrivent un cycle plus long ; lumière du stigmate au second cycle.",
+        "habitatDetail": "Amphithéâtre de fleurs et public de pollen.",
+        "aura": "Rubans de pollen corail.",
+        "narrative": "La forêt retrouve sa voix lors de ses floraisons."
+      },
+      "sprite": {
+        "bodyVariant": "ceremony",
+        "headVariant": "round",
+        "posture": "rooted",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 7,
+          "mouth": "none",
+          "mask": true,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "flowerCeremony"
+      }
+    },
+    {
+      "id": "F01-010",
+      "number": 10,
+      "name": "Chantignon",
+      "lineage": "L04",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-011",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Mycète",
+      "anatomy": "mushroom",
+      "silhouette": "Grand chapeau horizontal, pied court, collerette à pointes.",
+      "palette": {
+        "primary": "#fd8aaf",
+        "secondary": "#b14478",
+        "light": "#ffe9bd"
+      },
+      "habitat": "fungal-forest",
+      "personality": "Bavard, fredonne au lever du brouillard.",
+      "visual": "Coiffe rose ample, lamelles miel, petit pied crème avec bras mous.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 1
+      },
+      "flavor": "Sa chanson ne se répète jamais deux fois.",
+      "seed": 1370,
+      "sharedMarkers": "Collerette ivoire et signature à trois taches.",
+      "conditions": [],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "shortStem",
+        "headVariant": "cap",
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "scallopCap",
+        "markings": "spores",
+        "accessory": "ruff",
+        "aura": "none",
+        "idle": "sporeFall",
+        "posture": "leaning",
+        "proportions": {
+          "head": 1,
+          "width": 0.9,
+          "height": 0.9
+        },
+        "face": {
+          "eyes": "narrow",
+          "spacing": 9,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        }
+      }
+    },
+    {
+      "id": "F01-011",
+      "number": 11,
+      "name": "Sporelle",
+      "lineage": "L04",
+      "evolvesFrom": "F01-010",
+      "evolvesTo": "F01-012",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Mycète",
+      "anatomy": "mushroom",
+      "silhouette": "Deux chapeaux inclinés, pied élancé et bras de mousse.",
+      "palette": {
+        "primary": "#fd8aaf",
+        "secondary": "#b14478",
+        "light": "#ffe9bd"
+      },
+      "habitat": "fungal-forest",
+      "personality": "Attentive, écoute les racines.",
+      "visual": "Deux trompettes roses reliées par une collerette, taches triangulaires communes.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 1.5,
+        "autoMultiplier": 0.08
+      },
+      "flavor": "Elle conserve chaque note dans une spore.",
+      "seed": 1407,
+      "sharedMarkers": "Collerette ivoire et signature à trois taches.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "trumpets",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 1,
+          "width": 0.95,
+          "height": 1
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 10,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "sporeFall"
+      }
+    },
+    {
+      "id": "F01-012",
+      "number": 12,
+      "name": "Mycoralie",
+      "lineage": "L04",
+      "evolvesFrom": "F01-011",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Mycète",
+      "anatomy": "mushroom",
+      "silhouette": "Trois chapeaux en cascade, socle de racines large.",
+      "palette": {
+        "primary": "#fd8aaf",
+        "secondary": "#b14478",
+        "light": "#ffe9bd"
+      },
+      "habitat": "fungal-forest",
+      "personality": "Encourageante, laisse chanter les débutants.",
+      "visual": "Orchestre de coiffes superposées, baguettes de mycélium, visage bas sous le grand chapeau.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoMultiplier": 0.15
+      },
+      "flavor": "Les silences sont aussi des instruments.",
+      "seed": 1444,
+      "sharedMarkers": "Collerette ivoire et signature à trois taches.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Mycète",
+          "atLeast": 3,
+          "effect": {
+            "autoMultiplier": 0.2
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "orchestra",
+        "headVariant": "round",
+        "posture": "rooted",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "narrow",
+          "spacing": 10,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "sporeFall"
+      }
+    },
+    {
+      "id": "F01-013",
+      "number": 13,
+      "name": "Couspore",
+      "lineage": "L05",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-014",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Mycète",
+      "anatomy": "beetle",
+      "silhouette": "Ovale compact, six pattes courtes et antennes en boucle.",
+      "palette": {
+        "primary": "#bc99ec",
+        "secondary": "#6457a1",
+        "light": "#f4ddad"
+      },
+      "habitat": "understory",
+      "personality": "Appliqué, répare les feuilles abîmées.",
+      "visual": "Élytres lilas avec couture ivoire, tête basse et outils en brindilles.",
+      "role": "Collection",
+      "plannedEffects": {
+        "duplicateBonus": 0.5
+      },
+      "flavor": "Aucun trou n’est trop petit pour son attention.",
+      "seed": 1481,
+      "sharedMarkers": "Six petites pattes et couture en X.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "brooch",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 1,
+          "width": 0.7,
+          "height": 0.75
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "shellRock"
+      }
+    },
+    {
+      "id": "F01-014",
+      "number": 14,
+      "name": "Brochignon",
+      "lineage": "L05",
+      "evolvesFrom": "F01-013",
+      "evolvesTo": "F01-015",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Mycète",
+      "anatomy": "beetle",
+      "silhouette": "Carapace en losange, antennes recourbées, sac dorsal.",
+      "palette": {
+        "primary": "#bc99ec",
+        "secondary": "#6457a1",
+        "light": "#f4ddad"
+      },
+      "habitat": "understory",
+      "personality": "Fier de son premier jardin.",
+      "visual": "Sac de spores posé sur une broche chitineuse, couture en X plus large.",
+      "role": "Collection",
+      "plannedEffects": {
+        "boosterDiscount": 0.03
+      },
+      "flavor": "Il ferme son sac avec une étoile de fil.",
+      "seed": 1518,
+      "sharedMarkers": "Six petites pattes et couture en X.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "satchel",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 0.9,
+          "width": 0.85,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 9,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": true
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "shellRock"
+      }
+    },
+    {
+      "id": "F01-015",
+      "number": 15,
+      "name": "Mycélisseur",
+      "lineage": "L05",
+      "evolvesFrom": "F01-014",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Mycète",
+      "anatomy": "beetle",
+      "silhouette": "Élytres ouverts portant deux jardins, six pattes fines.",
+      "palette": {
+        "primary": "#bc99ec",
+        "secondary": "#6457a1",
+        "light": "#f4ddad"
+      },
+      "habitat": "understory",
+      "personality": "Attentionné, partage ses outils.",
+      "visual": "Plateaux de champignons sur les ailes rigides, pinces douces en forme d’aiguilles.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "duplicateBonus": 1.5
+      },
+      "flavor": "Son ouvrage relie les coins oubliés du monde.",
+      "seed": 1555,
+      "sharedMarkers": "Six petites pattes et couture en X.",
+      "conditions": [
+        {
+          "kind": "equippedLineage",
+          "lineage": "L05",
+          "atLeast": 2,
+          "effect": {
+            "duplicateBonus": 2
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "gardens",
+        "headVariant": "round",
+        "posture": "openWings",
+        "proportions": {
+          "head": 0.75,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "narrow",
+          "spacing": 9,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "glass",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "leafSway"
+      }
+    },
+    {
+      "id": "F01-016",
+      "number": 16,
+      "name": "Somnouchat",
+      "lineage": "L06",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-017",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Lune",
+      "anatomy": "cat",
+      "silhouette": "Chaton roulé en virgule, tête large et queue croissant.",
+      "palette": {
+        "primary": "#b8b4f3",
+        "secondary": "#615787",
+        "light": "#ffe2b7"
+      },
+      "habitat": "star-night",
+      "personality": "Somnolent, ronronne dans les poches.",
+      "visual": "Pelage lavande, masque crème et coussin d’ombre sous les pattes.",
+      "role": "Clic",
+      "plannedEffects": {
+        "critChance": 0.02
+      },
+      "flavor": "Il rêve pour ceux qui ont oublié de dormir.",
+      "seed": 1592,
+      "sharedMarkers": "Croissant de queue et oreilles rondes à pointe claire.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "kitten",
+        "headVariant": "round",
+        "posture": "curled",
+        "proportions": {
+          "head": 1.2,
+          "width": 0.75,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 10,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "breathe"
+      }
+    },
+    {
+      "id": "F01-017",
+      "number": 17,
+      "name": "Croissombre",
+      "lineage": "L06",
+      "evolvesFrom": "F01-016",
+      "evolvesTo": "F01-018",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Lune",
+      "anatomy": "cat",
+      "silhouette": "Félin de profil, queue en arc haute, longues pattes souples.",
+      "palette": {
+        "primary": "#b8b4f3",
+        "secondary": "#615787",
+        "light": "#ffe2b7"
+      },
+      "habitat": "star-night",
+      "personality": "Espiègle, cache les mauvaises pensées.",
+      "visual": "Masque ivoire et cape nocturne ponctuée de lunes, oreilles arrondies.",
+      "role": "Clic",
+      "plannedEffects": {
+        "critMultiplier": 0.2
+      },
+      "flavor": "Une ombre douce précède chacun de ses bonds.",
+      "seed": 1629,
+      "sharedMarkers": "Croissant de queue et oreilles rondes à pointe claire.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "prowler",
+        "headVariant": "round",
+        "posture": "quadruped",
+        "proportions": {
+          "head": 0.8,
+          "width": 0.95,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 8,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tailWave"
+      }
+    },
+    {
+      "id": "F01-018",
+      "number": 18,
+      "name": "Songegarde",
+      "lineage": "L06",
+      "evolvesFrom": "F01-017",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 3,
+      "type": "Lune",
+      "anatomy": "cat",
+      "silhouette": "Félin couché sur large coussin flottant, queue formant un halo.",
+      "palette": {
+        "primary": "#b8b4f3",
+        "secondary": "#615787",
+        "light": "#ffe2b7"
+      },
+      "habitat": "star-night",
+      "personality": "Rassurant, surveille les rêves des plus petits.",
+      "visual": "Crinière de velours, coussin astral tenu par la queue en croissant.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "critChance": 0.03,
+        "comboMultiplier": 0.1
+      },
+      "flavor": "Les cauchemars deviennent des histoires près de lui.",
+      "seed": 1666,
+      "sharedMarkers": "Croissant de queue et oreilles rondes à pointe claire.",
+      "conditions": [
+        {
+          "kind": "comboAtLeast",
+          "value": 75,
+          "effect": {
+            "critMultiplier": 0.5
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "dreamCushion",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 0.9,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 9,
+          "mouth": "muzzle",
+          "mask": true,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-019",
+      "number": 19,
+      "name": "Roséclair",
+      "lineage": "L07",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-020",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Rosée",
+      "anatomy": "frog",
+      "silhouette": "Corps trapu, yeux hauts, cuisses larges en triangle.",
+      "palette": {
+        "primary": "#78e8db",
+        "secondary": "#369bab",
+        "light": "#d3fff1"
+      },
+      "habitat": "pond",
+      "personality": "Enjoué, collectionne les gouttes rondes.",
+      "visual": "Grenouille turquoise à couronne de rosée, ventre lait et doigts en éventail.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 1.2
+      },
+      "flavor": "Chaque goutte est un minuscule ciel à protéger.",
+      "seed": 1703,
+      "sharedMarkers": "Yeux hauts et couronne à trois pointes.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "dropFrog",
+        "headVariant": "round",
+        "posture": "seated",
+        "proportions": {
+          "head": 1,
+          "width": 0.8,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 18,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "seedBounce"
+      }
+    },
+    {
+      "id": "F01-020",
+      "number": 20,
+      "name": "Ruisselet",
+      "lineage": "L07",
+      "evolvesFrom": "F01-019",
+      "evolvesTo": "F01-021",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Rosée",
+      "anatomy": "frog",
+      "silhouette": "Grenouille debout aux jambes fines, manteau d’eau triangulaire.",
+      "palette": {
+        "primary": "#78e8db",
+        "secondary": "#369bab",
+        "light": "#d3fff1"
+      },
+      "habitat": "pond",
+      "personality": "Serviable, accompagne les traversées.",
+      "visual": "Couronne élargie, longues jambes et cape liquide tendue entre les bras.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoMultiplier": 0.1
+      },
+      "flavor": "Il trouve toujours un gué pour ses amis.",
+      "seed": 1740,
+      "sharedMarkers": "Yeux hauts et couronne à trois pointes.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "waterWalker",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 0.8,
+          "width": 0.85,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 12,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-021",
+      "number": 21,
+      "name": "Vasqueroy",
+      "lineage": "L07",
+      "evolvesFrom": "F01-020",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Rosée",
+      "anatomy": "frog",
+      "silhouette": "Large grenouille assise dans une vasque de lotus, bras ouverts.",
+      "palette": {
+        "primary": "#78e8db",
+        "secondary": "#369bab",
+        "light": "#d3fff1"
+      },
+      "habitat": "pond",
+      "personality": "Contemplatif, garde les eaux silencieuses.",
+      "visual": "Trois pointes de couronne comme fontaines, lotus porté sous le ventre.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoFlat": 2.5
+      },
+      "flavor": "Les rivières ralentissent pour lui raconter leur voyage.",
+      "seed": 1777,
+      "sharedMarkers": "Yeux hauts et couronne à trois pointes.",
+      "conditions": [
+        {
+          "kind": "absentType",
+          "type": "Étincelle",
+          "effect": {
+            "autoMultiplier": 0.15
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "lotusBasin",
+        "headVariant": "round",
+        "posture": "seated",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 18,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-022",
+      "number": 22,
+      "name": "Filonde",
+      "lineage": "L08",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-023",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Rosée",
+      "anatomy": "salamander",
+      "silhouette": "Corps horizontal mince, quatre petites pattes, longue queue en S.",
+      "palette": {
+        "primary": "#77cfd5",
+        "secondary": "#376e9c",
+        "light": "#ffccad"
+      },
+      "habitat": "waterfall",
+      "personality": "Discret, se glisse sous les galets.",
+      "visual": "Salamandre bleu d’eau, ventre pêche et trois franges encore courtes.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 0.8
+      },
+      "flavor": "Elle noue les courants sans les arrêter.",
+      "seed": 1814,
+      "sharedMarkers": "Trois branchies corail de chaque côté du visage.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "streamlet",
+        "headVariant": "round",
+        "posture": "quadruped",
+        "proportions": {
+          "head": 0.85,
+          "width": 0.8,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 10,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tailWave"
+      }
+    },
+    {
+      "id": "F01-023",
+      "number": 23,
+      "name": "Frangonde",
+      "lineage": "L08",
+      "evolvesFrom": "F01-022",
+      "evolvesTo": "F01-024",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Rosée",
+      "anatomy": "salamander",
+      "silhouette": "Tête large et basse, queue sinueuse, éventails de branchies.",
+      "palette": {
+        "primary": "#77cfd5",
+        "secondary": "#376e9c",
+        "light": "#ffccad"
+      },
+      "habitat": "waterfall",
+      "personality": "Vif, dessine des rubans dans l’écume.",
+      "visual": "Six branchies corail, long dos turquoise et queue ivoire bordée de bleu.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoMultiplier": 0.15
+      },
+      "flavor": "Sa queue écrit des lettres que seule l’eau sait lire.",
+      "seed": 1851,
+      "sharedMarkers": "Trois branchies corail de chaque côté du visage.",
+      "conditions": [],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "ribbon",
+        "headVariant": "wide",
+        "ears": "gills",
+        "horns": "none",
+        "wings": "none",
+        "tail": "ribbon",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tailWave",
+        "posture": "turned",
+        "proportions": {
+          "head": 1.1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 15,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        }
+      }
+    },
+    {
+      "id": "F01-024",
+      "number": 24,
+      "name": "Nympharive",
+      "lineage": "L08",
+      "evolvesFrom": "F01-023",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Rosée",
+      "anatomy": "salamander",
+      "silhouette": "Corps en S étiré, nageoires latérales comme deux voiles.",
+      "palette": {
+        "primary": "#77cfd5",
+        "secondary": "#376e9c",
+        "light": "#ffccad"
+      },
+      "habitat": "waterfall",
+      "personality": "Accueillante, ouvre les chemins de cascade.",
+      "visual": "Franges devenues voilages, visage calme au bout d’un long ruban d’eau.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoFlat": 2,
+        "faerieBonus": 0.03
+      },
+      "flavor": "Elle laisse un passage sec au cœur des torrents.",
+      "seed": 1888,
+      "sharedMarkers": "Trois branchies corail de chaque côté du visage.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Rosée",
+          "atLeast": 3,
+          "effect": {
+            "autoMultiplier": 0.2
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "riverSails",
+        "headVariant": "round",
+        "posture": "turned",
+        "proportions": {
+          "head": 0.8,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 12,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "glass",
+        "tail": "none",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-025",
+      "number": 25,
+      "name": "Luciolot",
+      "lineage": "L09",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-026",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Étincelle",
+      "anatomy": "firefly",
+      "silhouette": "Petit insecte en poire, tête fine et abdomen lumineux.",
+      "palette": {
+        "primary": "#ffd678",
+        "secondary": "#be7954",
+        "light": "#fff6ce"
+      },
+      "habitat": "ember-orchard",
+      "personality": "Curieux, approche les fenêtres ouvertes.",
+      "visual": "Lanterne citron, ailes translucides courtes et antennes en boucle.",
+      "role": "Clic",
+      "plannedEffects": {
+        "clickFlat": 1
+      },
+      "flavor": "Sa lumière attend que vous souriiez.",
+      "seed": 1925,
+      "sharedMarkers": "Deux antennes recourbées et ampoule en poire.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "sparkPear",
+        "headVariant": "round",
+        "posture": "suspended",
+        "proportions": {
+          "head": 0.9,
+          "width": 0.6,
+          "height": 0.75
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 5,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "glass",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "lanternPulse"
+      }
+    },
+    {
+      "id": "F01-026",
+      "number": 26,
+      "name": "Lanterlume",
+      "lineage": "L09",
+      "evolvesFrom": "F01-025",
+      "evolvesTo": "F01-027",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Étincelle",
+      "anatomy": "firefly",
+      "silhouette": "Grosse lanterne suspendue à deux ailes en gouttes.",
+      "palette": {
+        "primary": "#ffd678",
+        "secondary": "#be7954",
+        "light": "#fff6ce"
+      },
+      "habitat": "ember-orchard",
+      "personality": "Généreux, éclaire les pétales fermés.",
+      "visual": "Abdomen miel compartimenté, deux ailes lilas et petit visage sombre sous les antennes.",
+      "role": "Clic",
+      "plannedEffects": {
+        "comboMultiplier": 0.15
+      },
+      "flavor": "Il n’allume jamais une fleur sans lui demander.",
+      "seed": 1962,
+      "sharedMarkers": "Deux antennes recourbées et ampoule en poire.",
+      "conditions": [],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "lantern",
+        "headVariant": "small",
+        "ears": "antennae",
+        "horns": "none",
+        "wings": "glass",
+        "tail": "none",
+        "crown": "none",
+        "markings": "pollen",
+        "accessory": "lantern",
+        "aura": "firelight",
+        "idle": "lanternPulse",
+        "posture": "suspended",
+        "proportions": {
+          "head": 0.7,
+          "width": 0.78,
+          "height": 0.9
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 4,
+          "mouth": "none",
+          "mask": true,
+          "asymmetric": false
+        }
+      }
+    },
+    {
+      "id": "F01-027",
+      "number": 27,
+      "name": "Cortélampe",
+      "lineage": "L09",
+      "evolvesFrom": "F01-026",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Étincelle",
+      "anatomy": "firefly",
+      "silhouette": "Insecte fin au centre d’un éventail de lanternes satellites.",
+      "palette": {
+        "primary": "#ffd678",
+        "secondary": "#be7954",
+        "light": "#fff6ce"
+      },
+      "habitat": "ember-orchard",
+      "personality": "Rassembleur, guide les fêtes nocturnes.",
+      "visual": "Ailes étroites, abdomen principal et trois lampes reliées par des filaments de pollen.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "clickMultiplier": 0.1
+      },
+      "flavor": "Une procession joyeuse suit chacun de ses départs.",
+      "seed": 1999,
+      "sharedMarkers": "Deux antennes recourbées et ampoule en poire.",
+      "conditions": [
+        {
+          "kind": "everyNthClick",
+          "every": 25,
+          "multiplier": 10
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "procession",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 0.7,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 5,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "glass",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "lanternPulse"
+      }
+    },
+    {
+      "id": "F01-028",
+      "number": 28,
+      "name": "Aubepiou",
+      "lineage": "L10",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-029",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Aurore",
+      "anatomy": "bird",
+      "silhouette": "Poitrine ronde, tête décalée, deux longues plumes de queue.",
+      "palette": {
+        "primary": "#ffcb85",
+        "secondary": "#b77776",
+        "light": "#fff4c1"
+      },
+      "habitat": "dawn",
+      "personality": "Confiant, salue tous les nuages.",
+      "visual": "Oisillon pêche, bec court, ailes en lames et écharpe crème.",
+      "role": "Clic",
+      "plannedEffects": {
+        "clickFlat": 1.2
+      },
+      "flavor": "Il annonce même les matins encore endormis.",
+      "seed": 2036,
+      "sharedMarkers": "Queue bifide et plume frontale en losange.",
+      "conditions": [],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "perched",
+        "headVariant": "beaked",
+        "ears": "none",
+        "horns": "none",
+        "wings": "feather",
+        "tail": "forked",
+        "crown": "crest",
+        "markings": "feathers",
+        "accessory": "scarf",
+        "aura": "none",
+        "idle": "birdPeek",
+        "posture": "standing",
+        "proportions": {
+          "head": 1.22,
+          "width": 0.78,
+          "height": 0.82
+        },
+        "face": {
+          "eyes": "profile",
+          "spacing": 0,
+          "mouth": "beak",
+          "mask": false,
+          "asymmetric": false
+        }
+      }
+    },
+    {
+      "id": "F01-029",
+      "number": 29,
+      "name": "Rubanvol",
+      "lineage": "L10",
+      "evolvesFrom": "F01-028",
+      "evolvesTo": "F01-030",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Aurore",
+      "anatomy": "bird",
+      "silhouette": "Hirondelle oblique, ailes arquées, queue bifide très longue.",
+      "palette": {
+        "primary": "#ffcb85",
+        "secondary": "#b77776",
+        "light": "#fff4c1"
+      },
+      "habitat": "dawn",
+      "personality": "Audacieux, joue avec le vent.",
+      "visual": "Plumes pêche et ivoire, écharpe devenue ruban double porté sous les ailes.",
+      "role": "Clic",
+      "plannedEffects": {
+        "clickMultiplier": 0.08
+      },
+      "flavor": "Le vent lui emprunte parfois sa signature.",
+      "seed": 2073,
+      "sharedMarkers": "Queue bifide et plume frontale en losange.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "swallow",
+        "headVariant": "beaked",
+        "posture": "leaning",
+        "proportions": {
+          "head": 0.75,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "profile",
+          "spacing": 0,
+          "mouth": "beak",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "feather",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "wingBeat"
+      }
+    },
+    {
+      "id": "F01-030",
+      "number": 30,
+      "name": "Vitraurore",
+      "lineage": "L10",
+      "evolvesFrom": "F01-029",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 3,
+      "type": "Aurore",
+      "anatomy": "bird",
+      "silhouette": "Large éventail d’ailes ajourées, petite tête et queue pendante.",
+      "palette": {
+        "primary": "#ffcb85",
+        "secondary": "#b77776",
+        "light": "#fff4c1"
+      },
+      "habitat": "dawn",
+      "personality": "Délicat, porte les couleurs avec soin.",
+      "visual": "Ailes en panneaux transparents corail-or, deux rubans identiques au premier stade.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "critMultiplier": 0.35
+      },
+      "flavor": "L’aube passe à travers ses plumes comme un vitrail.",
+      "seed": 2110,
+      "sharedMarkers": "Queue bifide et plume frontale en losange.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Aurore",
+          "atLeast": 2,
+          "effect": {
+            "critChance": 0.05
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "stainedFan",
+        "headVariant": "beaked",
+        "posture": "openWings",
+        "proportions": {
+          "head": 0.75,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "profile",
+          "spacing": 0,
+          "mouth": "beak",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "feather",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "wingBeat"
+      }
+    },
+    {
+      "id": "F01-031",
+      "number": 31,
+      "name": "Nouétoile",
+      "lineage": "L11",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-032",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Astral",
+      "anatomy": "serpent",
+      "silhouette": "Serpent court en boucle ouverte, petite tête ovale.",
+      "palette": {
+        "primary": "#9aa4f2",
+        "secondary": "#51568a",
+        "light": "#d9ffe4"
+      },
+      "habitat": "astral",
+      "personality": "Distrait, noue sa queue en rêvant.",
+      "visual": "Ruban indigo à nœud ivoire, joues claires et étoile sur le front.",
+      "role": "Collection",
+      "plannedEffects": {
+        "duplicateBonus": 0.5
+      },
+      "flavor": "Il oublie ses nœuds mais jamais ses amis.",
+      "seed": 2147,
+      "sharedMarkers": "Tête ovale et nœud clair derrière le visage.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "looseKnot",
+        "headVariant": "round",
+        "posture": "curled",
+        "proportions": {
+          "head": 1,
+          "width": 0.75,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 8,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "ringFlow"
+      }
+    },
+    {
+      "id": "F01-032",
+      "number": 32,
+      "name": "Anneleau",
+      "lineage": "L11",
+      "evolvesFrom": "F01-031",
+      "evolvesTo": "F01-033",
+      "stage": 1,
+      "rarity": 1,
+      "type": "Astral",
+      "anatomy": "serpent",
+      "silhouette": "Serpent en S vertical traversant deux anneaux.",
+      "palette": {
+        "primary": "#9aa4f2",
+        "secondary": "#51568a",
+        "light": "#d9ffe4"
+      },
+      "habitat": "astral",
+      "personality": "Joueur, bondit entre les étoiles.",
+      "visual": "Anneaux de nacre autour d’un corps lisse, nœud frontal encore visible.",
+      "role": "Collection",
+      "plannedEffects": {
+        "rareChance": 0.08
+      },
+      "flavor": "Chaque cercle ouvre une fenêtre sur une autre nuit.",
+      "seed": 2184,
+      "sharedMarkers": "Tête ovale et nœud clair derrière le visage.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "doubleRing",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 0.85,
+          "width": 0.85,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "ringFlow"
+      }
+    },
+    {
+      "id": "F01-033",
+      "number": 33,
+      "name": "Pontastrie",
+      "lineage": "L11",
+      "evolvesFrom": "F01-032",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Astral",
+      "anatomy": "serpent",
+      "silhouette": "Long arc horizontal soutenu par trois nœuds lumineux.",
+      "palette": {
+        "primary": "#9aa4f2",
+        "secondary": "#51568a",
+        "light": "#d9ffe4"
+      },
+      "habitat": "astral",
+      "personality": "Attentif, rapproche les voyageurs séparés.",
+      "visual": "Corps étiré comme une passerelle, trois anneaux d’appui et visage souriant à une extrémité.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "faerieBonus": 0.04
+      },
+      "flavor": "Il raccourcit les distances, jamais les histoires.",
+      "seed": 2221,
+      "sharedMarkers": "Tête ovale et nœud clair derrière le visage.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Astral",
+          "atLeast": 2,
+          "effect": {
+            "rareChance": 0.15
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "starBridge",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 0.75,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 7,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "ringFlow"
+      }
+    },
+    {
+      "id": "F01-034",
+      "number": 34,
+      "name": "Mottignon",
+      "lineage": "L12",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-035",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Sylve",
+      "anatomy": "golem",
+      "silhouette": "Cube mou sur deux racines, bras très courts.",
+      "palette": {
+        "primary": "#adb68c",
+        "secondary": "#637a67",
+        "light": "#e4dcb7"
+      },
+      "habitat": "ruins",
+      "personality": "Dévoué, soutient les pousses qui penchent.",
+      "visual": "Petite motte à pierres rondes, carré clair au front et racines comme chaussures.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 1
+      },
+      "flavor": "Il garde une place pour la prochaine graine.",
+      "seed": 2258,
+      "sharedMarkers": "Front carré et deux mains fourchues.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "soilCube",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 1,
+          "width": 0.7,
+          "height": 0.75
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 10,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "leafSway"
+      }
+    },
+    {
+      "id": "F01-035",
+      "number": 35,
+      "name": "Dallardin",
+      "lineage": "L12",
+      "evolvesFrom": "F01-034",
+      "evolvesTo": "F01-036",
+      "stage": 1,
+      "rarity": 2,
+      "type": "Sylve",
+      "anatomy": "golem",
+      "silhouette": "Rectangle debout, deux bras en branches, jardinière ventrale.",
+      "palette": {
+        "primary": "#adb68c",
+        "secondary": "#637a67",
+        "light": "#e4dcb7"
+      },
+      "habitat": "ruins",
+      "personality": "Méthodique, range les cailloux par chanson.",
+      "visual": "Plaques de pierre couvertes de mousse et jardinière au ventre.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoMultiplier": 0.15
+      },
+      "flavor": "Même ses poches ont un coin d’ombre.",
+      "seed": 2295,
+      "sharedMarkers": "Front carré et deux mains fourchues.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "planter",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 1,
+          "width": 0.85,
+          "height": 1
+        },
+        "face": {
+          "eyes": "single",
+          "spacing": 0,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "leafSway"
+      }
+    },
+    {
+      "id": "F01-036",
+      "number": 36,
+      "name": "Rempartille",
+      "lineage": "L12",
+      "evolvesFrom": "F01-035",
+      "evolvesTo": null,
+      "stage": 2,
+      "rarity": 2,
+      "type": "Sylve",
+      "anatomy": "golem",
+      "silhouette": "Large mur bas en arc, bras ouverts et deux jardinières hautes.",
+      "palette": {
+        "primary": "#adb68c",
+        "secondary": "#637a67",
+        "light": "#e4dcb7"
+      },
+      "habitat": "ruins",
+      "personality": "Serein, laisse passer les hérissons.",
+      "visual": "Rempart sur racines-pieds, fenêtres fleuries et front carré de la première motte.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoFlat": 2.5
+      },
+      "flavor": "Un refuge n’a pas besoin de porte fermée.",
+      "seed": 2332,
+      "sharedMarkers": "Front carré et deux mains fourchues.",
+      "conditions": [
+        {
+          "kind": "equippedLineage",
+          "lineage": "L12",
+          "atLeast": 2,
+          "effect": {
+            "autoMultiplier": 0.2
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "gardenWall",
+        "headVariant": "round",
+        "posture": "rooted",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "rootPulse"
+      }
+    },
+    {
+      "id": "F01-037",
+      "number": 37,
+      "name": "Lunailée",
+      "lineage": "L13",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-038",
+      "stage": 0,
+      "rarity": 1,
+      "type": "Lune",
+      "anatomy": "moth",
+      "silhouette": "Ailes arrondies horizontales, antennes en gouttes.",
+      "palette": {
+        "primary": "#c0adff",
+        "secondary": "#7666ca",
+        "light": "#ffe0fa"
+      },
+      "habitat": "star-night",
+      "personality": "Curieuse, suit les reflets de lune.",
+      "visual": "Deux grandes ailes lilas gravées de croissants, corps court et médaillon ivoire.",
+      "role": "Clic",
+      "plannedEffects": {
+        "critChance": 0.03
+      },
+      "flavor": "Un battement d’ailes, et la nuit retient son souffle.",
+      "seed": 2369,
+      "sharedMarkers": "Antennes en gouttes et médaillon au thorax.",
+      "conditions": [],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "moonWings",
+        "headVariant": "round",
+        "ears": "antennae",
+        "horns": "none",
+        "wings": "crescent",
+        "tail": "none",
+        "crown": "none",
+        "markings": "moonDust",
+        "accessory": "medallion",
+        "aura": "none",
+        "idle": "moonFlutter",
+        "posture": "openWings",
+        "proportions": {
+          "head": 1.12,
+          "width": 0.83,
+          "height": 0.84
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 12,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        }
+      }
+    },
+    {
+      "id": "F01-038",
+      "number": 38,
+      "name": "Noctipapille",
+      "lineage": "L13",
+      "evolvesFrom": "F01-037",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 3,
+      "type": "Lune",
+      "anatomy": "moth",
+      "silhouette": "Quatre panneaux d’ailes verticaux comme une cape ouverte.",
+      "palette": {
+        "primary": "#c0adff",
+        "secondary": "#7666ca",
+        "light": "#ffe0fa"
+      },
+      "habitat": "star-night",
+      "personality": "Calme, écoute les rêves oubliés.",
+      "visual": "Ailes devenues tentures d’oracle, grands ocelles, antennes conservées et médaillon central.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "critMultiplier": 0.3,
+        "duplicateBonus": 1
+      },
+      "flavor": "Ses ailes gardent les constellations disparues.",
+      "seed": 2406,
+      "sharedMarkers": "Antennes en gouttes et médaillon au thorax.",
+      "conditions": [
+        {
+          "kind": "comboAtLeast",
+          "value": 75,
+          "effect": {
+            "critMultiplier": 0.4
+          }
+        }
+      ],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "oracle",
+        "headVariant": "long",
+        "ears": "antennae",
+        "horns": "none",
+        "wings": "curtain",
+        "tail": "none",
+        "crown": "none",
+        "markings": "ocelli",
+        "accessory": "medallion",
+        "aura": "moonHalo",
+        "idle": "wingBeat",
+        "posture": "openWings",
+        "proportions": {
+          "head": 0.82,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": true,
+          "asymmetric": true
+        }
+      }
+    },
+    {
+      "id": "F01-039",
+      "number": 39,
+      "name": "Flamèche",
+      "lineage": "L14",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-040",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Étincelle",
+      "anatomy": "canine",
+      "silhouette": "Renardeau assis, oreilles hautes et queue-flamme en crochet.",
+      "palette": {
+        "primary": "#ffbf78",
+        "secondary": "#ce7156",
+        "light": "#fff0bb"
+      },
+      "habitat": "ember-orchard",
+      "personality": "Joueur, souffle sur les doigts froids.",
+      "visual": "Fourrure abricot, plastron ivoire et queue douce aux trois langues de feu.",
+      "role": "Clic",
+      "plannedEffects": {
+        "clickFlat": 1.5
+      },
+      "flavor": "Le feu de sa queue ne brûle que la peur.",
+      "seed": 2443,
+      "sharedMarkers": "Grandes oreilles triangulaires et pointe de queue crème.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "foxling",
+        "headVariant": "round",
+        "posture": "seated",
+        "proportions": {
+          "head": 1.1,
+          "width": 0.8,
+          "height": 0.85
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 11,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "emberMantle"
+      }
+    },
+    {
+      "id": "F01-040",
+      "number": 40,
+      "name": "Braiseloup",
+      "lineage": "L14",
+      "evolvesFrom": "F01-039",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 1,
+      "type": "Étincelle",
+      "anatomy": "canine",
+      "silhouette": "Canidé en marche, manteau de braise large et queue en crochet.",
+      "palette": {
+        "primary": "#ffbf78",
+        "secondary": "#ce7156",
+        "light": "#fff0bb"
+      },
+      "habitat": "ember-orchard",
+      "personality": "Protecteur, escorte les voyageurs de nuit.",
+      "visual": "Oreilles conservées, longues pattes et crinière de flammes basses comme une couverture.",
+      "role": "Clic",
+      "plannedEffects": {
+        "comboMultiplier": 0.2
+      },
+      "flavor": "Il entretient le feu qui permet de rentrer chez soi.",
+      "seed": 2480,
+      "sharedMarkers": "Grandes oreilles triangulaires et pointe de queue crème.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "emberWolf",
+        "headVariant": "round",
+        "posture": "quadruped",
+        "proportions": {
+          "head": 0.8,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "narrow",
+          "spacing": 8,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": true
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "emberMantle"
+      }
+    },
+    {
+      "id": "F01-041",
+      "number": 41,
+      "name": "Lentefeuille",
+      "lineage": "L15",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-042",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Sylve",
+      "anatomy": "slug",
+      "silhouette": "Ruban bas, dos en feuille, deux antennes rondes.",
+      "palette": {
+        "primary": "#9fcea7",
+        "secondary": "#587f74",
+        "light": "#edcfa3"
+      },
+      "habitat": "understory",
+      "personality": "Paisible, ne presse jamais ses amis.",
+      "visual": "Limace menthe portant une feuille sèche en couverture, patin de mousse.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 0.7
+      },
+      "flavor": "Le monde est moins pressé à sa hauteur.",
+      "seed": 2517,
+      "sharedMarkers": "Antennes rondes et patin de mousse.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "leafSlug",
+        "headVariant": "round",
+        "posture": "leaning",
+        "proportions": {
+          "head": 1,
+          "width": 0.85,
+          "height": 0.75
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 7,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "leafSway"
+      }
+    },
+    {
+      "id": "F01-042",
+      "number": 42,
+      "name": "Cabacrète",
+      "lineage": "L15",
+      "evolvesFrom": "F01-041",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 1,
+      "type": "Sylve",
+      "anatomy": "snail",
+      "silhouette": "Spirale de cabane sur corps horizontal, antennes hautes.",
+      "palette": {
+        "primary": "#9fcea7",
+        "secondary": "#587f74",
+        "light": "#edcfa3"
+      },
+      "habitat": "understory",
+      "personality": "Hospitalier, prête son toit quand il pleut.",
+      "visual": "Coquille d’écorce en escalier, porte minuscule et feuilles-antennes conservées.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoMultiplier": 0.1
+      },
+      "flavor": "Chaque étage accueille une autre saison.",
+      "seed": 2554,
+      "sharedMarkers": "Antennes rondes et patin de mousse.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "barkHouse",
+        "headVariant": "round",
+        "posture": "turned",
+        "proportions": {
+          "head": 0.8,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 7,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "shellRock"
+      }
+    },
+    {
+      "id": "F01-043",
+      "number": 43,
+      "name": "Bullipin",
+      "lineage": "L16",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-044",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Rosée",
+      "anatomy": "fish",
+      "silhouette": "Poisson en goutte horizontale, bouche ronde, queue fourchue.",
+      "palette": {
+        "primary": "#b4e8e8",
+        "secondary": "#628da7",
+        "light": "#ffd5da"
+      },
+      "habitat": "river",
+      "personality": "Rêveur, regarde les arbres à l’envers.",
+      "visual": "Écailles nacrées, bulle rose au front et nageoires-feuilles.",
+      "role": "Collection",
+      "plannedEffects": {
+        "rareChance": 0.04
+      },
+      "flavor": "Il croit que le ciel pousse au fond des mares.",
+      "seed": 2591,
+      "sharedMarkers": "Bulle frontale et queue à deux feuilles.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "bubbleFish",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 0.75,
+          "height": 0.75
+        },
+        "face": {
+          "eyes": "profile",
+          "spacing": 0,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-044",
+      "number": 44,
+      "name": "Roseauvin",
+      "lineage": "L16",
+      "evolvesFrom": "F01-043",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 1,
+      "type": "Rosée",
+      "anatomy": "fish",
+      "silhouette": "Poisson allongé, deux nageoires ramifiées hautes.",
+      "palette": {
+        "primary": "#b4e8e8",
+        "secondary": "#628da7",
+        "light": "#ffd5da"
+      },
+      "habitat": "river",
+      "personality": "Inventif, dessine des cartes dans les reflets.",
+      "visual": "Nageoires devenues roseaux, bulle frontale comme une lentille et queue-feuille inchangée.",
+      "role": "Collection",
+      "plannedEffects": {
+        "boosterDiscount": 0.03
+      },
+      "flavor": "Les chemins sont plus clairs quand on les voit deux fois.",
+      "seed": 2628,
+      "sharedMarkers": "Bulle frontale et queue à deux feuilles.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "reedFish",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 0.8,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "profile",
+          "spacing": 0,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-045",
+      "number": 45,
+      "name": "Pollenpin",
+      "lineage": "L17",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-046",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Aurore",
+      "anatomy": "beetle",
+      "silhouette": "Bouclier rond, six pattes rayonnantes.",
+      "palette": {
+        "primary": "#e6c675",
+        "secondary": "#947459",
+        "light": "#fff1b9"
+      },
+      "habitat": "canopy",
+      "personality": "Sérieux, compte les grains tombés au sol.",
+      "visual": "Carapace miel à fente claire, petites joues et antennes recourbées.",
+      "role": "Clic",
+      "plannedEffects": {
+        "critMultiplier": 0.1
+      },
+      "flavor": "Il considère chaque grain comme un petit soleil.",
+      "seed": 2665,
+      "sharedMarkers": "Fente centrale et antennes en demi-cercle.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "pollenShield",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 1,
+          "width": 0.8,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "shellRock"
+      }
+    },
+    {
+      "id": "F01-046",
+      "number": 46,
+      "name": "Verrélytre",
+      "lineage": "L17",
+      "evolvesFrom": "F01-045",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 3,
+      "type": "Aurore",
+      "anatomy": "beetle",
+      "silhouette": "Bouclier central, deux grands élytres vitrail ouverts en V.",
+      "palette": {
+        "primary": "#e6c675",
+        "secondary": "#947459",
+        "light": "#fff1b9"
+      },
+      "habitat": "canopy",
+      "personality": "Tendre, protège les siestes du jardin.",
+      "visual": "Élytres ajourés ambrés, antennes rondes et fente solaire conservées.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "clickMultiplier": 0.1,
+        "critChance": 0.02
+      },
+      "flavor": "Sa plus grande victoire est une fleur reposée.",
+      "seed": 2702,
+      "sharedMarkers": "Fente centrale et antennes en demi-cercle.",
+      "conditions": [
+        {
+          "kind": "everyNthClick",
+          "every": 25,
+          "multiplier": 4
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "glassGuard",
+        "headVariant": "round",
+        "posture": "openWings",
+        "proportions": {
+          "head": 0.8,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": true,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "glass",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "wingBeat"
+      }
+    },
+    {
+      "id": "F01-047",
+      "number": 47,
+      "name": "Échomimi",
+      "lineage": "L18",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-048",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Lune",
+      "anatomy": "bat",
+      "silhouette": "Boule suspendue, grandes oreilles, petites ailes triangulaires.",
+      "palette": {
+        "primary": "#aab1e8",
+        "secondary": "#62699d",
+        "light": "#d1fff1"
+      },
+      "habitat": "crystal-cave",
+      "personality": "Sensible, rougit à chaque écho.",
+      "visual": "Fourrure pervenche, oreilles nacrées et ventre clair en triangle.",
+      "role": "Collection",
+      "plannedEffects": {
+        "duplicateBonus": 0.5
+      },
+      "flavor": "Il répète les mots qui font du bien.",
+      "seed": 2739,
+      "sharedMarkers": "Oreilles cuillères et bijou ventral.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "echoBall",
+        "headVariant": "round",
+        "posture": "suspended",
+        "proportions": {
+          "head": 1,
+          "width": 0.8,
+          "height": 0.85
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 10,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "feather",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "geodeEcho"
+      }
+    },
+    {
+      "id": "F01-048",
+      "number": 48,
+      "name": "Géodoreille",
+      "lineage": "L18",
+      "evolvesFrom": "F01-047",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 3,
+      "type": "Lune",
+      "anatomy": "bat",
+      "silhouette": "Ailes larges en facettes, oreilles hautes comme deux calices.",
+      "palette": {
+        "primary": "#aab1e8",
+        "secondary": "#62699d",
+        "light": "#d1fff1"
+      },
+      "habitat": "crystal-cave",
+      "personality": "Généreux, offre des concerts aux pierres.",
+      "visual": "Membranes devenues géodes creuses, oreilles-cuillères et bijou ventral conservés.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "rareChance": 0.12
+      },
+      "flavor": "Les cristaux lui rendent toujours son salut.",
+      "seed": 2776,
+      "sharedMarkers": "Oreilles cuillères et bijou ventral.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Lune",
+          "atLeast": 3,
+          "effect": {
+            "rareChance": 0.15
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "geodeWings",
+        "headVariant": "round",
+        "posture": "openWings",
+        "proportions": {
+          "head": 0.85,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "luminous",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": true,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "feather",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "geodeEcho"
+      }
+    },
+    {
+      "id": "F01-049",
+      "number": 49,
+      "name": "Brumelin",
+      "lineage": "L19",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-050",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Rosée",
+      "anatomy": "fish",
+      "silhouette": "Poisson-perle rond, nageoires courtes comme deux mains.",
+      "palette": {
+        "primary": "#8ebfd9",
+        "secondary": "#607ca7",
+        "light": "#fff0d1"
+      },
+      "habitat": "sanctuary",
+      "personality": "Souriant, répond aux gouttes de pluie.",
+      "visual": "Dos bleu perle, ventre ivoire et petite perle frontale.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 1
+      },
+      "flavor": "Il sourit même quand la pluie tombe à l’envers.",
+      "seed": 2813,
+      "sharedMarkers": "Perle ivoire au front et deux nageoires arrondies.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "pearlFish",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 0.8,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 9,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-050",
+      "number": 50,
+      "name": "Nacréveil",
+      "lineage": "L19",
+      "evolvesFrom": "F01-049",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 4,
+      "type": "Rosée",
+      "anatomy": "whale",
+      "silhouette": "Longue baleine horizontale, deux grandes nageoires et queue ouverte.",
+      "palette": {
+        "primary": "#8ebfd9",
+        "secondary": "#607ca7",
+        "light": "#fff0d1"
+      },
+      "habitat": "sanctuary",
+      "personality": "Paisible, porte les îles qui dérivent.",
+      "visual": "Corps nacré traversé de mares minuscules, perle frontale et nageoires-manches conservées.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoFlat": 3,
+        "autoMultiplier": 0.15
+      },
+      "flavor": "Un lac entier peut dormir contre son cœur.",
+      "seed": 2850,
+      "sharedMarkers": "Perle ivoire au front et deux nageoires arrondies.",
+      "conditions": [
+        {
+          "kind": "absentType",
+          "type": "Étincelle",
+          "effect": {
+            "autoMultiplier": 0.25
+          }
+        }
+      ],
+      "status": "produced",
+      "signature": {
+        "composition": "Direction prévue : baleine horizontale basse, nageoires de nacre séparées du corps, nuage dorsal creux et petit œil en croissant ; contraste avec la grande masse de brume.",
+        "idle": "Direction prévue : houle lente du ventre, nageoires détachées qui flottent à contretemps, souffle de brume discret.",
+        "habitatDetail": "Sanctuaire inondé et îles de brume.",
+        "aura": "Ondes nacrées sous le ventre.",
+        "narrative": "Elle abrite les îles qui perdent leurs rivages."
+      },
+      "sprite": {
+        "bodyVariant": "mistWhale",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 9,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "nacreTide"
+      }
+    },
+    {
+      "id": "F01-051",
+      "number": 51,
+      "name": "Brumou",
+      "lineage": "L20",
+      "evolvesFrom": null,
+      "evolvesTo": "F01-052",
+      "stage": 0,
+      "rarity": 0,
+      "type": "Rosée",
+      "anatomy": "spirit",
+      "silhouette": "Goutte flottante sans jambes, courte écharpe au cou.",
+      "palette": {
+        "primary": "#c5dbdd",
+        "secondary": "#7796a2",
+        "light": "#ffd1c0"
+      },
+      "habitat": "clearing",
+      "personality": "Distrait, oublie son écharpe sur les branches.",
+      "visual": "Corps de brume bleu pâle, nœud pêche et yeux en virgule.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 0.6
+      },
+      "flavor": "Il laisse ses pensées sécher au soleil.",
+      "seed": 2887,
+      "sharedMarkers": "Nœud corail et yeux en petites virgules.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "mistDrop",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 0.65,
+          "height": 0.75
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-052",
+      "number": 52,
+      "name": "Écharume",
+      "lineage": "L20",
+      "evolvesFrom": "F01-051",
+      "evolvesTo": null,
+      "stage": 1,
+      "rarity": 0,
+      "type": "Rosée",
+      "anatomy": "spirit",
+      "silhouette": "Deux rubans en S sous une petite tête flottante.",
+      "palette": {
+        "primary": "#c5dbdd",
+        "secondary": "#7796a2",
+        "light": "#ffd1c0"
+      },
+      "habitat": "clearing",
+      "personality": "Attentionné, enveloppe les doigts glacés.",
+      "visual": "Écharpe devenue corps rubané, nœud corail conservé, extrémités translucides.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoMultiplier": 0.07
+      },
+      "flavor": "Sa seule richesse est la chaleur qu’il partage.",
+      "seed": 2924,
+      "sharedMarkers": "Nœud corail et yeux en petites virgules.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "mistScarves",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 0.8,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "ringFlow"
+      }
+    },
+    {
+      "id": "F01-053",
+      "number": 53,
+      "name": "Brindiboule",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 0,
+      "type": "Sylve",
+      "anatomy": "round",
+      "silhouette": "Boule aplatie sous une brindille en travers.",
+      "palette": {
+        "primary": "#d0dd8e",
+        "secondary": "#809366",
+        "light": "#fff3ce"
+      },
+      "habitat": "clearing",
+      "personality": "Optimiste, roule vers les nouveaux chemins.",
+      "visual": "Pompon mousse à pattes cachées, brindille-écharpe horizontale.",
+      "role": "Clic",
+      "plannedEffects": {
+        "clickFlat": 1
+      },
+      "flavor": "Elle transforme les détours en jeux.",
+      "seed": 2961,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "mossBall",
+        "headVariant": "round",
+        "posture": "curled",
+        "proportions": {
+          "head": 1,
+          "width": 0.85,
+          "height": 0.75
+        },
+        "face": {
+          "eyes": "round",
+          "spacing": 14,
+          "mouth": "smile",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "seedBounce"
+      }
+    },
+    {
+      "id": "F01-054",
+      "number": 54,
+      "name": "Goutteline",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 0,
+      "type": "Rosée",
+      "anatomy": "slug",
+      "silhouette": "Limace basse au dos comme trois gouttes.",
+      "palette": {
+        "primary": "#8addcc",
+        "secondary": "#529b9c",
+        "light": "#e8ffe9"
+      },
+      "habitat": "pond",
+      "personality": "Méticuleuse, polit les pierres de sa mare.",
+      "visual": "Trois gouttes menthe en selle, visage au bout d’un long cou bas.",
+      "role": "Idle",
+      "plannedEffects": {
+        "autoFlat": 0.8
+      },
+      "flavor": "Chaque pierre mérite un reflet propre.",
+      "seed": 2998,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "tripleDrop",
+        "headVariant": "round",
+        "posture": "leaning",
+        "proportions": {
+          "head": 0.9,
+          "width": 1,
+          "height": 0.8
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-055",
+      "number": 55,
+      "name": "Miettambre",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 0,
+      "type": "Étincelle",
+      "anatomy": "beetle",
+      "silhouette": "Scarabée carré tenant une miette lumineuse.",
+      "palette": {
+        "primary": "#ecb879",
+        "secondary": "#a27558",
+        "light": "#fff0b9"
+      },
+      "habitat": "ember-orchard",
+      "personality": "Économe, partage les dernières braises.",
+      "visual": "Carapace caramel à angles doux, grande miette jaune entre les pattes.",
+      "role": "Collection",
+      "plannedEffects": {
+        "duplicateBonus": 0.5
+      },
+      "flavor": "La plus petite braise fait déjà un grand dîner.",
+      "seed": 3035,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "crumbCarrier",
+        "headVariant": "round",
+        "posture": "standing",
+        "proportions": {
+          "head": 1,
+          "width": 0.75,
+          "height": 0.85
+        },
+        "face": {
+          "eyes": "narrow",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "spores",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "lanternPulse"
+      }
+    },
+    {
+      "id": "F01-056",
+      "number": 56,
+      "name": "Tintabule",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 0,
+      "type": "Aurore",
+      "anatomy": "spirit",
+      "silhouette": "Clochette renversée flottante, deux rubans courts.",
+      "palette": {
+        "primary": "#edd895",
+        "secondary": "#9d9279",
+        "light": "#e4fff1"
+      },
+      "habitat": "canopy",
+      "personality": "Joyeux, aime les silences qu’il peut ponctuer.",
+      "visual": "Corps-cloche citron, battant de feuille et deux yeux en croissant.",
+      "role": "Clic",
+      "plannedEffects": {
+        "critChance": 0.02
+      },
+      "flavor": "Son rire annonce les amis avant leurs pas.",
+      "seed": 3072,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "leafBell",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 0.8,
+          "height": 0.85
+        },
+        "face": {
+          "eyes": "crescent",
+          "spacing": 8,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": true
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "none",
+        "markings": "freckles",
+        "accessory": "none",
+        "aura": "none",
+        "idle": "bellSwing"
+      }
+    },
+    {
+      "id": "F01-057",
+      "number": 57,
+      "name": "Azurielle",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 3,
+      "type": "Rosée",
+      "anatomy": "fish",
+      "silhouette": "Poisson vertical aux nageoires comme une robe en cascade.",
+      "palette": {
+        "primary": "#8bb8ee",
+        "secondary": "#5b75b4",
+        "light": "#ffe7c4"
+      },
+      "habitat": "waterfall",
+      "personality": "Curieuse, regarde au-delà de sa rivière.",
+      "visual": "Trois voiles d’eau empilés, tête ovale, perle en boucle à la queue.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoMultiplier": 0.12,
+        "rareChance": 0.06
+      },
+      "flavor": "Elle garde une fenêtre ouverte dans chaque cascade.",
+      "seed": 3109,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Rosée",
+          "atLeast": 3,
+          "effect": {
+            "rareChance": 0.1
+          }
+        }
+      ],
+      "status": "produced",
+      "sprite": {
+        "bodyVariant": "cascadeDress",
+        "headVariant": "round",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "profile",
+          "spacing": 0,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "glass",
+        "tail": "none",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "tideFloat"
+      }
+    },
+    {
+      "id": "F01-058",
+      "number": 58,
+      "name": "Auralis",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 4,
+      "type": "Aurore",
+      "anatomy": "dragon",
+      "silhouette": "Dragon léger en diagonale, longues ailes en croissant.",
+      "palette": {
+        "primary": "#ffd97e",
+        "secondary": "#cd9654",
+        "light": "#fff9d4"
+      },
+      "habitat": "dawn",
+      "personality": "Joueur, apprend la lumière aux nuages.",
+      "visual": "Dragon ivoire-or au cou souple, ailes ajourées, queue portant un soleil creux.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "autoFlat": 3,
+        "faerieBonus": 0.05
+      },
+      "flavor": "Le soleil se lève un peu plus tôt pour le voir jouer.",
+      "seed": 3146,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Aurore",
+          "atLeast": 3,
+          "effect": {
+            "faerieBonus": 0.15
+          }
+        }
+      ],
+      "status": "produced",
+      "signature": {
+        "composition": "Direction prévue : dragon léger orienté en diagonale, long cou et petite tête, ailes rubans déployées sur des hauteurs différentes, queue spiralée laissant un vide central.",
+        "idle": "Direction prévue : ailes-rubans qui ondulent séparément, tête calme, lumière qui voyage du cou vers la pointe de la queue.",
+        "habitatDetail": "Canopée ouverte aux bandes d’aurore.",
+        "aura": "Rayons ivoire et or doux.",
+        "narrative": "Il apprend aux jours nouveaux à ne pas effrayer la nuit."
+      },
+      "sprite": {
+        "bodyVariant": "auroraDragon",
+        "headVariant": "round",
+        "posture": "openWings",
+        "proportions": {
+          "head": 0.75,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "almond",
+          "spacing": 8,
+          "mouth": "muzzle",
+          "mask": false,
+          "asymmetric": false
+        },
+        "ears": "none",
+        "horns": "none",
+        "wings": "feather",
+        "tail": "none",
+        "crown": "none",
+        "markings": "scales",
+        "accessory": "none",
+        "aura": "moonHalo",
+        "idle": "auroraFlight"
+      }
+    },
+    {
+      "id": "F01-059",
+      "number": 59,
+      "name": "Horlogrève",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 4,
+      "type": "Astral",
+      "anatomy": "golem",
+      "silhouette": "Portique carré creux, bras détachés, trois aiguilles en couronne.",
+      "palette": {
+        "primary": "#a5d8d3",
+        "secondary": "#507b8b",
+        "light": "#ffe4ab"
+      },
+      "habitat": "ruins",
+      "personality": "Patient, remet les horloges à l’heure du repos.",
+      "visual": "Automate de pierre bleu-vert, visage-orbe dans son cadre, pieds blocs et aiguilles dorées.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "duplicateBonus": 1.5,
+        "rareChance": 0.08
+      },
+      "flavor": "Il laisse toujours une minute pour une dernière histoire.",
+      "seed": 3183,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [
+        {
+          "kind": "everyNthClick",
+          "every": 25,
+          "multiplier": 6
+        }
+      ],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "gateFrame",
+        "headVariant": "orb",
+        "ears": "none",
+        "horns": "none",
+        "wings": "none",
+        "tail": "none",
+        "crown": "clockHands",
+        "markings": "runes",
+        "accessory": "pendulum",
+        "aura": "clockHalo",
+        "idle": "clockTick",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "single",
+          "spacing": 0,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        }
+      },
+      "signature": {
+        "composition": "Portique horloger en lévitation, œil unique dans un vide central, mains détachées à des hauteurs différentes, aiguilles en couronne et pendule libre.",
+        "idle": "Aiguilles en trois étapes, pendule en balancier, œil dont la lumière pulse sur un cycle distinct.",
+        "habitatDetail": "Ruines de cadrans mécaniques et pierres suspendues.",
+        "aura": "Runes cyan ponctuées.",
+        "narrative": "Le portail l’a construit pour garder du temps aux rencontres."
+      }
+    },
+    {
+      "id": "F01-060",
+      "number": 60,
+      "name": "Velours d’Entre-mondes",
+      "lineage": null,
+      "evolvesFrom": null,
+      "evolvesTo": null,
+      "stage": 0,
+      "rarity": 5,
+      "type": "Astral",
+      "anatomy": "manta",
+      "silhouette": "Voile asymétrique en losange ouvert, pointe basse à gauche, appendice haut à droite, ruban de Möbius.",
+      "palette": {
+        "primary": "#94b9e8",
+        "secondary": "#536b9e",
+        "light": "#f7edcd"
+      },
+      "habitat": "astral",
+      "personality": "Doux et curieux, recueille les voyageurs perdus.",
+      "visual": "Un textile astral vivant sans visage, plus ample d’un côté, traversé par une graine orbitale. Deux pointes détachent la silhouette de toute anatomie animale ; la boucle de Möbius reste son ancrage visuel.",
+      "role": "Synergie",
+      "plannedEffects": {
+        "boosterDiscount": 0.06,
+        "rareChance": 0.12
+      },
+      "flavor": "Les mondes sont des couvertures qu’il replie avec soin.",
+      "seed": 3220,
+      "sharedMarkers": "Créature unique : aucune relation d’évolution.",
+      "conditions": [
+        {
+          "kind": "equippedType",
+          "type": "Astral",
+          "atLeast": 2,
+          "effect": {
+            "boosterDiscount": 0.08
+          }
+        }
+      ],
+      "status": "sample",
+      "sprite": {
+        "bodyVariant": "openMantle",
+        "headVariant": "seed",
+        "ears": "none",
+        "horns": "none",
+        "wings": "cloth",
+        "tail": "mobius",
+        "crown": "none",
+        "markings": "constellations",
+        "accessory": "seedCore",
+        "aura": "foldOrbit",
+        "idle": "foldOrbit",
+        "posture": "floating",
+        "proportions": {
+          "head": 1,
+          "width": 1,
+          "height": 1
+        },
+        "face": {
+          "eyes": "none",
+          "spacing": 0,
+          "mouth": "none",
+          "mask": false,
+          "asymmetric": false
+        }
+      },
+      "signature": {
+        "composition": "Voile oblique asymétrique, boucle ouverte et noyau-graine dans le vide.",
+        "idle": "Draperies en vagues opposées et orbite du noyau ; corps stable.",
+        "habitatDetail": "Plans stellaires pliés, seuil en ruban, étoiles cousues aux bords.",
+        "aura": "Filaments ivoire en boucle de Möbius.",
+        "narrative": "Il replie les mondes pour offrir une couverture aux voyageurs égarés."
+      }
+    }
+  ]
+}

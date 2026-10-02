@@ -1,0 +1,38 @@
+.prestige-card {
+  border-width:2px;
+  padding:14px;
+  outline:1px solid #e7d19a45;
+  outline-offset:-6px;
+  background:linear-gradient(135deg,#d5b870 0%,#65533a 9%,#272c2c 28%,#1b262c 70%,#8c703e 93%,#ead594);
+  box-shadow:0 10px 25px #090e2355,inset 0 0 0 1px #fff0b440,inset 0 0 24px #bc913c20;
+}
+.prestige-card .card-name { color:#fff0c5; text-shadow:0 1px 6px #080e19; }
+.prestige-card .card-name strong { font-family:Georgia,serif; letter-spacing:.3px; }
+.prestige-card .card-art { aspect-ratio:1; border-radius:5px; border:1px solid #ecd6a1; }
+.prestige-art > img { image-rendering:auto; transition:transform 900ms ease; }
+.prestige-card:hover .prestige-art > img { transform:scale(1.045); }
+.prestige-art-vignette { position:absolute; inset:0; pointer-events:none; background:linear-gradient(0deg,#091a29b0,transparent 30%),radial-gradient(ellipse,transparent 45%,#0d142755); }
+.prestige-art-engraving { position:absolute; inset:0; width:100%; height:100%; stroke:#ffedb8; stroke-width:.75; opacity:.8; filter:drop-shadow(0 1px 2px #0c172a); pointer-events:none; }
+.prestige-edition { position:absolute; bottom:10px; left:0; right:0; text-align:center; font-size:7px; letter-spacing:1.4px; color:#fff0bf; text-shadow:0 1px 5px #000; }
+.prestige-card .rarity-label { border-bottom:1px solid #d6b66c60; padding:10px 0; color:#f6df9d; letter-spacing:1.3px; }
+.prestige-card .card-ability { background:linear-gradient(120deg,#181f2bd0,#423c30a0); border:1px solid #d6b66c40; margin-top:9px; padding:12px 9px; border-radius:4px; }
+.prestige-card .ability-sigil { color:#f6df9d; text-shadow:0 0 10px #e7bd66; }
+.prestige-card .card-flavor { font-family:Georgia,serif; color:#decda9; line-height:1.6; }
+.prestige-card footer { border-top:1px solid #d6b66c50; color:#f1dca6; padding-top:9px; }
+.prestige-card .card-foil { opacity:.24; }
+.prestige-card .card-holo { opacity:.2; }
+.prestige-card.rarity-5 { background:linear-gradient(135deg,#d4b8ef,#5e557d 12%,#202139 32%,#162534 70%,#577f83 90%,#e5c0e8); border-color:#d8c0f0; outline-color:#a0eff96b; box-shadow:0 12px 30px #090e2366,inset 0 0 0 1px #d4c3f840,0 0 22px #aa8eed26; }
+.prestige-card.rarity-5 .card-art { border-color:#c5c9f7; }
+.prestige-card.rarity-5 .prestige-art-engraving { stroke:#dfd4ff; }
+.prestige-card.rarity-5 .prestige-edition { color:#e8deff; }
+.prestige-card.rarity-5 .rarity-label { color:#e4d5ff; border-color:#b6a0e060; }
+.prestige-card.rarity-5 .card-ability { background:linear-gradient(120deg,#242c46,#3c2c50); border-color:#b6a0e050; }
+.prestige-card.rarity-5 .card-flavor { color:#d6c8eb; }
+.prestige-card.rarity-5 footer { color:#ded0ef; border-color:#b6a0e050; }
+.prestige-card .card-progression { margin-top:8px; border-top:1px solid #dbcaa34d; border-radius:4px; }
+.prestige-gallery { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px; max-width:1080px; margin:24px auto; }
+.prestige-gallery .card { min-width:0; width:100%; }
+@media(max-width:900px) { .prestige-gallery { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; } }
+@media(max-width:520px) { .prestige-gallery { grid-template-columns:minmax(0,1fr); max-width:350px; } }
+@media(prefers-reduced-motion:reduce) { .prestige-art > img { transition:none; }.prestige-card:hover .prestige-art > img { transform:none; } }
+.card-still .prestige-art > img { transition:none; transform:none !important; }

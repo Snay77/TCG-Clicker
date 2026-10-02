@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { CARDS } from "../lib/cards";
+import { CARDS } from "../lib/legacy-cards";
 import { spritePixels, spritePaths, usedSpritePalette } from "../lib/sprites";
 import { atmosphere, REVEAL_TIMINGS } from "../lib/visuals";
 

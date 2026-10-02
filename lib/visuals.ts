@@ -1,4 +1,4 @@
-import type { Creature } from "./cards";
+import { CARDS, type Creature } from "./cards";
 export type Habitat =
   "grove" | "mushrooms" | "moon" | "pond" | "embers" | "dawn" | "astral";
 export const VISUALS: Record<
@@ -59,6 +59,11 @@ export const VISUALS: Record<
     flavor: "La clairière rêvait de lui avant la première étoile.",
     accent: "#f3b9ff",
   },
+};
+for (const c of CARDS) if (c.design) VISUALS[c.id] = {
+ habitat: c.type === "Lune" ? "moon" : c.type === "Astral" ? "astral" : c.type === "Rosée" ? "pond" : c.type === "Étincelle" ? "embers" : c.type === "Aurore" ? "dawn" : c.type === "Mycète" ? "mushrooms" : "grove",
+ title:c.design.role === "Clic" ? "Élan féerique" : c.design.role === "Idle" ? "Souffle de la forêt" : c.design.role === "Collection" ? "Trésor des rencontres" : "Accord des affinités",
+ flavor:c.design.flavor,accent:c.design.palette.light,
 };
 export const REVEAL_TIMINGS = [160, 280, 1000, 1500, 2100, 2700];
 export const FINISHES = [

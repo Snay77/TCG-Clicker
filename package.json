@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "simulate:economy": "tsx scripts/simulate-booster-economy.ts"
   },
   "dependencies": {
     "next": "^16.3.8",

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { CARDS, byId } from "../../lib/cards";
-import { changeDeck, deckCapacity, deckEffects, equipBlockedReason, Save, stats } from "../../lib/game";
+import { changeDeck, deckCapacity, deckEffects, equipBlockedReason, Save, stats, savedCardLevel } from "../../lib/game";
 import { describeEffect } from "../../lib/effects";
-import { cardLevel, leveledEffect } from "../../lib/progression";
+import { leveledEffect } from "../../lib/progression";
 import { BUILD_ARCHETYPES, synergies } from "../../lib/synergies";
 import Sprite from "../Sprite";
 export function statImpact(before: ReturnType<typeof stats>, after: ReturnType<typeof stats>): string {
@@ -20,7 +20,7 @@ export default function DeckView({ save, onEquip }: { save: Save; onEquip: (id: 
       <div className="deck-slots">{Array.from({ length: deckCapacity(save) }, (_, i) => {
         const c = save.deck[i] ? byId(save.deck[i]) : null;
         return c ? <div className={`equipped-slot ${replacement === c.id ? "selected-slot" : ""}`} key={i}>
-          <button onClick={() => setReplaceId(replacement === c.id ? "" : c.id)} aria-pressed={replacement === c.id}><Sprite creature={c} /><strong>{c.name}</strong><small>Niv. {cardLevel(save.owned[c.id])}</small></button>
+          <button onClick={() => setReplaceId(replacement === c.id ? "" : c.id)} aria-pressed={replacement === c.id}><Sprite creature={c} /><strong>{c.name}</strong><small>Niv. {savedCardLevel(save, c.id)}</small></button>
           <button onClick={() => onEquip(c.id)}>Retirer −</button>
         </div> : <div className="empty-slot" key={i}><span>+</span><small>EMPLACEMENT {i + 1}</small></div>;
       })}</div>
@@ -35,7 +35,7 @@ export default function DeckView({ save, onEquip }: { save: Save; onEquip: (id: 
       const candidate = replacement && !save.deck.includes(c.id) ? { ...save, deck: save.deck.filter(id => id !== replacement) } : save;
       const reason = equipBlockedReason(candidate, c.id);
       const preview = changeDeck(save, c.id, replacement);
-      return <div className="build-candidate" key={c.id}><Sprite creature={c} /><div><strong>{c.name} · niv. {cardLevel(save.owned[c.id])}</strong><p>{describeEffect(leveledEffect(c.effect, save.owned[c.id]))}</p><small>{reason || statImpact(power, stats(preview))}</small></div><button disabled={!!reason} onClick={() => { onEquip(c.id, replacement); setReplaceId(""); }}>{save.deck.includes(c.id) ? "Retirer" : replacement ? "Remplacer" : "Équiper"}</button></div>;
+      return <div className="build-candidate" key={c.id}><Sprite creature={c} /><div><strong>{c.name} · niv. {savedCardLevel(save, c.id)}</strong><p>{describeEffect(leveledEffect(c.effect, savedCardLevel(save, c.id)))}</p><small>{reason || statImpact(power, stats(preview))}</small></div><button disabled={!!reason} onClick={() => { onEquip(c.id, replacement); setReplaceId(""); }}>{save.deck.includes(c.id) ? "Retirer" : replacement ? "Remplacer" : "Équiper"}</button></div>;
     })}</div>
     {!Object.keys(save.owned).length && <div className="notice">Votre deck est vide. Ouvrez un booster pour rencontrer vos premiers compagnons.</div>}
   </>;

@@ -8,10 +8,29 @@ import { BUILD_ARCHETYPES, synergies } from "../lib/synergies";
 const ownedSave = () => ({ ...initialSave(), owned: Object.fromEntries(CARDS.map(c => [c.id, 1])) });
 const near = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 1e-8, `${actual} ≠ ${expected}`);
 
-test("v1 → v2 conserve énergie, copies, deck, machine et ouverture partielle", () => {
+test("départ à un point par clic, bonus acquis et progression 1 → 2 → 3", () => {
+  let s = initialSave();
+  assert.equal(stats(s).click, 1);
+  assert.equal(stats(s).crit, 0);
+  let combo = initialCombo();
+  for (let i = 0; i < 50; i++) {
+    combo = advanceCombo(combo, 1000 + i * 100);
+    assert.equal(stats(s).click * comboFactor(combo.charge, stats(s).comboBonus), 1);
+  }
+  s = { ...s, energy: 1000 };
+  s = buyUpgrade(s, "click");
+  assert.equal(stats(s).click, 2);
+  s = buyUpgrade(s, "click");
+  assert.equal(stats(s).click, 3);
+  assert.equal(stats(parseSave(JSON.stringify(s))).click, 3);
+  assert.equal(stats(buyUpgrade(s, "critChance")).crit, 0.01);
+  near(comboFactor(100, stats(buyUpgrade(s, "combo")).comboBonus), 1.05);
+});
+
+test("v1 → v4 conserve énergie, copies, deck, machine et ouverture partielle", () => {
   const legacy = { version: 1, energy: 231.5, owned: { "001": 6, "006": 2, "009": 1 }, deck: ["001", "006", "009"], level: 12, clicks: 456, packs: 7, pending: ["001", "006", "009", "004", "003"], revealed: 3 };
   const migrated = parseSave(JSON.stringify(legacy));
-  assert.equal(migrated.version, 2);
+  assert.equal(migrated.version, 4);
   for (const key of ["energy", "owned", "deck", "level", "clicks", "packs", "pending", "revealed"] as const) assert.deepEqual(migrated[key], legacy[key]);
   assert.equal(migrated.upgrades.click, 12);
   assert.equal(migrated.upgrades.auto, 0);
@@ -24,19 +43,19 @@ test("v1 → v2 conserve énergie, copies, deck, machine et ouverture partielle"
 });
 test("migration aux limites et données nouvelles invalides refusées", () => {
   assert.equal(parseSave(JSON.stringify({ ...initialSave(), version: 1, level: 100 })).upgrades.click, 100);
-  for (const patch of [{ version: 3 }, { upgrades: {} }, { extraDeckSlots: 3 }, { owned: [] }, { level: -1 }]) assert.throws(() => parseSave(JSON.stringify({ ...initialSave(), ...patch })));
+  for (const patch of [{ version: 5 }, { upgrades: {} }, { extraDeckSlots: 3 }, { owned: [] }, { level: -1 }]) assert.throws(() => parseSave(JSON.stringify({ ...initialSave(), ...patch })));
   assert.throws(() => parseSave("null"));
 });
-test("niveaux et effets exacts, seuils configurables, copies jamais consommées", () => {
+test("anciens seuils de migration et effets par niveau acquis", () => {
   assert.equal(cardLevel(0), 0);
   CARD_LEVEL_THRESHOLDS.forEach((threshold, i) => {
     assert.equal(cardLevel(threshold), i + 1);
     assert.equal(cardLevel(threshold - 1), i);
   });
   assert.equal(cardLevel(999), 5);
-  [1, 1.2, 1.5, 1.8, 2].forEach((expected, i) => near(leveledEffect(byId("001").effect, CARD_LEVEL_THRESHOLDS[i]).clickFlat!, expected));
-  const s = { ...ownedSave(), owned: { "001": 15 }, deck: ["001"] };
-  assert.equal(stats(s).click, 7);
+  [1, 1.2, 1.5, 1.8, 2].forEach((expected, i) => near(leveledEffect(byId("001").effect, i + 1).clickFlat!, expected));
+  const s = { ...ownedSave(), owned: { "001": 15 }, cardLevels: { "001": 5 }, deck: ["001"] };
+  assert.equal(stats(s).click, 3);
   assert.equal(s.owned["001"], 15);
 });
 test("résolution de tous les effets, cumul et formules multiplicatives", () => {
@@ -47,21 +66,21 @@ test("résolution de tous les effets, cumul et formules multiplicatives", () => 
   const s = { ...ownedSave(), deck: ["001", "002", "004", "006"] };
   const e = deckEffects(s);
   near(e.clickFlat, 1);
-  near(e.autoFlat, 3);
-  near(e.autoMultiplier, 0.45);
+  near(e.autoFlat, 2.2);
+  near(e.autoMultiplier, 0);
   near(e.energyMultiplier, 0.1);
-  near(stats(s).click, 6 * 1.1);
-  near(stats(s).auto, 3 * 1.45 * 1.1);
-  assert.equal(price(s), 90);
+  near(stats(s).click, 2 * 1.1 * 1.06);
+  near(stats(s).auto, 2.2 * 1.1 * 1.06);
+  assert.equal(price(s), 100);
 });
 test("synergies actives et proches, pas de double comptage d’une espèce", () => {
   assert.equal(synergies(["001"])[0].active, false);
   assert.equal(synergies(["001", "001"])[0].count, 1);
   assert.equal(synergies(["001", "006"])[0].active, true);
   const s = { ...ownedSave(), deck: ["003", "007"] };
-  near(stats(s).crit, 0.2);
-  near(stats(s).critMultiplier, 3.8);
-  near(stats(equip(s, "007")).crit, 0.1);
+  near(stats(s).crit, 0.08);
+  near(stats(s).critMultiplier, 3.3);
+  near(stats(equip(s, "007")).crit, 0.03);
 });
 test("capacité centralisée 6, 7, 8, remplacement atomique et unique", () => {
   for (const extraDeckSlots of [0, 1, 2]) {
@@ -108,7 +127,7 @@ test("combo borné, délai et décroissance indépendants de la fréquence de ti
   let combo = initialCombo();
   for (let i = 0; i < 40; i++) combo = advanceCombo(combo, 1000 + i * 100);
   assert.equal(combo.charge, 100);
-  assert.equal(comboFactor(combo.charge, 0), 1.5);
+  assert.equal(comboFactor(combo.charge, 0), 1);
   assert.equal(comboFactor(combo.charge, 10), 2);
   assert.equal(decayCombo(combo, combo.lastClick + 1000).charge, 100);
   near(decayCombo(combo, combo.lastClick + 2000).charge, 82);
@@ -129,13 +148,13 @@ test("doublon positif dès la 2e copie, gain et niveau appliqués une seule fois
   assert.equal(s.energy, 1);
   assert.equal(cardLevel(s.owned["001"]), 1);
   s = reveal(s);
-  near(stats(s).click, 6.2);
+  near(stats(s).click, 2);
   for (let i = 0; i < 5; i++) s = reveal(s);
   assert.equal(s.owned["001"], 6);
   assert.equal(s.energy, 5);
   assert.equal(reveal(s), s);
   const collection = { ...ownedSave(), deck: ["006", "007", "009"] };
-  assert.equal(stats(collection).duplicateBonus, 9);
+  assert.equal(stats(collection).duplicateBonus, 4);
 });
 test("probabilités normalisées, bonus Rare+ plafonné et cinquième garantie", () => {
   for (const guaranteed of [false, true]) {
@@ -155,7 +174,7 @@ test("probabilités normalisées, bonus Rare+ plafonné et cinquième garantie",
   const s = { ...initialSave(), energy: 100 };
   assert.equal(buyPack(s, ["001"]), s);
 });
-test("trois builds distincts jouables avec neuf cartes, spécialités effectives", () => {
+test("trois builds distincts jouables avec le set complet, spécialités effectives", () => {
   const builds = BUILD_ARCHETYPES.map(b => ({ ...ownedSave(), deck: [...b.ids] }));
   assert.equal(new Set(builds.map(s => s.deck.join())).size, 3);
   builds.forEach(s => {

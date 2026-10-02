@@ -4,12 +4,16 @@ export const CARD_LEVEL_MULTIPLIERS = [1, 1.2, 1.5, 1.8, 2] as const;
 export function cardLevel(copies: number): number {
   return CARD_LEVEL_THRESHOLDS.filter(threshold => copies >= threshold).length;
 }
-export function leveledEffect(effect: Effect, copies: number): Effect {
-  const scale = CARD_LEVEL_MULTIPLIERS[Math.max(0, cardLevel(copies) - 1)];
+export const CARD_UPGRADE_COSTS = [2, 3, 4, 5] as const;
+export function cardUpgradeCost(level: number): number | null {
+  return CARD_UPGRADE_COSTS[level - 1] ?? null;
+}
+export function leveledEffect(effect: Effect, level: number): Effect {
+  const scale = CARD_LEVEL_MULTIPLIERS[Math.max(0, Math.min(4, level - 1))];
   return Object.fromEntries(Object.entries(effect).map(([key, value]) => [key, value * scale]));
 }
 export const UPGRADES = [
-  { id: "click", name: "Amplificateur sylvestre", base: 75, growth: 1.17, max: 100, effect: { clickFlat: 2 } },
+  { id: "click", name: "Amplificateur sylvestre", base: 75, growth: 1.17, max: 100, effect: { clickFlat: 1 } },
   { id: "auto", name: "Luciole mécanique", base: 60, growth: 1.2, max: 100, effect: { autoFlat: 1.5 } },
   { id: "critChance", name: "Lentille lunaire", base: 180, growth: 1.35, max: 25, effect: { critChance: 0.01 } },
   { id: "critMultiplier", name: "Prisme de résonance", base: 250, growth: 1.3, max: 30, effect: { critMultiplier: 0.15 } },
@@ -44,5 +48,5 @@ export function advanceCombo(combo: Combo, now: number): Combo {
   return { charge: Math.min(100, decayed.charge + 4), lastClick: now, updatedAt: now };
 }
 export function comboFactor(charge: number, bonus: number): number {
-  return 1 + Math.min(100, Math.max(0, charge)) / 100 * Math.min(1, 0.5 * (1 + bonus));
+  return 1 + Math.min(100, Math.max(0, charge)) / 100 * Math.min(1, Math.max(0, bonus));
 }

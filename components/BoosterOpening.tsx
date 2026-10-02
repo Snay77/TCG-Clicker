@@ -6,8 +6,8 @@ import { atmosphere, REVEAL_TIMINGS } from "../lib/visuals";
 import { packSound } from "../lib/pack-audio";
 import Card from "./Card";
 import BoosterPack from "./BoosterPack";
-import type { Save } from "../lib/game";
-import { cardLevel } from "../lib/progression";
+import type { Save, PackSource } from "../lib/game";
+import { savedCardLevel } from "../lib/game";
 
 type Stage =
   | "choose"
@@ -31,10 +31,14 @@ export default function BoosterOpening({
   save,
   onReveal,
   onClose,
+  onNext,
+  economy,
 }: {
   save: Save;
   onReveal: () => void;
-  onClose: () => void;
+  onClose: (destination?: "machine" | "collection") => void;
+  onNext?: (source: PackSource) => void;
+  economy?: {freeBoosters:number;capacity:number;price:number;nextSource:PackSource|null};
 }) {
   const [stage, setStage] = useState<Stage>(
     save.revealed === 5 ? "summary" : save.revealed > 0 ? "suspense" : "choose",
@@ -322,7 +326,7 @@ export default function BoosterOpening({
       </div>
       <header className="po-header">
         <span className="po-brand">
-          ✧ FAERIE <small>LES MURMURES DE LA FORÊT</small>
+          ✧ FAERIE <small>{economy ? `${save.pendingSource === "free" ? "BOOSTER GRATUIT" : "BOOSTER ACHETÉ"} · ${economy.freeBoosters} / ${economy.capacity} disponibles` : "LES MURMURES DE LA FORÊT"}</small>
         </span>
         <button
           className="po-sound"
@@ -471,6 +475,7 @@ export default function BoosterOpening({
                     <Card
                       card={nextCreature}
                       owned={(save.owned[nextCreature.id] || 0) + 1}
+                      level={savedCardLevel(save, nextCreature.id) || 1}
                       animated={false}
                     />
                     {isNew(nextCreature.id, index + 1) && (
@@ -512,6 +517,7 @@ export default function BoosterOpening({
                         <Card
                           card={creature}
                           owned={save.owned[creature.id] || 1}
+                          level={savedCardLevel(save, creature.id) || 1}
                         />
                         {isNew(creature.id, index) && (
                           <span className="po-new">NOUVEAU</span>
@@ -553,7 +559,7 @@ export default function BoosterOpening({
                   <span>
                     {RARITIES[tier]} · {"◆".repeat(tier + 1)}
                   </span>
-                  <span>Niv. {cardLevel(save.owned[creature.id] || 1)} · {save.owned[creature.id] || 1} copie(s){!isNew(creature.id, index) && " · Doublon : énergie bonus créditée !"}</span>
+                  <span>Niv. {savedCardLevel(save, creature.id)} · {save.owned[creature.id] || 1} copie(s){!isNew(creature.id, index) && " · Doublon : énergie bonus créditée !"}</span>
                 </>
               ) : (
                 <span>
@@ -592,19 +598,17 @@ export default function BoosterOpening({
                   key={i}
                   style={{ animationDelay: `${i * 0.08}s` }}
                 >
-                  <Card card={byId(id)} owned={save.owned[id] || 1} />
+                  <Card card={byId(id)} owned={save.owned[id] || 1} level={savedCardLevel(save, id)} />
                   {isNew(id, i) && <span className="po-new">NOUVEAU</span>}
                 </div>
               ))}
             </div>
             <div className="po-controls">
-              <button
-                className="po-primary"
-                data-opening-focus
-                onClick={() => callbacks.current.onClose()}
-              >
-                Continuer
-              </button>
+              {economy ? <>
+                <p>{economy.freeBoosters} / {economy.capacity} boosters gratuits disponibles</p>
+                {economy.nextSource && onNext && <button className="po-primary" data-opening-focus onClick={()=>onNext(economy.nextSource!)}>{economy.nextSource==="free"?"Ouvrir le booster suivant":`Acheter et ouvrir un autre · ${economy.price.toLocaleString("fr-FR")} ✦`}</button>}
+                <div className="po-summary-actions"><button className="po-secondary" data-opening-focus={!economy.nextSource?"":undefined} onClick={()=>callbacks.current.onClose("machine")}>Retour à la machine</button><button className="po-secondary" onClick={()=>callbacks.current.onClose("collection")}>Voir ma collection</button></div>
+              </> : <button className="po-primary" data-opening-focus onClick={()=>callbacks.current.onClose()}>Continuer</button>}
             </div>
           </>
         )}

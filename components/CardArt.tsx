@@ -2,6 +2,7 @@ import { memo, useId } from "react";
 import type { CSSProperties } from "react";
 import type { Creature } from "../lib/cards";
 import { VISUALS, atmosphere } from "../lib/visuals";
+import ContentHabitat from "./content/ContentHabitat";
 import Sprite from "./Sprite";
 function CardArt({
   card,
@@ -13,6 +14,10 @@ function CardArt({
   animated?: boolean;
 }) {
   const id = useId();
+  if (card.design) return <div className={`card-art runtime-card-art ${animated ? "art-animated" : "art-still"}`}>
+    <ContentHabitat habitat={card.design.habitat} seed={card.seed} signature={card.rarity>=4}/>
+    <div className="illustration-creature"><Sprite creature={card} silhouette={hidden} animated={animated}/></div>
+  </div>;
   const { habitat, accent } = VISUALS[card.id];
   const night = ["moon", "astral"].includes(habitat);
   const wet = habitat === "pond";

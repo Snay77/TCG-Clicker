@@ -8,11 +8,13 @@ import { leveledEffect } from "../lib/progression";
 export default function Card({
   card,
   owned = 1,
+  level = 1,
   children,
   animated = true,
 }: {
   card: Creature;
   owned?: number;
+  level?: number;
   children?: React.ReactNode;
   animated?: boolean;
 }) {
@@ -70,7 +72,7 @@ export default function Card({
           <h3>{owned ? v.title : "Rencontre inconnue"}</h3>
           <p>
             {owned
-              ? describeEffect(leveledEffect(card.effect, owned))
+              ? describeEffect(leveledEffect(card.effect, level))
               : "Cette créature attend de croiser votre chemin."}
           </p>
         </div>
@@ -82,7 +84,7 @@ export default function Card({
       </p>
       <footer>
         <span>
-          FÆ · {card.id}
+          FÆ · {String(card.number || card.id).padStart(3,"0")}
           <b> / 060</b>
         </span>
         <span>

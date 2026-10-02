@@ -1,0 +1,31 @@
+.booster-economy { margin:18px 0; }
+.free-pack-counter { text-align:center; padding:18px; background:#253e3c; border:1px solid #657a5b; border-radius:12px; margin-bottom:14px; }
+.free-pack-counter > span { display:block; font-size:10px; letter-spacing:1.5px; color:#b9cfaa; }
+.free-pack-counter > strong { display:block; font-size:28px; margin:9px 0; color:#f2e6ba; }
+.free-pack-counter small { color:#d2dfbd; font-size:12px; font-variant-numeric:tabular-nums; }
+.free-pack-dots { display:flex; gap:7px; flex-wrap:wrap; justify-content:center; margin:10px 0; }
+.free-pack-dots i { width:11px; height:11px; border-radius:50%; border:1px solid #a6bd8f; background:#1a2e32; }
+.free-pack-dots .filled { background:#e0e9ab; box-shadow:0 0 9px #c6ecad55; }
+.booster-economy .buy-button { display:flex; justify-content:space-between; gap:12px; width:100%; align-items:center; padding:13px 16px; }
+.booster-economy .secondary { background:#263b3c; color:#cadbbd; border:1px solid #60795c; }
+.booster-economy .buy-button span { font-size:10px; }
+.paid-pack-option { border-top:1px solid #496452; margin-top:20px; padding-top:18px; }
+.paid-pack-option > small { font-size:10px; letter-spacing:1px; color:#a8c2aa; }
+.paid-pack-option p { font-size:12px; color:#d8d6b4; }
+.storage-upgrade { margin:20px 0; background:linear-gradient(120deg,#314f40,#253847); }
+.po-summary-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.po-summary-actions .po-secondary { padding:12px 18px; background:#24323c; color:#d6e1c4; border:1px solid #688063; border-radius:9px; }
+.dev-reset { margin:24px 0; padding:18px; border:1px solid #8d695b; border-radius:12px; background:#332e35; }
+.dev-reset p { color:#d1c2b1; font-size:12px; line-height:1.6; }
+.dev-reset button { padding:12px 16px; }
+.dev-reset { scroll-margin-top:24px; }
+.sidebar-bottom .playtest-reset-link, .mobile-dev-link.playtest-reset-link { color:#e7c2ad; border:1px solid #8d695b; border-radius:8px; padding:10px 12px; text-align:center; }
+.dev-reset-confirm { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:14px 0; }
+@media(max-width:600px) { .booster-economy .buy-button { flex-direction:column; gap:6px; }.po-brand small { max-width:230px; }.storage-upgrade { gap:12px; } }
+.booster-economy { margin:18px 22px; }
+.booster-economy .buy-button { margin:0; width:100%; }
+.booster-economy .progress-track { margin-left:0; margin-right:0; }
+.booster-economy .buy-button span { flex-shrink:0; }
+
+.card-progression .card-upgrade-button { margin:7px 0; padding:10px 8px; color:#f7e7af; background:#425746; border:1px solid #9ba56f; border-radius:6px; font-size:11px; }
+.card-progression .card-upgrade-button:disabled { opacity:.5; cursor:not-allowed; }

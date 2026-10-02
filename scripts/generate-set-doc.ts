@@ -1,0 +1,13 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { buildRosterDocumentation, ROSTER_DOC_START, ROSTER_DOC_END } from "../lib/content/documentation";
+import { validateRoster } from "../lib/content/roster";
+const errors=validateRoster();
+if(errors.length)throw Error(errors.join("\n"));
+const path=resolve("SET_01_FAERIE.md");
+const source=readFileSync(path,"utf8").replace(/\r\n/g,"\n");
+const start=source.indexOf(ROSTER_DOC_START), end=source.indexOf(ROSTER_DOC_END);
+if((start>=0)!==(end>=0))throw Error("Marqueurs documentaires incomplets");
+const block=buildRosterDocumentation();
+writeFileSync(path,start<0?`${source.trimEnd()}\n\n${block}\n`:source.slice(0,start)+block+source.slice(end+ROSTER_DOC_END.length));
+console.log("Set 01 : référence des 60 cartes régénérée.");

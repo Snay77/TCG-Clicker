@@ -1,7 +1,8 @@
+import ContentSprite from "./content/ContentSprite";
 import { memo, useMemo } from "react";
 import { spritePaths, SPRITE_SIZE, type Part } from "../lib/sprites";
 import type { Creature } from "../lib/cards";
-function Sprite({
+function LegacySprite({
   creature,
   seed,
   silhouette = false,
@@ -51,5 +52,8 @@ function Sprite({
       </g>
     </svg>
   );
+}
+function Sprite(props: Parameters<typeof LegacySprite>[0]) {
+ return props.creature.design ? <div className="sprite runtime-sprite"><ContentSprite card={props.creature.design} seed={props.seed} silhouette={props.silhouette} animated={props.animated} onlyPart={props.onlyPart}/></div> : <LegacySprite {...props}/>;
 }
 export default memo(Sprite);

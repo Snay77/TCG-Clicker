@@ -8,11 +8,15 @@ import {
   SPRITE_SIZE,
   type Part,
 } from "../../lib/sprites";
+import { usedContentPalette } from "../../lib/content/directed-sprites";
 import { FINISHES } from "../../lib/visuals";
 import { initialSave, reveal, type Save } from "../../lib/game";
 import Sprite from "../../components/Sprite";
 import Card from "../../components/Card";
 import BoosterOpening from "../../components/BoosterOpening";
+import RosterWorkbench from "../../components/content/RosterWorkbench";
+import PlaytestReset from "../../components/content/PlaytestReset";
+import StyleValidation from "../../components/content/StyleValidation";
 export default function Dev() {
   const [seed, setSeed] = useState(0),
     [scale, setScale] = useState(3);
@@ -25,14 +29,15 @@ export default function Dev() {
   return (
     <main className="dev-page">
       <Link href="/">← Retour à la clairière</Link>
+      <PlaytestReset/>
       <div className="dev-intro">
         <div>
-          <div className="eyebrow">ATELIER VISUEL · PHASE 02</div>
-          <h1>Neuf êtres. Neuf petits mondes.</h1>
+          <div className="eyebrow">ATELIER VISUEL · FAERIE</div>
+          <h1>Les rencontres prennent forme.</h1>
           <p>
-            Silhouettes originales sur une grille de {SPRITE_SIZE} ×{" "}
-            {SPRITE_SIZE} pixels. Comparez leur présence, leur volume et leur
-            lisibilité avant de peupler la forêt.
+            Silhouettes originales sur une grille de {SPRITE_SIZE} × {SPRITE_SIZE}
+            pixels. Comparez leur présence, leur volume et leur lisibilité avant
+            de peupler la forêt.
           </p>
         </div>
       </div>
@@ -48,6 +53,18 @@ export default function Dev() {
           onClick={() => setTab("cards")}
         >
           Cartes & finitions
+        </button>
+        <button
+          className={tab === "roster" ? "active" : ""}
+          onClick={() => setTab("roster")}
+        >
+          Set 01 — Full Roster
+        </button>
+        <button
+          className={tab === "style" ? "active" : ""}
+          onClick={() => setTab("style")}
+        >
+          Set 01 — Style Validation
         </button>
         <button
           onClick={() =>
@@ -140,13 +157,18 @@ export default function Dev() {
         )}
       </div>
       <p className="dev-preview-note">
-        {tab === "sprites"
+        {tab === "roster" || tab === "style" ? "Design complet et échantillon visuel indépendants du jeu. Les 48 autres sprites attendent la validation artistique."
+          : tab === "sprites"
           ? "Comparaison simultanée : 48, 80 et 112 px sur trois fonds. Le seed modifie les marques, jamais l’identité de la créature."
           : "Survolez les cartes pour déplacer le reflet. Les finitions sont visuelles : aucune nouvelle variante ni aucun bonus de gameplay."}{" "}
         Le test d’ouverture utilise des cartes de démonstration et ne touche pas
         à votre sauvegarde.
       </p>
-      {tab === "sprites" ? (
+      {tab === "style" ? (
+        <StyleValidation animated={animated}/>
+      ) : tab === "roster" ? (
+        <RosterWorkbench animated={animated} palettes={palette} />
+      ) : tab === "sprites" ? (
         <div className="sprite-gallery">
           {CARDS.map((c) => (
             <article key={c.id}>
@@ -186,30 +208,14 @@ export default function Dev() {
               </p>
               {palette && (
                 <div className="palette" aria-label={`Palette de ${c.name}`}>
-                  {usedSpritePalette(c, c.seed + seed).map((color, i) => (
+                  {(c.design ? usedContentPalette(c.design, c.seed + seed) : usedSpritePalette(c, c.seed + seed)).map((color, i) => (
                     <span key={i} style={{ background: color }} title={color} />
                   ))}
                 </div>
               )}
               <div className="sprite-parts">
                 <strong>Construction</strong> ·{" "}
-                {c.id === "001"
-                  ? "bulbe, oreilles, pattes, feuilles"
-                  : c.id === "002"
-                    ? "pied, collerette, coiffe, spores"
-                    : c.id === "003"
-                      ? "ailes lunaires, abdomen, antennes"
-                      : c.id === "004"
-                        ? "cuisses, doigts, couronne, yeux"
-                        : c.id === "005"
-                          ? "museau, oreilles, plastron, queue flamme"
-                          : c.id === "006"
-                            ? "pattes, cou, ramures, feuillage"
-                            : c.id === "007"
-                              ? "ailes ocellées, abdomen, antennes"
-                              : c.id === "008"
-                                ? "ailes, cornes, ventre, queue"
-                                : "corps enroulé, ailes, bois, étoiles"}
+                {c.design ? `${c.design.anatomy} · ${c.design.sprite!.bodyVariant} · ${c.design.sprite!.posture}` : c.shape}
               </div>
             </article>
           ))}
@@ -224,7 +230,7 @@ export default function Dev() {
               </p>
               {palette && (
                 <div className="palette">
-                  {usedSpritePalette(c, c.seed + seed).map((color, i) => (
+                  {(c.design ? usedContentPalette(c.design, c.seed + seed) : usedSpritePalette(c, c.seed + seed)).map((color, i) => (
                     <span key={i} style={{ background: color }} title={color} />
                   ))}
                 </div>

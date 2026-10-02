@@ -11,7 +11,7 @@ import {
   reveal,
   stats,
 } from "../lib/game";
-import { spritePixels, SPRITE_SIZE } from "../lib/sprites";
+import { contentPixels as spritePixels, CONTENT_SPRITE_SIZE as SPRITE_SIZE } from "../lib/content/directed-sprites";
 test("un achat débite une seule fois et révèle exactement cinq cartes", () => {
   const ids = ["001", "001", "003", "008", "009"];
   const start = { ...initialSave(), energy: 100 };
@@ -37,16 +37,12 @@ test("deck limité, possession obligatoire et effets réversibles", () => {
   s.owned = Object.fromEntries(CARDS.map((c) => [c.id, 1]));
   for (const c of CARDS) s = equip(s, c.id);
   assert.equal(s.deck.length, 6);
-  assert.ok(stats(s).click > 10);
-  assert.ok(stats(s).auto > 3);
-  assert.equal(price(s), 90);
-  s = equip(s, "006");
-  assert.equal(price(s), 100);
-  const passive = stats(s).auto;
-  s = equip(s, "009");
-  assert.ok(stats(s).auto > passive);
-  s = equip(s, "009");
-  assert.equal(stats(s).auto, passive);
+  const full = stats(s);
+  const removed = equip(s, s.deck[0]);
+  assert.equal(removed.deck.length,5);
+  assert.notDeepEqual(stats(removed),full);
+  assert.deepEqual(stats(equip(removed,s.deck[0])),full);
+
 });
 test("chaque booster garantit une peu commune ou mieux en cinquième position", () => {
   let seed = 41;
@@ -64,8 +60,8 @@ test("chaque booster garantit une peu commune ou mieux en cinquième position", 
 test("sprites déterministes, distincts et bornés à la grille", () => {
   const signatures = new Set();
   for (const c of CARDS) {
-    const a = spritePixels(c);
-    assert.deepEqual(a, spritePixels(c));
+    const a = spritePixels(c.design!);
+    assert.deepEqual(a, spritePixels(c.design!));
     assert.ok(
       a.every(
         (p) => p.x >= 0 && p.x < SPRITE_SIZE && p.y >= 0 && p.y < SPRITE_SIZE,
