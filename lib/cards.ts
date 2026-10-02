@@ -6,18 +6,16 @@ export const RARITIES = [
   "Légendaire",
   "Mythique",
 ] as const;
-export type Effect = {
-  click?: number;
-  auto?: number;
-  crit?: number;
-  discount?: number;
-};
+import type { Effect } from "./effects";
+export type { Effect } from "./effects";
 export type Creature = {
   id: string;
   name: string;
   rarity: number;
   type: string;
   stage: string;
+  evolvesFrom?: string;
+  evolvesTo?: string;
   effect: Effect;
   description: string;
   seed: number;
@@ -31,7 +29,8 @@ export const CARDS: Creature[] = [
     rarity: 0,
     type: "Sylve",
     stage: "Base",
-    effect: { click: 1 },
+    evolvesTo: "006",
+    effect: { clickFlat: 1 },
     description: "+1 énergie par clic",
     seed: 17,
     shape: "sprout",
@@ -43,8 +42,8 @@ export const CARDS: Creature[] = [
     rarity: 0,
     type: "Mycète",
     stage: "Base",
-    effect: { auto: 1 },
-    description: "+1 énergie par seconde",
+    effect: { autoFlat: 1, autoMultiplier: 0.15 },
+    description: "+1 / sec et +15 % production passive",
     seed: 28,
     shape: "mushroom",
     palette: ["#fd8aaf", "#b14478", "#ffe9bd"],
@@ -55,8 +54,9 @@ export const CARDS: Creature[] = [
     rarity: 1,
     type: "Lune",
     stage: "Base",
-    effect: { crit: 0.05 },
-    description: "+5 % de chance de critique (×3)",
+    evolvesTo: "007",
+    effect: { critChance: 0.05, critMultiplier: 0.3 },
+    description: "+5 points critique et +0,3 multiplicateur critique",
     seed: 39,
     shape: "moth",
     palette: ["#c0adff", "#7666ca", "#e9dcff"],
@@ -67,8 +67,8 @@ export const CARDS: Creature[] = [
     rarity: 1,
     type: "Rosée",
     stage: "Base",
-    effect: { auto: 2 },
-    description: "+2 énergies par seconde",
+    effect: { autoFlat: 2, autoMultiplier: 0.2 },
+    description: "+2 / sec et +20 % production passive",
     seed: 42,
     shape: "frog",
     palette: ["#78e8db", "#369bab", "#d3fff1"],
@@ -79,8 +79,8 @@ export const CARDS: Creature[] = [
     rarity: 2,
     type: "Étincelle",
     stage: "Base",
-    effect: { click: 4 },
-    description: "+4 énergies par clic",
+    effect: { clickFlat: 4, comboMultiplier: 0.3 },
+    description: "+4 / clic et +30 % bonus de combo",
     seed: 57,
     shape: "fox",
     palette: ["#ffbf78", "#ce7156", "#fff0bb"],
@@ -91,8 +91,10 @@ export const CARDS: Creature[] = [
     rarity: 2,
     type: "Sylve",
     stage: "Évolution 1",
-    effect: { discount: 0.1 },
-    description: "−10 % sur le prix des boosters",
+    evolvesFrom: "001",
+    evolvesTo: "009",
+    effect: { boosterDiscount: 0.1, rareChance: 0.15, duplicateBonus: 2 },
+    description: "Boosters −10 %, poids Rare+ +15 %, +2 éclats / doublon",
     seed: 61,
     shape: "sprout",
     palette: ["#70e4bb", "#388f91", "#eaffb1"],
@@ -103,8 +105,9 @@ export const CARDS: Creature[] = [
     rarity: 3,
     type: "Lune",
     stage: "Évolution 1",
-    effect: { auto: 6, crit: 0.05 },
-    description: "+6 / sec et +5 % de critique",
+    evolvesFrom: "003",
+    effect: { clickMultiplier: 0.2, critChance: 0.05, critMultiplier: 0.5, duplicateBonus: 1 },
+    description: "+20 % clic, +5 points critique, +0,5 critique, +1 éclat / doublon",
     seed: 73,
     shape: "moth",
     palette: ["#cf8df5", "#8451be", "#ffe0fa"],
@@ -115,8 +118,8 @@ export const CARDS: Creature[] = [
     rarity: 4,
     type: "Aurore",
     stage: "Base",
-    effect: { click: 10, auto: 8 },
-    description: "+10 / clic et +8 / seconde",
+    effect: { autoFlat: 8, autoMultiplier: 0.3, faerieBonus: 0.05 },
+    description: "+8 / sec, +30 % passif et +5 % énergie Faerie",
     seed: 89,
     shape: "dragon",
     palette: ["#ffd97e", "#cd9654", "#fff9d4"],
@@ -127,8 +130,9 @@ export const CARDS: Creature[] = [
     rarity: 5,
     type: "Astral",
     stage: "Évolution 2",
-    effect: { click: 20, auto: 15, discount: 0.1 },
-    description: "+20 / clic, +15 / sec, boosters −10 %",
+    evolvesFrom: "006",
+    effect: { boosterDiscount: 0.1, rareChance: 0.3, duplicateBonus: 5, faerieBonus: 0.1 },
+    description: "Boosters −10 %, poids Rare+ +30 %, +5 éclats / doublon, +10 % Faerie",
     seed: 97,
     shape: "dragon",
     palette: ["#f4b1f8", "#9c68cf", "#c3fff0"],

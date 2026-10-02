@@ -1,5 +1,6 @@
 import { memo, useId } from "react";
 function Machine({ level }: { level: number }) {
+  const machineLevel = level + 1;
   const uid = useId();
   const portal = uid + "portal",
     clip = uid + "clip";
@@ -56,6 +57,11 @@ function Machine({ level }: { level: number }) {
       <path d="M134 312h252v26H134z" fill="#56796b" />
       <path d="M147 319h226v5H147z" fill="#91a884" />
       <g className="machine-core">
+        {machineLevel >= 35 && <g className="dimension-rings" fill="none" stroke="#9fddff" strokeWidth="4">
+          <ellipse cx="260" cy="201" rx="141" ry="119" strokeDasharray="24 8" />
+          <ellipse cx="260" cy="201" rx="123" ry="146" stroke="#d8b2ff" strokeWidth="3" />
+          <path d="M104 180h22v42h-22zM394 180h22v42h-22z" fill="#365867" stroke="#adcea1" />
+        </g>}
         <path
           d="M164 304V126h18v-25h27V82h103v19h27v25h18v178z"
           fill="#192f3b"
@@ -111,6 +117,11 @@ function Machine({ level }: { level: number }) {
             opacity=".13"
           />
         </g>
+        {machineLevel >= 50 && <g className="portal-awakened" fill="#e2ffdc">
+          <path d="M254 130h12v143h-12zM215 194h91v12h-91z" opacity=".3" />
+          <path d="M248 151h24v12h12v76h-12v12h-24v-12h-12v-76h12z" fill="none" stroke="#fff9c0" strokeWidth="4" />
+          <path d="M245 63h30v10h10v12h-50V73h10z" fill="#f9df95" />
+        </g>}
         <g className="portal-runes" fill="#e3ffd1">
           <path d="M250 179h20v7h7v23h-7v8h-20v-8h-7v-23h7z" opacity=".6" />
           <path d="M256 187h9v22h-9zM249 194h23v8h-23z" fill="#ffffff" />
@@ -128,6 +139,15 @@ function Machine({ level }: { level: number }) {
           <rect x="-4" y="-4" width="8" height="8" fill="#315357" />
         </g>
       </g>
+      {machineLevel >= 10 && <g className="scene-vines" fill="#73ce9d">
+        <path d="M153 300h-9V159h12v-37h12v49h-9v129zM352 300h12V151h-12v-27h-12v48h12z" />
+        <path d="M145 180h-29v-10h29zM153 148h33v9h-33zM353 193h37v10h-37zM340 135h-28v9h28z" fill="#b0ed9c" />
+        <path d="M127 170h10v10h-10zM372 194h10v10h-10zM175 149h10v9h-10z" fill="#efb7e3" />
+      </g>}
+      {machineLevel >= 20 && <g className="portal-runes" fill="none" stroke="#e7db9f" strokeWidth="3">
+        {[145, 180, 215, 250].map(y => <g key={y}><path d={`M181 ${y}h10v10h-10zM330 ${y}h10v10h-10zM182 ${y + 4}h8M331 ${y + 4}h8`} /></g>)}
+        <path d="M216 111h12v-8h12M281 103h12v8h12" />
+      </g>}
       <path
         d="M224 281h72v13h-72zM210 294h100v14H210zM196 307h128v13H196z"
         fill="#b2b998"
@@ -195,13 +215,14 @@ function Machine({ level }: { level: number }) {
           />
         ))}
       </g>
-      {level > 0 && (
+      {machineLevel >= 5 && (
         <g fill="#eccc8b">
           <path
             className="crown-crystal"
             d="M249 57h22v20h-22zM240 65h40v6h-40z"
           />
-          {level > 2 && <path d="M153 148h9v26h-9zM358 148h9v26h-9z" />}
+          <path d="M98 268h12v-15h12v15h9v38H98zM391 268h12v-15h12v15h9v38h-33z" fill="#91ebd2" />
+          <path d="M103 269h6v32h-6zM396 269h6v32h-6z" fill="#d6ffed" />
         </g>
       )}
     </svg>

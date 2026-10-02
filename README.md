@@ -1,4 +1,4 @@
-# TCG Clicker — Faerie · Visual Polish Prototype
+# TCG Clicker — Faerie · Phase 3
 
 Prototype local Next.js / React / TypeScript, sans service externe, police téléchargée, asset graphique externe ou image générée par IA. Les trois documents de conception à la racine restent la source de vérité.
 
@@ -21,14 +21,23 @@ npm run build
 
 ## Boucle jouable
 
-Le portail rapporte 5 éclats par clic au départ, avec 5 % de critiques ×3. Un booster coûte 100 éclats et contient cinq cartes, dont une peu commune ou mieux garantie. Les cartes sont révélées séparément, conservées dans le classeur et équipables dans un deck de six espèces distinctes. Les effets actifs modifient clics, production passive, critiques et prix. Une amélioration permanente ajoute 2 éclats par clic et fait évoluer le portail. Les doublons sont comptés sans système d'amélioration à ce stade.
+Le portail rapporte 5 éclats par clic au départ, avec 5 % de critiques ×3. Sept familles d'améliorations permanentes développent clic, passif, critiques, combo, énergie globale et bonus Faerie. Les coûts croissent exponentiellement. Les achats d'Amplificateur sylvestre enrichissent visuellement la machine aux paliers 1/5/10/20/35/50.
 
-La sauvegarde versionnée est locale au navigateur (`tcg-faerie-v1`). Un booster en cours reprend au même point après rechargement. Pas de production hors ligne ni de synchronisation multi-onglets dans cette slice : jouer dans un seul onglet. Les six raretés sont représentées par neuf créatures provisoires ; variantes foil collectionnables, évolutions jouables et 60 cartes restent hors périmètre.
+Le combo augmente avec les clics rapprochés et décroît après une pause ; il multiplie uniquement les clics. Les boosters coûtent initialement 100 éclats, contiennent cinq cartes, et garantissent une Peu commune ou mieux en cinquième position. Les cartes montent automatiquement de niveau à 1/3/6/10/15 copies ; chaque doublon rapporte aussi de l'énergie. Le classeur montre les lignées et silhouettes ; les évolutions exigent la découverte du parent pour être équipées.
+
+L'écran Deck présente six emplacements, statistiques, bonus cumulés, synergies, trois exemples de builds et prévisualisation des remplacements. La capacité est centralisée, prête pour sept/huit places ultérieures. Les cartes sont numérotées /060, avec seulement neuf espèces disponibles. Les règles chiffrées et le plan des 60 cartes sont documentés dans GAME_DESIGN.md et SET_01_FAERIE.md.
+
+La sauvegarde est maintenant en version 2, toujours sous la clé locale `tcg-faerie-v1` pour retrouver les anciennes parties. La migration conserve énergie, machine, copies, deck et ouverture en cours, initialise les nouvelles familles et garde une copie v1 sous `tcg-faerie-v1-backup`. Une sauvegarde illisible ou d'une version future n'est jamais écrasée : le message indique que la session ne sera pas persistée. Le combo se réinitialise au rechargement. Pas de production hors ligne ni de synchronisation multi-onglets : jouer dans un seul onglet.
 
 ## Modifier le prototype
 
 - `lib/cards.ts` : contenu, raretés, palettes, seeds et effets.
-- `lib/game.ts` : économie, tirage, équipement et validation de sauvegarde ; fonctions pures testées.
+- `lib/game.ts` : statistiques, économie, tirage pondéré, équipement/remplacement atomique, capacité et migration v1 → v2 ; fonctions pures testées.
+- `lib/effects.ts` : catalogue typé des effets, résolution centrale et descriptions numériques.
+- `lib/progression.ts` : sept améliorations, coûts, niveaux de cartes, combo et paliers de machine.
+- `lib/synergies.ts` : seuils de type et propositions de builds Clic, Idle et Collection.
+- `components/game/` : vues Collection, Deck, Améliorations et jauge de combo.
+- `app/progression.css` : mise en page responsive et retour visuel de progression.
 - `lib/sprites.ts` : rasterisation déterministe sur grille 64 × 64, neuf anatomies, détails basés sur seed et séparation des parties (corps, queue, ailes, coiffe, visage).
 - `lib/visuals.ts` : habitats, noms de capacités, textes d'ambiance, finitions et durées de suspense. Aucun changement des effets du jeu.
 - `components/Sprite.tsx` : pixels regroupés en chemins SVG par couleur et partie, animations idle. Pas d'image ni de dépendance graphique.
@@ -47,7 +56,7 @@ Les choix de prix, noms et effets sont des valeurs de test de cette vertical sli
 
 Ouvrir `/dev`, comparer les silhouettes sur les fonds clair et sombre, puis consulter « Cartes & finitions ». « Tester l'ouverture » permet de voir les révélations sans attendre un tirage rare. La carte suivante est déjà face visible sous celle que l’on retire. Elle arrive directement au premier plan avec les effets de sa rareté, sans dos ni suspense intermédiaire. Seule la première apparition conserve une courte anticipation, raccourcie à 50 ms avec les animations réduites.
 
-La phase 2 conserve les neuf identifiants, l'économie, les probabilités, les effets, le deck et la clé de sauvegarde `tcg-faerie-v1`. Aucun nouvel asset ou package n'est nécessaire.
+La phase 3 conserve les neuf identifiants, les sprites, la clé de sauvegarde et les gestes de booster. Les effets ont été rééquilibrés pour les trois builds. Aucun asset externe, image IA ou package ajouté.
 
 ## Documents du projet
 

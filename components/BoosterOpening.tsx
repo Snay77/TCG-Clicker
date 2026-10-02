@@ -7,6 +7,7 @@ import { packSound } from "../lib/pack-audio";
 import Card from "./Card";
 import BoosterPack from "./BoosterPack";
 import type { Save } from "../lib/game";
+import { cardLevel } from "../lib/progression";
 
 type Stage =
   | "choose"
@@ -552,6 +553,7 @@ export default function BoosterOpening({
                   <span>
                     {RARITIES[tier]} · {"◆".repeat(tier + 1)}
                   </span>
+                  <span>Niv. {cardLevel(save.owned[creature.id] || 1)} · {save.owned[creature.id] || 1} copie(s){!isNew(creature.id, index) && " · Doublon : énergie bonus créditée !"}</span>
                 </>
               ) : (
                 <span>

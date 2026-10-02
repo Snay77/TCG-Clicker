@@ -1,6 +1,27 @@
 # Vérification de TCG Clicker
 
-## État actuel — 2 octobre 2026
+## Phase 3 — Core Game Loop & Progression · 2 octobre 2026
+
+- `npm test` : 21 tests réussis, dont 13 nouveaux tests de progression et les 8 tests précédents conservés/adaptés.
+- `npm run typecheck` et `npm run build` : réussis ; routes / et /dev générées.
+- Logique : migration v1 → v2 et reprise de booster, validation de sauvegardes, seuils et effets de carte, résolution cumulative de tous les types d'effets, synergies actives/proches, capacité 6/7/8, remplacement atomique, contraintes d'évolution, sept améliorations et plafonds, combo/décroissance, paliers de machine, doublons crédités une seule fois, probabilités renormalisées et garantie du cinquième tirage, trois builds distincts.
+- Navigateur Edge/Chromium, build de production : migration avec copie v1 brute, achat d'amélioration, montée/décroissance du combo, remplacement de Chantignon par Noctipapille, prévisualisation des variations, niveaux de carte, deux lignées, neuf cartes /060, persistance après recharge. Évolution bloquée sans parent ; sauvegarde future conservée après clic ; /dev accessible. Aucune erreur JavaScript navigateur pendant les parcours.
+- Mobile tactile 390 × 844 avec animations réduites : découpe clavier, retrait tactile des cartes, rechargement après la première attribution, reprise à la suivante, cinq attributions exactes, cinq cartes et Continuer au récapitulatif. Machine, Deck et Collection sans débordement horizontal du document.
+- Souris et tactile réel via CDP, animations normales : petite découpe annulée, découpe de droite à gauche, petit balayage annulé, cinq cartes retirées par balayage, son désactivable, Rare/Épique/Légendaire/Mythique au premier plan, cinq attributions exactes et récapitulatif.
+- Six paliers visuels vérifiés séparément en navigateur (1/5/10/20/35/50) : cristaux, végétation, anneaux et cœur renforcé cumulés, console sans erreur. Captures `phase3-tier-*.png` ; script `phase3-tiers.cjs`.
+- Inspection des captures desktop et mobile : panneaux lisibles, synergies, niveaux, six emplacements, atelier et combo. Contraste corrigé pendant cette phase pour conserver le thème sombre.
+
+Scripts/captures locaux dans `test-results/` (ignorés) : `phase3-check.cjs`, `phase3-gestures.cjs`, `phase3-balance.ts`, `phase3-machine.png`, `phase3-deck.png`, `phase3-collection.png`, `phase3-mobile-machine.png`, `phase3-mobile-deck.png`, captures d'ouverture et de récapitulatif. Le CLI agent-browser n'est pas installé : contrôles exécutés avec le Playwright fourni par Codex et Edge installé, sans installation de dépendance.
+
+### Vérification du rythme de progression
+
+Simulation déterministe indicative de 30 minutes : 2 clics/seconde, combo supposé maintenu à ×1,5, rendement critique moyen, tentative de booster toutes les 20 secondes, achat de l'amélioration disponible la moins coûteuse et équipement des six premières espèces dès découverte. À 5/15/30 minutes : machine niveaux 28/44/53, 14/44/89 boosters, coût de l'amélioration suivante environ 4 481 / 61 241 / 229 334 éclats. Plusieurs familles continuent de progresser à 30 minutes. Les ouvertures ne bloquent pas la production de clic dans cette simulation : ces valeurs donnent une borne optimiste, pas une durée de partie validée par des joueurs. Une session réelle et le choix du build modifieront ce rythme.
+
+### Périmètre et suites
+
+Neuf créatures uniquement ; le plan 60 cartes est documenté, aucune espèce supplémentaire ajoutée. Pas d'asset externe ni image IA. Les niveaux de machine suivent l'Amplificateur sylvestre ; les autres améliorations modifient les statistiques. Synergies à une carte provisoires pour les types représentés par une seule espèce. Les anciennes évolutions équipées restent actives à la migration ; tout nouvel équipement exige le parent immédiat. Capacités 7/8 préparées sans amélioration achetable. Les copies restent conservées ; pas de destruction/craft. Pas de production hors ligne ou synchronisation multi-onglets.
+
+## Historique — pile face visible, 2 octobre 2026
 
 La pile montre la carte suivante face visible sous celle qui s’envole. Aucun dos ni suspense n’est intercalé entre les cartes ; les effets de rareté démarrent au premier plan.
 

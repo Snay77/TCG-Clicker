@@ -3,6 +3,8 @@ import type { CSSProperties, PointerEvent } from "react";
 import { Creature, RARITIES } from "../lib/cards";
 import { FINISHES, VISUALS } from "../lib/visuals";
 import CardArt from "./CardArt";
+import { describeEffect } from "../lib/effects";
+import { leveledEffect } from "../lib/progression";
 export default function Card({
   card,
   owned = 1,
@@ -68,7 +70,7 @@ export default function Card({
           <h3>{owned ? v.title : "Rencontre inconnue"}</h3>
           <p>
             {owned
-              ? card.description
+              ? describeEffect(leveledEffect(card.effect, owned))
               : "Cette créature attend de croiser votre chemin."}
           </p>
         </div>
@@ -81,7 +83,7 @@ export default function Card({
       <footer>
         <span>
           FÆ · {card.id}
-          <b> / 009</b>
+          <b> / 060</b>
         </span>
         <span>
           {owned ? `×${owned}` : "◇"} · {FINISHES[card.rarity]}

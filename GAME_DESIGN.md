@@ -2,7 +2,7 @@
 
 ## Concept
 
-État au 2 octobre 2026 : vertical slice jouable et prototype de finition visuelle disponibles. Le périmètre actuel reste limité à neuf créatures temporaires ; les 60 cartes sont un objectif ultérieur.
+État au 2 octobre 2026 : phase 3, boucle de progression jouable. Le périmètre reste limité à neuf créatures temporaires ; les 60 cartes sont un objectif ultérieur.
 
 TCG Clicker est un jeu de clicker centré sur la collection de créatures à travers des boosters.
 
@@ -142,12 +142,7 @@ Cela permet au joueur de créer différents builds.
 
 Obtenir plusieurs fois la même carte doit rester utile.
 
-Les doublons pourront notamment permettre :
-- d'améliorer une carte
-- d'augmenter son niveau
-- de produire une ressource secondaire
-
-Le système exact sera défini plus tard.
+Les niveaux 1 à 5 demandent 1, 3, 6, 10 et 15 copies cumulées. Les effets valent respectivement ×1, ×1,2, ×1,5, ×1,8 et ×2. Les copies ne sont jamais consommées. Chaque doublon rapporte immédiatement 1 éclat, augmenté par les effets `duplicateBonus` du deck. Aucun recyclage, poussière ni craft.
 
 ## Direction artistique
 
@@ -243,3 +238,41 @@ Créer d'abord une vertical slice contenant :
 - premiers sprites de créatures
 
 L'objectif est de valider le gameplay et surtout la direction artistique avant de produire le Set 01 complet.
+
+## Phase 3 — progression permanente
+
+Les sept familles sont configurées dans `lib/progression.ts`. Coût du niveau suivant : arrondi supérieur de `base × croissance^niveauActuel`.
+
+| Famille | Coût initial | Croissance | Limite | Gain par niveau |
+| --- | ---: | ---: | ---: | --- |
+| Amplificateur sylvestre | 75 | 1,17 | 100 | +2 / clic |
+| Luciole mécanique | 60 | 1,20 | 100 | +1,5 / sec |
+| Lentille lunaire | 180 | 1,35 | 25 | +1 point critique |
+| Prisme de résonance | 250 | 1,30 | 30 | +0,15 multiplicateur critique |
+| Cadence du portail | 120 | 1,30 | 20 | +5 % bonus de combo |
+| Cœur interdimensionnel | 350 | 1,40 | 30 | +5 % énergie globale |
+| Pacte de la clairière | 200 | 1,32 | 30 | +4 % énergie Faerie |
+
+Chaque achat d'Amplificateur sylvestre augmente le niveau de machine d'un cran ; les autres familles améliorent ses statistiques. Le champ `level` conserve ce compteur historique ; le niveau affiché vaut `level + 1`. Paliers visuels cumulatifs : niveau 1 portail initial, 5 cristaux accordés, 10 lianes et fleurs intégrées au cadre, 20 runes, 35 anneaux et stabilisateurs dimensionnels, 50 cœur lumineux renforcé. Ils restent entièrement en SVG/CSS. Ce lien à la progression du clic évite de parcourir tous les paliers visuels en achetant seulement les premiers niveaux peu coûteux des sept familles.
+
+Le combo gagne 4 points par clic, plafonné à 100. Après 1 seconde sans clic, il perd 18 points par seconde. Son multiplicateur continu vaut `1 + charge/100 × min(1, 0,5 × (1 + bonusCombo))`, soit ×1,5 initialement et ×2 au maximum. Les paliers 25/50/75/100 ont un retour visuel. Le passif ne dépend jamais du combo ; le combo n'est pas sauvegardé.
+
+## Effets, builds et synergies
+
+`lib/effects.ts` centralise le cumul de `clickFlat`, `clickMultiplier`, `autoFlat`, `autoMultiplier`, `critChance`, `critMultiplier`, `boosterDiscount`, `comboMultiplier`, `faerieBonus`, `rareChance`, `duplicateBonus`, `energyMultiplier`. Les pourcentages se cumulent par catégorie ; 0,1 représente +10 %. Le niveau de carte multiplie toutes ses contributions. Les synergies ont un bonus fixe.
+
+Clic = `(5 + clics plats) × (1 + bonus clic) × (1 + énergie globale) × (1 + Faerie)`. Passif = `passif plat × (1 + bonus passif) × (1 + énergie globale) × (1 + Faerie)`. Critique initial : 5 % et ×3 ; chance plafonnée à 75 %. Réduction booster plafonnée à 50 %. `rareChance` augmente les poids de Rare à Mythique, avec un maximum de +75 %, puis renormalise toutes les probabilités. La cinquième carte reste Peu commune ou mieux. Les probabilités exactes du deck sont affichées en boutique.
+
+Les trois propositions de six compagnons dans `lib/synergies.ts` utilisent les neuf cartes existantes : Clic privilégie Flamèche et les deux Lune ; Idle privilégie Chantignon, Roséclair et Auralis ; Collection combine les deux évolutions Sylve/Astral, Noctipapille et Auralis pour les doublons, les tirages et une production d'appoint. Les builds partagent certains compagnons : c'est volontaire avec seulement neuf espèces. Les améliorations permanentes complètent leur spécialisation.
+
+Synergies temporaires accessibles : Sylve ×2 → +10 % énergie globale ; Lune ×2 → +5 points critique ; Mycète ×1 et Rosée ×1 → chacun +5 % passif ; Étincelle ×1 → +5 % clic. Les seuils à une carte sont des affinités provisoires : le prototype ne possède qu'une carte de ces types. Les règles sont data-driven, prêtes pour des seuils plus élevés dans le set complet.
+
+Le Deck présente les emplacements, les niveaux, les bonus du deck, les statistiques permanentes, les synergies actives/proches et les builds proposés. Un emplacement sélectionné permet un remplacement atomique avec prévisualisation des variations de clic, passif, critique, multiplicateur critique et réduction booster. `deckCapacity(save)` est l'unique règle de capacité : six emplacements initiaux, plus `extraDeckSlots` (0 à 2), sans achat de capacité dans cette phase.
+
+## Lignées et sauvegarde
+
+Moussillon → Sylvérêve → Éon de la clairière ; Lunailée → Noctipapille. `evolvesFrom` et `evolvesTo` relient des cartes indépendantes ; les formes non découvertes sont des silhouettes. L'équipement exige la découverte du parent immédiat, sans le consommer ni l'obliger à rester équipé.
+
+Sauvegarde v2 : anciens champs conservés, ajout de `upgrades` (sept niveaux) et `extraDeckSlots`. Les niveaux de carte dérivent de `owned`. La clé `tcg-faerie-v1` reste identique pour retrouver les parties existantes. Migration automatique : ancien `level` conservé et reporté dans `upgrades.click`, nouvelles familles à zéro, cartes/deck/énergie/clics/boosters/ouverture préservés. Une copie brute v1 est gardée sous `tcg-faerie-v1-backup` avant écriture v2. Les évolutions déjà équipées en v1 restent actives ; les prérequis s'appliquent aux nouveaux équipements. Une sauvegarde illisible ou future est conservée sans écrasement, avec message visible et session temporaire non persistée.
+
+`Game.tsx` garde orchestration, timers, persistance et scène principale ; `components/game/` contient `CollectionView`, `DeckView`, `UpgradesView`, `ComboBar`. Les composants de cartes et boosters gardent leurs chemins pour limiter le refactor. Aucun asset, image IA ou dépendance ajouté. Les interactions souris/tactiles/clavier, Web Audio, animations réduites, sprites déterministes et `/dev` restent pris en charge.

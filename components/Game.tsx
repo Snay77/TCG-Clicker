@@ -1,24 +1,32 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { CARDS, byId } from "../lib/cards";
+import { CARDS, RARITIES, byId } from "../lib/cards";
 import {
   buyPack,
   drawPack,
-  equip,
+  changeDeck,
+  deckCapacity,
+  equipBlockedReason,
+  buyUpgrade,
+  rarityProbabilities,
   initialSave,
   parseSave,
   price,
   reveal,
   Save,
   stats,
-  upgradePrice,
 } from "../lib/game";
-import Card from "./Card";
 import Sprite from "./Sprite";
 import Machine from "./Machine";
 import BoosterPack from "./BoosterPack";
 import BoosterOpening from "./BoosterOpening";
+import CollectionView from "./game/CollectionView";
+import DeckView, { statImpact } from "./game/DeckView";
+import UpgradesView from "./game/UpgradesView";
+import ComboBar from "./game/ComboBar";
+import { advanceCombo, decayCombo, comboFactor, initialCombo, machineTier, leveledEffect, cardLevel } from "../lib/progression";
+import { describeEffect } from "../lib/effects";
 const KEY = "tcg-faerie-v1";
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
@@ -27,6 +35,9 @@ export default function Game() {
   const [tab, setTab] = useState("machine");
   const [notice, setNotice] = useState("");
   const [storageOk, setStorageOk] = useState(true);
+  const [combo, setCombo] = useState(initialCombo);
+  const comboRef = useRef(initialCombo());
+  const storageBlocked = useRef(false);
   const [sparks, setSparks] = useState<
     { id: number; x: number; y: number; gain: number; crit: boolean }[]
   >([]);
@@ -36,10 +47,19 @@ export default function Game() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setSave(parseSave(raw));
+      if (raw) {
+        const migrated = parseSave(raw);
+        setSave(migrated);
+        if (JSON.parse(raw).version === 1) {
+          localStorage.setItem(`${KEY}-backup`, raw);
+          setNotice("Sauvegarde migrée en v2. Votre progression et le booster en cours sont conservés ; une copie v1 est gardée.");
+        }
+      }
     } catch {
+      storageBlocked.current = true;
+      setStorageOk(false);
       setNotice(
-        "La sauvegarde est illisible ou inaccessible. Une nouvelle session commence.",
+        "La sauvegarde est illisible ou inaccessible. Elle est conservée sans écrasement ; cette session ne sera pas sauvegardée.",
       );
     }
     setReady(true);
@@ -50,6 +70,7 @@ export default function Game() {
   useEffect(() => {
     if (!ready) return;
     const persist = () => {
+      if (storageBlocked.current) return;
       try {
         localStorage.setItem(KEY, JSON.stringify(latest.current));
       } catch {
@@ -71,11 +92,13 @@ export default function Game() {
       const now = performance.now();
       const elapsed = Math.min((now - last) / 1000, 5);
       last = now;
-      setSave((s) =>
-        stats(s).auto
-          ? { ...s, energy: s.energy + stats(s).auto * elapsed }
-          : s,
-      );
+      const nextCombo = decayCombo(comboRef.current, now);
+      comboRef.current = nextCombo;
+      setCombo(previous => previous.charge === nextCombo.charge ? previous : nextCombo);
+      setSave((s) => {
+        const passive = stats(s).auto;
+        return passive ? { ...s, energy: s.energy + passive * elapsed } : s;
+      });
     }, 200);
     return () => clearInterval(t);
   }, [ready]);
@@ -89,10 +112,14 @@ export default function Game() {
   const opening = save.pending.length > 0;
   const power = stats(save);
   const discovered = Object.keys(save.owned).length;
-  const total = Object.values(save.owned).reduce((a, b) => a + b, 0);
   function click(e: React.MouseEvent<HTMLButtonElement>) {
-    const critical = Math.random() < power.crit;
-    const gain = power.click * (critical ? 3 : 1);
+    const current = latest.current;
+    const currentPower = stats(current);
+    const nextCombo = advanceCombo(comboRef.current, performance.now());
+    comboRef.current = nextCombo;
+    setCombo(nextCombo);
+    const critical = Math.random() < currentPower.crit;
+    const gain = currentPower.click * comboFactor(nextCombo.charge, currentPower.comboBonus) * (critical ? currentPower.critMultiplier : 1);
     const box = e.currentTarget.getBoundingClientRect();
     setSave((s) => ({ ...s, energy: s.energy + gain, clicks: s.clicks + 1 }));
     setSparks((s) => [
@@ -106,14 +133,16 @@ export default function Game() {
       },
     ]);
   }
-  function toggle(id: string) {
-    if (!save.deck.includes(id) && save.deck.length === 6) {
-      setNotice(
-        "Votre deck est plein. Retirez une carte pour libérer un emplacement.",
-      );
+  function toggle(id: string, replaceId?: string) {
+    const candidate = replaceId && !save.deck.includes(id) ? { ...save, deck: save.deck.filter(x => x !== replaceId) } : save;
+    const reason = equipBlockedReason(candidate, id);
+    if (reason) {
+      setNotice(reason);
       return;
     }
-    setSave((s) => equip(s, id));
+    const next = changeDeck(save, id, replaceId);
+    setNotice(`${byId(id).name} · ${statImpact(stats(save), stats(next))}`);
+    setSave((s) => changeDeck(s, id, replaceId));
   }
   return (
     <div className="app-shell">
@@ -141,7 +170,7 @@ export default function Game() {
               <span>{icon}</span>
               {label}
               {id === "collection" && <small>{discovered}/9</small>}
-              {id === "deck" && <small>{save.deck.length}/6</small>}
+              {id === "deck" && <small>{save.deck.length}/{deckCapacity(save)}</small>}
             </button>
           ))}
         </nav>
@@ -156,7 +185,7 @@ export default function Game() {
             </p>
           </div>
           <Link href="/dev">⌘ Atelier des sprites ↗</Link>
-          <small>VISUAL POLISH · v0.2</small>
+          <small>PROGRESSION · v0.3</small>
         </div>
       </aside>
       <main>
@@ -229,7 +258,7 @@ export default function Game() {
             <div>
               <small>PUISSANCE DU CLIC</small>
               <strong>
-                +{power.click} <em>/ clic</em>
+                +{Number(power.click.toFixed(2))} <em>/ clic</em>
               </strong>
             </div>
             <div>
@@ -257,7 +286,7 @@ export default function Game() {
                       </span>
                       <h2>Le Cœur de la clairière</h2>
                     </div>
-                    <span className="level">NIV. {save.level + 1}</span>
+                    <span className="level">NIV. {save.level + 1} · {machineTier(save.level).name}</span>
                   </div>
                   <div className="forest">
                     <div className="forest-trees" />
@@ -299,55 +328,22 @@ export default function Game() {
                           key={p.id}
                           style={{ left: p.x, top: p.y }}
                         >
-                          +{p.gain} ✦{p.crit && <small>CRITIQUE !</small>}
+                          +{Number(p.gain.toFixed(1))} ✦{p.crit && <small>CRITIQUE !</small>}
                         </span>
                       ))}
                     </button>
                     <div className="machine-prompt">
                       <span className="live-dot" /> LE PORTAIL VOUS ATTEND
                       <strong>
-                        Cliquez pour générer <b>+{power.click} ✦</b>
+                        Cliquez pour générer <b>+{Number((power.click * comboFactor(combo.charge, power.comboBonus)).toFixed(1))} ✦</b>
                       </strong>
                       <small>
                         {Math.round(power.crit * 100)} % de chance de critique ·
-                        énergie ×3
+                        énergie ×{Number(power.critMultiplier.toFixed(2))}
                       </small>
                     </div>
                   </div>
-                  <div className="upgrade-bar">
-                    <div>
-                      <span>⌁</span>
-                      <div>
-                        <strong>Amplificateur sylvestre</strong>
-                        <small>
-                          +2 énergies par clic · amélioration permanente
-                        </small>
-                      </div>
-                    </div>
-                    <button
-                      disabled={
-                        !ready ||
-                        save.energy < upgradePrice(save) ||
-                        save.level >= 100
-                      }
-                      onClick={() =>
-                        setSave((s) =>
-                          s.energy >= upgradePrice(s) && s.level < 100
-                            ? {
-                                ...s,
-                                energy: s.energy - upgradePrice(s),
-                                level: s.level + 1,
-                              }
-                            : s,
-                        )
-                      }
-                    >
-                      {save.level >= 100
-                        ? "MAX"
-                        : `${fmt(upgradePrice(save))} ✦`}{" "}
-                      <span>↗</span>
-                    </button>
-                  </div>
+                  <ComboBar combo={combo} bonus={power.comboBonus} />
                 </section>
                 <section className="shop-panel">
                   <div className="panel-heading">
@@ -370,7 +366,7 @@ export default function Game() {
                     className="primary buy-button"
                     disabled={!ready || save.energy < price(save) || opening}
                     onClick={() => {
-                      const cards = drawPack();
+                      const cards = drawPack(Math.random, stats(latest.current).rareChance);
                       setSave((s) => buyPack(s, cards));
                     }}
                   >
@@ -391,31 +387,35 @@ export default function Game() {
                   <details>
                     <summary>Probabilités des raretés</summary>
                     <p>
-                      Cartes 1–4 : commune 50 %, peu commune 27 %, rare 14 %,
-                      épique 6 %, légendaire 2,5 %, mythique 0,5 %. Carte 5 :
-                      mêmes poids sans commune, soit 54 / 28 / 12 / 5 / 1 %.
-                      Doublons possibles.
+                      {[false, true].map(guaranteed => (
+                        <span className="probability-line" key={String(guaranteed)}>
+                          {guaranteed ? "Carte 5" : "Cartes 1–4"} : {rarityProbabilities(power.rareChance, guaranteed)
+                            .map((p, i) => `${RARITIES[i]} ${(p * 100).toFixed(2)} %`).join(" · ")}
+                        </span>
+                      ))}
+                      Doublons : +{power.duplicateBonus.toFixed(1)} éclats et progression de niveau.
                     </p>
                   </details>
                 </section>
               </div>
+              <UpgradesView save={save} ready={ready} onBuy={id => setSave(s => buyUpgrade(s, id))} />
               <section className="deck-panel">
                 <div className="section-title">
                   <div>
                     <h2>
-                      Vos compagnons de voyage <span>{save.deck.length}/6</span>
+                      Vos compagnons de voyage <span>{save.deck.length}/{deckCapacity(save)}</span>
                     </h2>
                     <p>Leurs pouvoirs alimentent votre machine.</p>
                   </div>
                   <button
                     className="text-button"
-                    onClick={() => setTab("collection")}
+                    onClick={() => setTab("deck")}
                   >
                     Composer mon deck <span>→</span>
                   </button>
                 </div>
                 <div className="deck-slots">
-                  {Array.from({ length: 6 }, (_, i) => {
+                  {Array.from({ length: deckCapacity(save) }, (_, i) => {
                     const c = save.deck[i] ? byId(save.deck[i]) : null;
                     return c ? (
                       <button
@@ -426,7 +426,7 @@ export default function Game() {
                       >
                         <Sprite creature={c} />
                         <strong>{c.name}</strong>
-                        <small>{c.description}</small>
+                        <small>Niv. {cardLevel(save.owned[c.id])} · {describeEffect(leveledEffect(c.effect, save.owned[c.id]))}</small>
                         <span>Retirer −</span>
                       </button>
                     ) : (
@@ -439,64 +439,10 @@ export default function Game() {
                 </div>
               </section>
             </>
+          ) : tab === "deck" ? (
+            <DeckView save={save} onEquip={toggle} />
           ) : (
-            <>
-              <div className="section-title">
-                <div>
-                  <h2>
-                    {tab === "deck"
-                      ? "Deck actif · 6 emplacements"
-                      : "Classeur Faerie"}{" "}
-                    <span>{total} cartes obtenues</span>
-                  </h2>
-                  <p>
-                    {tab === "deck"
-                      ? "Une carte par espèce. Les effets se cumulent entre compagnons."
-                      : "Les doublons sont conservés ; leur amélioration viendra après le prototype."}
-                  </p>
-                </div>
-                <button
-                  className="text-button"
-                  onClick={() => setTab("machine")}
-                >
-                  Retour au portail →
-                </button>
-              </div>
-              {tab === "deck" && !save.deck.length && (
-                <div className="notice">
-                  Votre deck est vide. Équipez vos découvertes depuis la
-                  collection.
-                  <button onClick={() => setTab("collection")}>
-                    Voir la collection →
-                  </button>
-                </div>
-              )}
-              <div className="collection-grid">
-                {CARDS.filter(
-                  (c) => tab !== "deck" || save.deck.includes(c.id),
-                ).map((c) => (
-                  <Card key={c.id} card={c} owned={save.owned[c.id] || 0}>
-                    {!!save.owned[c.id] && (
-                      <button
-                        className={
-                          save.deck.includes(c.id) ? "equipped" : "equip-button"
-                        }
-                        onClick={() => toggle(c.id)}
-                        disabled={
-                          !save.deck.includes(c.id) && save.deck.length === 6
-                        }
-                      >
-                        {save.deck.includes(c.id)
-                          ? "✓ Équipée · Retirer"
-                          : save.deck.length === 6
-                            ? "Deck complet"
-                            : "Équiper + "}
-                      </button>
-                    )}
-                  </Card>
-                ))}
-              </div>
-            </>
+            <CollectionView save={save} onEquip={toggle} />
           )}
           <Link className="mobile-dev-link" href="/dev">
             ⌘ Atelier des sprites ↗
