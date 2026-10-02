@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./polish.css";
+import "./opening.css";
 export const metadata: Metadata = {
   title: "TCG Clicker · La Clairière",
   description:

@@ -2,6 +2,8 @@
 
 ## Concept
 
+État au 2 octobre 2026 : vertical slice jouable et prototype de finition visuelle disponibles. Le périmètre actuel reste limité à neuf créatures temporaires ; les 60 cartes sont un objectif ultérieur.
+
 TCG Clicker est un jeu de clicker centré sur la collection de créatures à travers des boosters.
 
 Le joueur utilise une machine interdimensionnelle pour produire de l'énergie. Cette énergie permet d'acheter des boosters contenant des cartes de créatures.
@@ -58,7 +60,7 @@ Ambiance :
 
 ## Set 01
 
-Le premier set contient 60 cartes.
+Le premier set complet prévoit 60 cartes. Le prototype en contient neuf, décrites dans `SET_01_FAERIE.md`.
 
 Les cartes représentent principalement des créatures vivantes.
 
@@ -96,6 +98,19 @@ Pour le prototype :
 L'ouverture doit être une partie importante de l'expérience.
 
 Les cartes doivent être révélées une par une avec des animations différentes selon leur rareté.
+
+### Ouverture actuelle
+
+1. Choisir visuellement un sachet dans un carrousel de cinq boosters. Ce choix ne change pas le tirage acheté.
+2. Découper horizontalement le haut du sachet à la souris ou au doigt, dans les deux sens. Un bouton et le clavier permettent aussi de l’ouvrir.
+3. Détacher la bandelette, retirer l’emballage et faire apparaître la pile. La première carte apparaît automatiquement après une courte anticipation.
+4. Toucher la carte pour l’envoyer vers le haut, ou la balayer. La suivante est déjà face visible dessous : aucun retournement ni suspense supplémentaire entre les cartes.
+5. Déclencher les effets de rareté à l’arrivée au premier plan, progressivement plus marqués de Rare à Mythique.
+6. Afficher les cinq cartes dans un récapitulatif, avec une indication des nouvelles espèces.
+
+La carte en arrière-plan est un aperçu : elle n’est attribuée qu’à son arrivée au premier plan, une seule fois. La sauvegarde conserve les cartes obtenues et reprend à la suivante après rechargement.
+
+Les sons sont synthétisés en code et désactivables. Les animations respectent la préférence de mouvement réduit. La démonstration de `/dev` ne modifie pas la sauvegarde.
 
 ## Collection
 

@@ -1,0 +1,1131 @@
+/* Tactile pack ritual: carousel, physical seam, a single stack and a final spread. */
+.pocket-opening {
+  --po-ink: #304b53;
+  --po-accent: #579ca5;
+  --po-card-width: clamp(210px, calc((100dvh - 270px) * 0.6), 300px);
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--po-ink);
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    #fff 0%,
+    #edf6f4 44%,
+    #d3e7e8 100%
+  );
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color-scheme: light;
+}
+.pocket-opening::backdrop {
+  background: #e4eeee;
+}
+.po-header {
+  height: 76px;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 3;
+}
+.po-brand {
+  font: 19px Georgia;
+  letter-spacing: 4px;
+  color: #5b7e79;
+}
+.po-brand small {
+  display: block;
+  font: 7px Arial;
+  letter-spacing: 1.9px;
+  margin: 6px 0 0 25px;
+  color: #799790;
+}
+.po-sound {
+  font-size: 10px;
+  background: #fff6;
+  border: 1px solid #a9c4c466;
+  border-radius: 30px;
+  color: #638384;
+  padding: 9px 13px;
+}
+.po-layout {
+  position: relative;
+  z-index: 1;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 15px 24px 28px;
+  text-align: center;
+  min-height: calc(100dvh - 76px);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.po-title {
+  font: 400 21px Arial;
+  letter-spacing: 0.5px;
+  margin: 6px 0 18px;
+  color: #486267;
+}
+.po-atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.po-atmosphere > span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  box-shadow: 0 0 13px #fff;
+  border-radius: 50%;
+  animation: po-mote 7s ease-in-out infinite;
+}
+.po-controls {
+  position: relative;
+  z-index: 15;
+  margin-top: 20px;
+  min-height: 65px;
+  text-align: center;
+}
+.po-controls p {
+  color: #6e898d;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 14px 0 5px;
+}
+.po-controls p span {
+  margin-left: 12px;
+  color: #519da6;
+  font-size: 20px;
+}
+.po-primary {
+  background: linear-gradient(#71b9bd, #579b9e);
+  border: 1px solid #6fa8a8;
+  border-radius: 30px;
+  box-shadow:
+    0 3px 0 #38757933,
+    inset 0 1px 0 #ffffff66;
+  color: white;
+  font-size: 14px;
+  min-width: 240px;
+  padding: 14px 30px;
+}
+.po-primary:hover {
+  background: linear-gradient(#85c7c8, #64a8ac);
+}
+.po-text-button {
+  display: block;
+  margin: 7px auto 0;
+  padding: 8px 18px;
+  font-size: 11px;
+  color: #527982;
+  background: transparent;
+  border: 0;
+  border-radius: 20px;
+}
+.po-text-button:hover {
+  background: #ffffff80;
+}
+.pocket-opening button:focus-visible,
+.pocket-opening [role="button"]:focus-visible {
+  outline: 2px solid #48939b;
+  outline-offset: 6px;
+}
+.po-carousel {
+  position: relative;
+  height: 430px;
+  max-width: 100%;
+  width: 1000px;
+  perspective: 1000px;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+  overflow: visible;
+  margin-top: 20px;
+}
+.po-carousel-pack {
+  position: absolute;
+  top: 65px;
+  left: calc(50% - 100px);
+  width: 200px;
+  transform: translateX(calc(var(--offset) * 180px))
+    translateZ(calc(-70px * abs(var(--offset))))
+    rotateY(calc(var(--offset) * -17deg));
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.35s;
+  filter: brightness(0.88);
+  pointer-events: none;
+}
+.po-carousel-pack.selected {
+  z-index: 5;
+  filter: brightness(1.05);
+  transform: translateZ(70px);
+}
+.pocket-opening .pack {
+  margin: 0;
+  transform: none;
+  animation: none;
+  box-shadow:
+    10px 19px 22px #254c542b,
+    inset 0 0 0 5px #25403e,
+    inset 0 0 0 6px #b3bc7d88;
+  user-select: none;
+}
+.po-carousel-pack .pack {
+  width: 200px;
+  height: 275px;
+  padding-top: 28px;
+}
+.po-carousel-pack .pack-sprite {
+  width: 144px;
+  height: 144px;
+}
+.po-carousel-pack .pack > strong {
+  font-size: 35px;
+}
+.po-carousel-pack .pack .sprite * {
+  animation: none !important;
+}
+.po-select-controls {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  color: #8aa2a4;
+  font-size: 11px;
+}
+.po-select-controls button {
+  border: 1px solid #adc5c5;
+  background: #fff9;
+  border-radius: 50%;
+  color: #5e9098;
+  width: 34px;
+  height: 34px;
+  font-size: 25px;
+  line-height: 1;
+}
+.po-pack-stage {
+  height: 440px;
+  width: 350px;
+  max-width: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  margin-top: 10px;
+  perspective: 1200px;
+}
+.po-cut-pack {
+  position: relative;
+  width: 260px;
+  height: 357px;
+  z-index: 3;
+  transform: rotateY(-4deg);
+  animation: po-pack-enter 0.45s ease-out both;
+}
+.po-cut-pack .pack {
+  width: 260px;
+  height: 357px;
+  padding: 40px 15px 15px;
+}
+.po-cut-pack .pack > small {
+  font-size: 9px;
+}
+.po-cut-pack .pack > strong {
+  font-size: 44px;
+  margin-top: 13px;
+  letter-spacing: 7px;
+}
+.po-cut-pack .pack-subtitle {
+  font-size: 7px;
+  margin-top: 7px;
+}
+.po-cut-pack .pack-sprite {
+  width: 190px;
+  height: 190px;
+  margin: -3px auto;
+}
+.po-cut-pack .pack footer {
+  font-size: 8px;
+  padding-top: 11px;
+}
+.po-cut-pack .pack-ornament {
+  inset: 109px 35px 55px;
+}
+.po-cut-pack .pack-ridge {
+  height: 18px;
+}
+.po-cut-pack .pack-seal {
+  font-size: 30px;
+  bottom: 50px;
+}
+.po-cut-track {
+  position: absolute;
+  top: -10px;
+  left: -20px;
+  width: calc(100% + 40px);
+  height: 58px;
+  z-index: 6;
+  cursor: ew-resize;
+  touch-action: none;
+  outline-offset: 0;
+  user-select: none;
+}
+.po-cut-line {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 29px;
+  height: 2px;
+  background: #eef7ca;
+  box-shadow: 0 0 10px #efffd8;
+  opacity: 0.75;
+}
+.po-cut-line:after {
+  content: "";
+  position: absolute;
+  inset: -2px 0;
+  background: white;
+  clip-path: inset(0 calc(100% - var(--cut)) 0 0);
+  box-shadow: 0 0 16px #baffef;
+}
+.po-cut-spark {
+  position: absolute;
+  left: var(--cut-head);
+  top: 22px;
+  width: 13px;
+  height: 13px;
+  background: #fff;
+  box-shadow: 0 0 13px 4px #c8fff0;
+  rotate: 45deg;
+  opacity: 0;
+}
+.po-dragging .po-cut-spark {
+  opacity: 1;
+}
+.po-cut-guide {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 35px;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 1px 5px #30595488;
+  animation: po-swipe-guide 2s ease-in-out infinite;
+}
+.po-dragging .po-cut-guide {
+  opacity: 0;
+}
+.po-cut-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: repeating-linear-gradient(90deg, #8ca080 0 2px, #496550 2px 4px);
+  border-block: 2px solid #a6b789;
+  z-index: 5;
+  pointer-events: none;
+}
+.po-pack-shadow {
+  position: absolute;
+  width: 210px;
+  height: 27px;
+  background: radial-gradient(#54767640, transparent 70%);
+  bottom: 10px;
+  filter: blur(4px);
+}
+.po-opening-light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(white, #ceffff77 25%, transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+}
+.po-tearing .po-cut-strip {
+  animation: po-strip-away 0.62s ease-out both;
+}
+.po-tearing .po-cut-pack .pack {
+  clip-path: polygon(
+    0 6%,
+    5% 5%,
+    10% 6%,
+    15% 5%,
+    20% 6%,
+    25% 5%,
+    30% 6%,
+    35% 5%,
+    40% 6%,
+    45% 5%,
+    50% 6%,
+    55% 5%,
+    60% 6%,
+    65% 5%,
+    70% 6%,
+    75% 5%,
+    80% 6%,
+    85% 5%,
+    90% 6%,
+    95% 5%,
+    100% 6%,
+    100% 100%,
+    0 100%
+  );
+  animation: po-wrapper-fall 0.62s ease-in both;
+}
+.po-tearing .po-cut-track {
+  display: none;
+}
+.po-tearing .po-opening-light {
+  animation: po-soft-light 0.62s ease-out both;
+}
+.po-stack-stage {
+  width: 100%;
+  min-height: calc(var(--po-card-width) * 1.64 + 34px);
+  position: relative;
+  display: grid;
+  place-items: center;
+  perspective: 1000px;
+  margin: 12px auto 0;
+}
+.po-stack {
+  position: relative;
+  width: var(--po-card-width);
+  min-height: 0;
+  isolation: isolate;
+}
+.po-stack-sheet {
+  position: absolute;
+  inset: 0;
+  transform: translate(calc(var(--depth) * 3px), calc(var(--depth) * -4px))
+    rotate(calc(var(--depth) * 0.45deg));
+  border: 2px solid #a8b4ad;
+  border-radius: 13px;
+  background: linear-gradient(110deg, #eef0e3, #fcfff7 65%, #c2d5c5);
+  box-shadow: 1px 2px 2px #57776b22;
+  overflow: hidden;
+}
+.po-stack-sheet > span {
+  position: absolute;
+  inset: 5px;
+  border: 1px solid #adbcaa;
+  border-radius: 7px;
+  background: repeating-linear-gradient(45deg, #416c61 0 8px, #50786a 8px 9px);
+  display: grid;
+  place-items: center;
+  font-size: 65px;
+  color: #d5dfbc;
+}
+.po-stack-motion {
+  position: relative;
+  transform: translate(var(--drag-x, 0px), var(--drag-y, 0px))
+    rotate(var(--drag-r, 0deg));
+  transition: transform 0.22s ease-out;
+  will-change: transform;
+}
+.po-dragging .po-stack-motion {
+  transition: none;
+}
+.po-front {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+.po-front .card {
+  width: 100%;
+  padding: 13px;
+  transform: none !important;
+  box-shadow: 0 12px 30px #41636c33;
+}
+.po-next-face {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+.po-front .card-art {
+  aspect-ratio: 1.12;
+}
+.po-front .card-name {
+  font-size: 16px;
+}
+.po-front .card-ability {
+  min-height: 58px;
+  padding: 10px 0 3px;
+}
+.po-front .card-flavor {
+  min-height: 43px;
+  padding: 6px 0 9px;
+}
+.po-front .card:after,
+.po-front .card-reflection {
+  display: none !important;
+}
+.po-front .card-foil,
+.po-front .card-holo {
+  pointer-events: none;
+}
+.po-card-back {
+  width: var(--po-card-width);
+  height: calc(var(--po-card-width) * 1.64);
+  border: 2px solid #a9bea7;
+  border-radius: 13px;
+  box-shadow:
+    inset 0 0 0 5px #214442,
+    inset 0 0 0 6px #b8c9a877,
+    0 10px 30px #41636c26;
+  background:
+    repeating-linear-gradient(45deg, #30574f 0 10px, #4a756514 10px 11px),
+    radial-gradient(#588a70, #234642);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #dce7c4;
+}
+.po-card-back > span {
+  font-size: 90px;
+}
+.po-card-back strong {
+  font: 25px Georgia;
+  letter-spacing: 6px;
+}
+.po-card-back small {
+  font-size: 7px;
+  letter-spacing: 1px;
+  margin-top: 20px;
+}
+.po-lifting .po-stack {
+  animation: po-stack-lift 0.7s ease-out both;
+}
+.po-suspense .po-card-back {
+  animation: po-card-wait 0.8s ease-in-out infinite;
+}
+.po-tier-2 {
+  --po-accent: #83b7e3;
+}
+.po-tier-3 {
+  --po-accent: #b898de;
+}
+.po-tier-4 {
+  --po-accent: #d1ab56;
+}
+.po-tier-5 {
+  --po-accent: #c48ad3;
+}
+.po-front-visible {
+  animation: po-front-in 0.25s ease-out both;
+}
+.po-reveal-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 550px;
+  height: 550px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    color-mix(in srgb, var(--po-accent) 38%, transparent),
+    transparent 66%
+  );
+}
+.po-tier-2 .po-reveal-aura,
+.po-tier-3 .po-reveal-aura,
+.po-tier-4 .po-reveal-aura,
+.po-tier-5 .po-reveal-aura {
+  opacity: 0.7;
+}
+.po-tier-4.po-view .po-reveal-aura,
+.po-tier-5.po-view .po-reveal-aura {
+  animation: po-aura-reveal 1.4s ease-out both;
+}
+.po-tier-3 .po-front-visible {
+  animation: po-special-in 0.65s ease-out both;
+}
+.po-tier-4 .po-front-visible {
+  animation: po-special-in 0.85s ease-out both;
+  filter: drop-shadow(0 0 12px #ead07855);
+}
+.po-tier-5 .po-front-visible {
+  animation: po-special-in 1.1s ease-out both;
+  filter: drop-shadow(0 0 18px #c896e466);
+}
+.po-leaving .po-stack-motion {
+  animation: po-card-away 0.26s ease-in both;
+}
+.po-new {
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  background: linear-gradient(120deg, #78b998, #459a94);
+  color: #fff;
+  border: 1px solid #ffffffcc;
+  border-radius: 3px;
+  padding: 5px 9px;
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 6px #337d7733;
+  z-index: 15;
+}
+.po-card-caption {
+  min-height: 45px;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  color: #607b81;
+}
+.po-card-caption strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.po-card-caption span {
+  font-size: 10px;
+  letter-spacing: 0.4px;
+}
+.po-card-caption + .po-controls {
+  margin-top: 0;
+}
+.po-swipe-hint {
+  font-size: 24px;
+  line-height: 1;
+  color: #86a8aa;
+  animation: po-swipe-guide 2s ease-in-out infinite;
+}
+.po-stardust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+  overflow: visible;
+}
+.po-stardust span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: var(--po-accent);
+  font-size: 22px;
+  animation: reveal-particle 1.4s ease-out both;
+  animation-delay: var(--delay);
+  text-shadow: 0 0 10px white;
+}
+.po-summary-caption {
+  font-size: 12px;
+  color: #728c8f;
+  margin: 0 0 35px;
+}
+.po-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 22px;
+  width: 100%;
+  align-items: start;
+  max-width: 1250px;
+  padding: 10px 0;
+}
+.po-summary-item {
+  position: relative;
+  animation: summary-enter 0.45s ease-out both;
+}
+.po-summary-grid .card-name {
+  font-size: 13px;
+}
+.po-summary-grid .card-ability {
+  min-height: 73px;
+}
+.po-summary-grid .card-flavor {
+  min-height: 58px;
+}
+.po-summary-grid .card:hover {
+  transform: none;
+  box-shadow: 0 12px 24px #28465225;
+}
+.po-summary-grid + .po-controls {
+  margin-top: 35px;
+}
+.po-summary-grid .card {
+  box-shadow: 0 10px 20px #41636c22;
+}
+.po-dragging .po-front {
+  cursor: grabbing;
+}
+@keyframes po-mote {
+  50% {
+    opacity: 0.3;
+    transform: translate(6px, -14px);
+  }
+}
+@keyframes po-pack-enter {
+  from {
+    transform: translateY(20px) rotateY(20deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) rotateY(-4deg);
+    opacity: 1;
+  }
+}
+@keyframes po-swipe-guide {
+  50% {
+    translate: 0 -5px;
+    opacity: 0.5;
+  }
+}
+@keyframes po-strip-away {
+  to {
+    transform: translate(130px, -130px) rotate(40deg);
+    opacity: 0;
+  }
+}
+@keyframes po-wrapper-fall {
+  35% {
+    transform: translateY(8px);
+  }
+  to {
+    transform: translateY(150px) scale(1.05);
+    opacity: 0;
+  }
+}
+@keyframes po-soft-light {
+  40% {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes po-stack-lift {
+  from {
+    transform: translateY(90px) scale(0.88);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes po-card-wait {
+  50% {
+    filter: brightness(1.12);
+    transform: translateY(-2px);
+  }
+}
+@keyframes po-front-in {
+  from {
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes po-special-in {
+  from {
+    transform: scale(1);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.018);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes po-aura-reveal {
+  from {
+    scale: 0.7;
+    opacity: 0;
+  }
+  40% {
+    scale: 1.15;
+    opacity: 0.85;
+  }
+  to {
+    scale: 1;
+    opacity: 0.5;
+  }
+}
+@keyframes po-card-away {
+  from {
+    transform: translate(var(--drag-x, 0px), var(--drag-y, 0px))
+      rotate(var(--drag-r, 0deg));
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--exit-x, 0px), var(--exit-y, -850px))
+      rotate(var(--exit-r, 18deg));
+    opacity: 0;
+  }
+}
+@media (max-width: 1000px) {
+  .po-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 850px;
+    gap: 22px;
+  }
+  .po-carousel-pack {
+    transform: translateX(calc(var(--offset) * 150px))
+      rotateY(calc(var(--offset) * -20deg)) scale(0.88);
+  }
+  .po-carousel-pack.selected {
+    transform: translateZ(40px) scale(1);
+  }
+  .po-carousel {
+    width: 750px;
+  }
+  .po-summary-grid .card-art {
+    aspect-ratio: 1.1;
+  }
+}
+@media (max-width: 580px) {
+  .pocket-opening {
+    --po-card-width: clamp(205px, calc((100dvh - 260px) * 0.6), 280px);
+  }
+  .po-header {
+    height: 62px;
+    padding: 0 20px;
+  }
+  .po-brand {
+    font-size: 15px;
+    letter-spacing: 3px;
+  }
+  .po-brand small {
+    font-size: 5px;
+    letter-spacing: 1px;
+    margin-left: 21px;
+  }
+  .po-sound {
+    font-size: 8px;
+    padding: 8px 10px;
+  }
+  .po-layout {
+    padding: 10px 18px 20px;
+    min-height: calc(100dvh - 62px);
+  }
+  .po-title {
+    font-size: 17px;
+    margin: 10px 0 12px;
+  }
+  .po-carousel {
+    height: 370px;
+    width: 100%;
+    margin-top: 5px;
+  }
+  .po-carousel-pack {
+    top: 40px;
+    transform: translateX(calc(var(--offset) * 127px))
+      rotateY(calc(var(--offset) * -23deg)) scale(0.8);
+  }
+  .po-carousel-pack.selected {
+    transform: translateZ(25px) scale(1);
+  }
+  .po-carousel-pack .pack {
+    width: 200px;
+    height: 275px;
+  }
+  .po-select-controls {
+    gap: 22px;
+  }
+  .po-pack-stage {
+    height: 410px;
+    margin-top: 0;
+  }
+  .po-cut-pack {
+    scale: 0.95;
+  }
+  .po-controls {
+    margin-top: 15px;
+  }
+  .po-controls p {
+    font-size: 10px;
+    margin-top: 10px;
+  }
+  .po-primary {
+    font-size: 12px;
+    padding: 13px 25px;
+    min-width: 215px;
+  }
+  .po-front .card {
+    padding: 11px;
+  }
+  .po-front .card-name {
+    font-size: 15px;
+  }
+  .po-front .card-taxonomy small,
+  .po-front .card-taxonomy > span {
+    font-size: 8px;
+  }
+  .po-front .card-ability h3 {
+    font-size: 11px;
+  }
+  .po-front .card-ability p {
+    font-size: 10px;
+  }
+  .po-front .card-ability {
+    min-height: 58px;
+  }
+  .po-front .rarity-label {
+    font-size: 8px;
+    letter-spacing: 0.7px;
+  }
+  .po-front .rarity-label > span:last-child {
+    font-size: 6px;
+  }
+  .po-front .card footer {
+    font-size: 7px;
+  }
+  .po-front .card-flavor {
+    min-height: 43px;
+    font-size: 10px;
+  }
+  .po-stack-stage {
+    min-height: calc(var(--po-card-width) * 1.67 + 16px);
+    margin-top: 12px;
+  }
+  .po-reveal-aura {
+    width: 370px;
+    height: 370px;
+  }
+  .po-card-caption {
+    margin-top: 10px;
+    min-height: 38px;
+  }
+  .po-card-caption strong {
+    font-size: 12px;
+  }
+  .po-swipe-hint {
+    font-size: 20px;
+  }
+  .po-text-button {
+    font-size: 10px;
+    margin-top: 0;
+    padding: 6px 12px;
+  }
+  .po-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 23px 12px;
+    padding-top: 5px;
+  }
+  .po-summary-grid .card {
+    padding: 8px;
+  }
+  .po-summary-grid .card-name {
+    font-size: 11px;
+  }
+  .po-summary-grid .card-art {
+    aspect-ratio: 1;
+  }
+  .po-summary-grid .card-ability {
+    min-height: 78px;
+  }
+  .po-summary-grid .card-flavor {
+    min-height: 60px;
+    font-size: 8px;
+  }
+  .po-summary-grid .card footer {
+    font-size: 6px;
+  }
+  .po-summary-grid .card-ability p {
+    font-size: 8px;
+  }
+  .po-summary-grid .card-ability h3 {
+    font-size: 9px;
+  }
+  .po-summary-item:last-child {
+    grid-column: 1/-1;
+    width: calc(50% - 6px);
+    justify-self: center;
+  }
+  .po-summary-grid .po-new {
+    font-size: 6px;
+    padding: 4px 6px;
+    top: -10px;
+    left: 8px;
+  }
+  .po-summary-caption {
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
+}
+@media (max-height: 720px) and (min-width: 581px) {
+  .po-header {
+    height: 50px;
+  }
+  .po-layout {
+    padding-top: 0;
+  }
+  .po-carousel {
+    height: 340px;
+    margin-top: 0;
+  }
+  .po-carousel-pack {
+    top: 30px;
+  }
+  .po-pack-stage {
+    height: 370px;
+  }
+  .po-cut-pack {
+    scale: 0.86;
+  }
+  .po-title {
+    margin-bottom: 5px;
+  }
+  .po-controls {
+    margin-top: 8px;
+  }
+  .po-stack-stage {
+    margin-top: 0;
+  }
+  .po-card-caption {
+    margin-top: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pocket-opening * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .po-atmosphere,
+  .po-stardust,
+  .po-opening-light {
+    display: none;
+  }
+  .po-tearing .po-cut-strip {
+    visibility: hidden;
+  }
+  .po-front-visible {
+    opacity: 1;
+  }
+  .po-leaving .po-stack-motion {
+    opacity: 0;
+  }
+  .po-dragging .po-stack-motion {
+    transform: translate(var(--drag-x, 0px), var(--drag-y, 0px));
+  }
+}
+
+.po-cut-line {
+  transform: scaleX(var(--cut-direction, 1));
+}
+.po-stardust {
+  overflow: hidden;
+}
+/* On a phone the result is a complete five-card spread, not a long scrolling list. */
+@media (max-width: 580px) {
+  .po-summary-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 24px 10px;
+    max-width: 430px;
+  }
+  .po-summary-item {
+    grid-column: span 2;
+    min-width: 0;
+  }
+  .po-summary-item:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+  .po-summary-item:last-child {
+    grid-column: 4 / span 2;
+    width: auto;
+    justify-self: stretch;
+  }
+  .po-summary-grid .card {
+    padding: 6px;
+    border-radius: 7px;
+    border-width: 1px;
+    pointer-events: none;
+  }
+  .po-summary-grid .card-name {
+    font-size: 8px;
+    min-height: 18px;
+    letter-spacing: -0.2px;
+  }
+  .po-summary-grid .type-gem {
+    width: 11px;
+    height: 11px;
+    font-size: 9px;
+  }
+  .po-summary-grid .card-taxonomy {
+    padding: 3px 0 4px;
+  }
+  .po-summary-grid .card-taxonomy > span,
+  .po-summary-grid .card-taxonomy small {
+    font-size: 5px;
+    letter-spacing: 0;
+  }
+  .po-summary-grid .card-art {
+    aspect-ratio: 1.1;
+    border-radius: 2px 2px 7px 2px;
+  }
+  .po-summary-grid .rarity-label {
+    font-size: 5px;
+    letter-spacing: 0;
+    padding: 4px 0;
+  }
+  .po-summary-grid .rarity-label > span:last-child {
+    font-size: 3px;
+  }
+  .po-summary-grid .card-ability {
+    min-height: 33px;
+    gap: 3px;
+    padding: 6px 0 2px;
+  }
+  .po-summary-grid .ability-sigil {
+    min-width: 10px;
+    height: 10px;
+    font-size: 9px;
+  }
+  .po-summary-grid .card-ability h3 {
+    font-size: 6px;
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+  .po-summary-grid .card-ability p {
+    font-size: 5.5px;
+    line-height: 1.3;
+  }
+  .po-summary-grid .card-flavor {
+    min-height: 30px;
+    font-size: 6px;
+    padding: 3px 0 5px;
+    line-height: 1.25;
+  }
+  .po-summary-grid .card footer {
+    font-size: 4px;
+    padding-top: 5px;
+    gap: 1px;
+  }
+  .po-summary-grid .po-new {
+    font-size: 5px;
+    letter-spacing: 0.4px;
+    left: 5px;
+    padding: 3px 5px;
+    top: -8px;
+  }
+  .po-summary-grid + .po-controls {
+    margin-top: 24px;
+  }
+}
+@media (max-width: 580px) {
+  .po-summary-grid .card > p.card-flavor {
+    font-size: 5.5px;
+    min-height: 28px;
+    line-height: 1.2;
+    padding: 4px 0 5px;
+  }
+}
