@@ -25,6 +25,8 @@ import {
 } from "../lib/game";
 import { rechargeFreePacks, freePackRemaining } from "../lib/booster-economy";
 import BoosterShop from "./game/BoosterShop";
+import ProgressionView from "./game/ProgressionView";
+import { ACHIEVEMENTS, achievementReady, completedLineages, explorationLevel, freePackCount, claimAchievement, buyDeckSlot, selectTitle, toggleFastOpening, recordClick, recordTick, TITLES } from "../lib/exploration";
 import Sprite from "./Sprite";
 import Machine from "./Machine";
 import BoosterPack from "./BoosterPack";
@@ -52,6 +54,9 @@ export default function Game() {
   >([]);
   const serial = useRef(0);
   const latest = useRef(save);
+  const progressBaseline = useRef<{level:number;ready:Set<string>;species:number;lineages:number}|null>(null);
+  const queuedFeedback = useRef<string[]>([]);
+
 
   useEffect(() => {
     try {
@@ -60,9 +65,9 @@ export default function Game() {
         const migrated = parseSave(raw);
         setSave(migrated);
         const previousVersion=JSON.parse(raw).version;
-        if (previousVersion<4) {
-          localStorage.setItem(previousVersion===1 ? `${KEY}-backup` : `${KEY}-backup-v${previousVersion}`, raw);
-          setNotice(`Sauvegarde migrée en v4. Niveaux de carte et copies conservés. Progression et booster en cours conservés ; copie v${previousVersion} gardée.`);
+        if (previousVersion<4 || !JSON.parse(raw).account) {
+          localStorage.setItem(previousVersion===1 ? `${KEY}-backup` : previousVersion===4 ? `${KEY}-backup-v4-before-phase7` : `${KEY}-backup-v${previousVersion}`, raw);
+          setNotice(`Sauvegarde migrée en v4. Progression d’exploration ajoutée. Niveaux de carte et copies conservés. Progression et booster en cours conservés ; copie v${previousVersion} gardée.`);
         }
       }
     } catch {
@@ -99,6 +104,9 @@ export default function Game() {
   useEffect(() => {
     if (!ready) return;
     let last = performance.now();
+    const resetClock = () => { last = performance.now(); };
+    window.addEventListener("focus",resetClock);
+    document.addEventListener("visibilitychange",resetClock);
     const t = setInterval(() => {
       const now = performance.now();
       const epoch = Date.now();
@@ -110,10 +118,10 @@ export default function Game() {
       setSave((s) => {
         const current=rechargeFreePacks(s,epoch);
         const passive = stats(current).auto;
-        return passive ? { ...current, energy: current.energy + passive * elapsed } : current;
+        return recordTick(current,elapsed,passive,document.visibilityState === "visible" && document.hasFocus());
       });
     }, 200);
-    return () => clearInterval(t);
+    return () => { clearInterval(t);window.removeEventListener("focus",resetClock);document.removeEventListener("visibilitychange",resetClock); };
   }, [ready]);
   useEffect(() => {
     if(!ready)return;
@@ -130,6 +138,23 @@ export default function Game() {
     return () => clearInterval(t);
   }, []);
   const opening = save.pending.length > 0;
+  useEffect(() => {
+    if(!ready)return;
+    const state=latest.current;
+    const snapshot={level:explorationLevel(state.account.xp),ready:new Set(ACHIEVEMENTS.filter(a=>achievementReady(state,a)).map(a=>a.id)),species:Object.keys(state.owned).length,lineages:completedLineages(state)};
+    const before=progressBaseline.current;
+    if(before){
+      if(snapshot.level>before.level)queuedFeedback.current.push(`Exploration niveau ${snapshot.level} · de nouveaux horizons vous attendent.`);
+      const newlyReady=[...snapshot.ready].filter(id=>!before.ready.has(id));
+      if(snapshot.species===60&&before.species<60)queuedFeedback.current.push('60/60 · Faerie est complète ! Récompense et titre Gardien du Portail dans les objectifs.');
+      else if(snapshot.lineages>before.lineages)queuedFeedback.current.push(`Lignée complétée · ${snapshot.lineages} / 20. Votre badge et votre récompense vous attendent.`);
+      else if(newlyReady.length)queuedFeedback.current.push('Objectifs accomplis · récompenses à réclamer dans Progression.');
+    }
+    progressBaseline.current=snapshot;
+    if(!opening&&queuedFeedback.current.length){setNotice([...new Set(queuedFeedback.current)].slice(-3).join(' '));queuedFeedback.current=[];}
+  },[ready,opening,save.account.xp,save.owned,save.level,save.cardLevels,save.packs,save.account.claimed,save.account.totals.maxCombo,save.account.totals.criticalClicks,Math.floor(save.account.totals.generatedEnergy/10000)]);
+  function claim(id:string) { setSave(s=>claimAchievement(s,id)); }
+
   const power = stats(save);
   const discovered = Object.keys(save.owned).length;
   function click(e: React.MouseEvent<HTMLButtonElement>) {
@@ -141,7 +166,7 @@ export default function Game() {
     const critical = Math.random() < currentPower.crit;
     const gain = currentPower.click * comboFactor(nextCombo.charge, currentPower.comboBonus) * (critical ? currentPower.critMultiplier : 1);
     const box = e.currentTarget.getBoundingClientRect();
-    setSave((s) => ({ ...s, energy: s.energy + gain, clicks: s.clicks + 1 }));
+    setSave((s) => recordClick(s,gain,critical,nextCombo.charge));
     setSparks((s) => [
       ...s.slice(-18),
       {
@@ -173,7 +198,7 @@ export default function Game() {
     });
   }
   const available=rechargeFreePacks(save,wallTime || Date.now());
-  const nextSource:PackSource|null=available.freeBoosters>0?"free":available.energy>=price(available)?"paid":null;
+  const nextSource:PackSource|null=freePackCount(available)>0?"free":available.energy>=price(available)?"paid":null;
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -191,6 +216,7 @@ export default function Game() {
             ["machine", "◈", "La machine"],
             ["collection", "▦", "Collection"],
             ["deck", "▤", "Mon deck"],
+            ["progression", "✧", "Progression"],
           ].map(([id, icon, label]) => (
             <button
               key={id}
@@ -216,7 +242,7 @@ export default function Game() {
           </div>
           <Link href="/dev">⌘ Atelier des sprites ↗</Link>
           <Link className="playtest-reset-link" href="/dev#playtest-reset">↺ Réinitialiser la sauvegarde · test</Link>
-          <small>PROGRESSION · v0.3</small>
+          <small>EXPLORATION · niv. {explorationLevel(save.account.xp)}</small>
         </div>
       </aside>
       <main>
@@ -229,7 +255,7 @@ export default function Game() {
                 ? "Portail interdimensionnel"
                 : tab === "deck"
                   ? "Compagnons actifs"
-                  : "Classeur de créatures"}
+                  : tab === "progression" ? "Votre voyage" : "Classeur de créatures"}
             </span>
           </span>
           <span className="save-status">
@@ -250,7 +276,7 @@ export default function Game() {
                   ? "Un passage vers l’inconnu."
                   : tab === "deck"
                     ? "De petites créatures. De grands pouvoirs."
-                    : "Votre petit monde prend vie."}
+                    : tab === "progression" ? "Chaque rencontre ouvre un chemin." : "Votre petit monde prend vie."}
               </h1>
               <p>
                 {tab === "machine"
@@ -265,8 +291,9 @@ export default function Game() {
               </span>
             </span>
           </div>
+          <div className="exploration-strip"><button onClick={()=>setTab("progression")}>✧ Exploration niv. {explorationLevel(save.account.xp)} · {TITLES.find(t=>t.id===save.account.activeTitle)?.name}</button></div>
           {notice && (
-            <div className="notice" role="status">
+            <div className={`notice ${notice.includes("60/60")?"completion-notice":""}`} role="status">
               {notice}
               <button
                 onClick={() => setNotice("")}
@@ -448,10 +475,12 @@ export default function Game() {
                 </div>
               </section>
             </>
+          ) : tab === "progression" ? (
+            <ProgressionView save={save} onClaim={claim} onSlot={()=>setSave(buyDeckSlot)} onTitle={id=>setSave(s=>selectTitle(s,id))} onFast={()=>setSave(toggleFastOpening)}/>
           ) : tab === "deck" ? (
             <DeckView save={save} onEquip={toggle} />
           ) : (
-            <CollectionView save={save} onEquip={toggle} onUpgrade={id => setSave(s => upgradeCard(s, id))} />
+            <CollectionView save={save} onEquip={toggle} onUpgrade={id => setSave(s => upgradeCard(s, id))} onClaim={claim} />
           )}
           <Link className="mobile-dev-link" href="/dev">
             ⌘ Atelier des sprites ↗
@@ -471,8 +500,9 @@ export default function Game() {
         <BoosterOpening
           key={save.packs}
           save={save}
+          fast={save.account.fastOpening && explorationLevel(save.account.xp)>=12}
           onReveal={() => setSave(reveal)}
-          economy={{freeBoosters:available.freeBoosters,capacity:available.freeBoosterCapacity,price:price(available),nextSource}}
+          economy={{freeBoosters:available.freeBoosters,rewardBoosters:available.account.rewardBoosters,capacity:available.freeBoosterCapacity,price:price(available),nextSource}}
           onNext={source=>startPack(source,true)}
           onClose={destination => {
             setSave(finishPack);

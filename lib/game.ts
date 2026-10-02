@@ -2,16 +2,18 @@ import { initialFreePacks, rechargeFreePacks, progressivePackPrice, storageCost,
 import { byId, CARDS } from "./cards";
 import { resolveEffects } from "./effects";
 import { cardLevel, cardUpgradeCost, initialUpgrades, leveledEffect, UPGRADES, upgradeCost, upgradeEffects, UpgradeId, UpgradeLevels } from "./progression";
-import { synergies } from "./synergies";
+import { synergies, advancedSynergies } from "./synergies";
+import { initialAccount, parseAccount, explorationLevel, freePackCount, XP, type Account } from "./exploration";
 export type PackSource = "free" | "paid";
 export type Save = FreePackState & {
+  account: Account;
   version: 4; energy: number; owned: Record<string, number>; cardLevels: Record<string, number>; deck: string[];
   level: number; clicks: number; packs: number; pending: string[]; revealed: number;
   upgrades: UpgradeLevels; extraDeckSlots: number;
   paidBoostersPurchased: number; pendingSource: PackSource | null;
 };
 export const initialSave = (now = Date.now()): Save => ({
-  version: 4, energy: 0, owned: {}, cardLevels: {}, deck: [], level: 0, clicks: 0, packs: 0,
+  account: initialAccount(), version: 4, energy: 0, owned: {}, cardLevels: {}, deck: [], level: 0, clicks: 0, packs: 0,
   pending: [], revealed: 0, upgrades: initialUpgrades(), extraDeckSlots: 0,
   ...initialFreePacks(now), paidBoostersPurchased: 0, pendingSource: null,
 });
@@ -23,12 +25,14 @@ export function upgradeCard(s: Save, id: string): Save {
   const level = savedCardLevel(s, id), cost = cardUpgradeCost(level);
   if (cost === null || s.owned[id] - 1 < cost) return s;
   return { ...s, owned: { ...s.owned, [id]: s.owned[id] - cost },
-    cardLevels: { ...s.cardLevels, [id]: level + 1 } };
+    cardLevels: { ...s.cardLevels, [id]: level + 1 },
+    account: { ...s.account, xp: s.account.xp + XP.cardLevel * (level + 1) } };
 }
 export function deckEffects(s: Save) {
   return resolveEffects([
     ...s.deck.map(id => leveledEffect(byId(id).effect, savedCardLevel(s, id))),
     ...synergies(s.deck).filter(x => x.active).map(x => x.effect),
+    ...advancedSynergies(s.deck, explorationLevel(s.account.xp)).filter(x => x.active).map(x => x.effect),
   ]);
 }
 export function stats(s: Save) {
@@ -51,7 +55,7 @@ export function buyUpgrade(s: Save, id: UpgradeId): Save {
   const u = UPGRADES.find(u => u.id === id)!;
   const cost = upgradeCost(id, s.upgrades);
   if (s.energy < cost || s.upgrades[id] >= u.max) return s;
-  return { ...s, energy: s.energy - cost, level: s.level + (id === "click" ? 1 : 0), upgrades: { ...s.upgrades, [id]: s.upgrades[id] + 1 } };
+  return { ...s, energy: s.energy - cost, level: s.level + (id === "click" ? 1 : 0), upgrades: { ...s.upgrades, [id]: s.upgrades[id] + 1 }, account: { ...s.account, xp: s.account.xp + XP.upgrade } };
 }
 export const RARITY_WEIGHTS = [50, 27, 14, 6, 2.5, 0.5];
 export function rarityProbabilities(rareChance = 0, guaranteed = false): number[] {
@@ -73,12 +77,14 @@ export function buyPack(s: Save, cards: string[], now = Date.now()): Save {
 export function openPack(s: Save, cards: string[], source: PackSource, now = Date.now()): Save {
   if (s.pending.length || cards.length !== 5 || cards.some(id => !byId(id))) return s;
   const current = rechargeFreePacks(s, now);
-  if (source === "free" ? current.freeBoosters < 1 : current.energy < price(current)) return s;
+  if (source === "free" ? freePackCount(current) < 1 : current.energy < price(current)) return s;
   const full = current.freeBoosters === current.freeBoosterCapacity;
+  const useReward = source === "free" && current.account.rewardBoosters > 0;
   return {...current,energy:current.energy-(source === "paid" ? price(current) : 0),
-    freeBoosters:current.freeBoosters-(source === "free" ? 1 : 0),
-    freeBoosterTimerStartedAt:source === "free" && full ? now : current.freeBoosterTimerStartedAt,
+    freeBoosters:current.freeBoosters-(source === "free" && !useReward ? 1 : 0),
+    freeBoosterTimerStartedAt:source === "free" && !useReward && full ? now : current.freeBoosterTimerStartedAt,
     paidBoostersPurchased:current.paidBoostersPurchased+(source === "paid" ? 1 : 0),
+    account:{...current.account,xp:current.account.xp+XP.booster,rewardBoosters:current.account.rewardBoosters-(useReward?1:0),totals:{...current.account.totals,freeOpened:current.account.totals.freeOpened+(source==="free"?1:0)}},
     packs:current.packs+1,pending:[...cards],revealed:0,pendingSource:source};
 }
 export function finishPack(s: Save): Save {
@@ -99,7 +105,11 @@ export function buyStorage(s: Save, now = Date.now()): Save {
 export function reveal(s: Save): Save {
   if (s.revealed >= s.pending.length) return s;
   const id = s.pending[s.revealed];
-  return { ...s, revealed: s.revealed + 1, energy: s.energy + (s.owned[id] ? stats(s).duplicateBonus : 0), owned: { ...s.owned, [id]: (s.owned[id] || 0) + 1 } };
+  const duplicate = !!s.owned[id];
+  return { ...s, revealed: s.revealed + 1, energy: s.energy + (duplicate ? stats(s).duplicateBonus : 0), owned: { ...s.owned, [id]: (s.owned[id] || 0) + 1 },
+    account: { ...s.account, xp: s.account.xp + (duplicate ? 0 : XP.discovery) + (byId(id).rarity >= 2 ? XP.rare : 0),
+      totals: { ...s.account.totals, cardsObtained:s.account.totals.cardsObtained+1, duplicatesObtained:s.account.totals.duplicatesObtained+(duplicate?1:0) } } };
+
 }
 export function equipBlockedReason(s: Save, id: string): string | null {
   if (s.deck.includes(id)) return null;
@@ -137,7 +147,7 @@ export function parseSave(raw: string, now = Date.now()): Save {
       upgrades[u.id] = value;
     }
   }
-  const migrated: Save = { version: 4, cardLevels: {}, energy: s.energy, level: s.level, clicks: s.clicks, packs: s.packs, pending: [...pending], revealed: s.revealed, owned, deck: [], upgrades, extraDeckSlots: s.version === 1 ? 0 : s.extraDeckSlots, ...initialFreePacks(now), paidBoostersPurchased: Math.floor(s.packs), pendingSource:pending.length?"paid":null };
+  const migrated: Save = { account:initialAccount(), version: 4, cardLevels: {}, energy: s.energy, level: s.level, clicks: s.clicks, packs: s.packs, pending: [...pending], revealed: s.revealed, owned, deck: [], upgrades, extraDeckSlots: s.version === 1 ? 0 : s.extraDeckSlots, ...initialFreePacks(now), paidBoostersPurchased: Math.floor(s.packs), pendingSource:pending.length?"paid":null };
   if (s.version >= 3) {
     const capacity=s.freeBoosterCapacity,count=s.freeBoosters,timer=s.freeBoosterTimerStartedAt;
     if (!Number.isInteger(capacity)||capacity<2||capacity>10||!Number.isInteger(count)||count<0||count>capacity
@@ -158,5 +168,6 @@ export function parseSave(raw: string, now = Date.now()): Save {
   }
   // Keep already-equipped v1 evolutions: prerequisites apply to future equipment.
   migrated.deck = [...new Set<string>(s.deck.filter((id: unknown) => typeof id === "string" && owned[id]))].slice(0, deckCapacity(migrated));
+  migrated.account = parseAccount(s.version===4?s.account:undefined,migrated);
   return rechargeFreePacks(migrated,now);
 }

@@ -435,3 +435,10 @@ Les mesures de simulation Phase 6 ci-dessus sont historiques (base de clic 5) ; 
 ### Illustrations de prestige archivées
 
 À la demande du joueur, les six illustrations peintes et leur habillage sont conservés dans `design/archive/2026-10-02-prestige-art/` pour plus tard. Le rendu actif revient aux sprites et habitats en pixels, avec les cadres et titres de capacités précédents. Les améliorations de progression restent actives.
+
+
+## Phase 7 — Objectifs, progression et déblocages
+
+Spécification de l’implémentation dans `design/phase7-progression.md`. Courbe : 100 + 50 × (niveau − 1) XP par niveau ; niveau global indépendant. Activités : booster 20 XP, découverte 25, Rare+ 8, achat d’amélioration 5, niveau de carte N : 15 × N. Pas d’XP par clic seul. 42 objectifs déclaratifs, dont 20 lignées ; récompenses uniques en énergie, XP et boosters dans une réserve séparée. Milestones 10/25/40/50/60 ; à 60/60, 10 000 éclats + 2 000 XP + 5 boosters, animation et titre Gardien du Portail.
+
+Déblocages : 3 triples de type (+3 % énergie), 5 objectifs experts, 8 slot 7 (5 000), 12 ouverture rapide, 15 slot 8 (25 000), 20 maîtrise du set. Les paires de type et les coûts actuels des boosters et du stockage sont conservés. Temps actif uniquement visible et avec focus ; compteurs de cartes obtenues persistants malgré consommation des doublons. V4 étendue avec compte au format 1, compatible versions précédentes et v4 de cartes manuelles. Aucun nouvel asset.

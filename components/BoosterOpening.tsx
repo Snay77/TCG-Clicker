@@ -2,12 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, PointerEvent } from "react";
 import { byId, RARITIES } from "../lib/cards";
-import { atmosphere, REVEAL_TIMINGS } from "../lib/visuals";
+import { atmosphere } from "../lib/visuals";
 import { packSound } from "../lib/pack-audio";
 import Card from "./Card";
 import BoosterPack from "./BoosterPack";
 import type { Save, PackSource } from "../lib/game";
 import { savedCardLevel } from "../lib/game";
+import { openingDelay } from "../lib/exploration";
 
 type Stage =
   | "choose"
@@ -33,12 +34,14 @@ export default function BoosterOpening({
   onClose,
   onNext,
   economy,
+  fast = false,
 }: {
   save: Save;
+  fast?: boolean;
   onReveal: () => void;
   onClose: (destination?: "machine" | "collection") => void;
   onNext?: (source: PackSource) => void;
-  economy?: {freeBoosters:number;capacity:number;price:number;nextSource:PackSource|null};
+  economy?: {freeBoosters:number;rewardBoosters?:number;capacity:number;price:number;nextSource:PackSource|null};
 }) {
   const [stage, setStage] = useState<Stage>(
     save.revealed === 5 ? "summary" : save.revealed > 0 ? "suspense" : "choose",
@@ -68,6 +71,7 @@ export default function BoosterOpening({
   const creature = byId(save.pending[index]);
   const nextCreature = index < 4 ? byId(save.pending[index + 1]) : null;
   const tier = creature.rarity;
+  const packFast = fast && !save.pending.some(id => byId(id).rarity === 5);
   const isNew = (id: string, i: number) =>
     !originalOwned[id] && save.pending.indexOf(id) === i;
   function play(kind: "cut" | "swipe" | "rare") {
@@ -105,9 +109,9 @@ export default function BoosterOpening({
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (stage === "tearing")
-      timer = setTimeout(() => setStage("lifting"), reduced ? 50 : 620);
+      timer = setTimeout(() => setStage("lifting"), openingDelay(packFast ? 0 : 5,packFast,"tear",reduced));
     if (stage === "lifting")
-      timer = setTimeout(() => setStage("suspense"), reduced ? 50 : 700);
+      timer = setTimeout(() => setStage("suspense"), reduced ? 50 : packFast ? 200 : 700);
     if (stage === "suspense")
       timer = setTimeout(
         () => {
@@ -123,14 +127,17 @@ export default function BoosterOpening({
           }
           setStage("view");
         },
-        reduced ? 50 : Math.max(100, REVEAL_TIMINGS[tier] * 0.65),
+        openingDelay(tier,fast,"suspense",reduced),
       );
     if (stage === "leaving")
       timer = setTimeout(
         () => {
           exiting.current = false;
           if (index === 4) setStage("summary");
-          else {
+          else if (fast) {
+            setIndex(i => i + 1);
+            setStage("suspense");
+          } else {
             // The next face is already visible beneath the departing card.
             if (credited.current < index + 1) {
               credited.current = index + 1;
@@ -147,10 +154,10 @@ export default function BoosterOpening({
             setStage("view");
           }
         },
-        reduced ? 40 : 260,
+        openingDelay(tier,fast,"leave",reduced),
       );
     return () => clearTimeout(timer);
-  }, [stage, index, tier, reduced, nextCreature]);
+  }, [stage, index, tier, reduced, nextCreature, fast, packFast]);
   async function toggleSound() {
     if (enabled.current) {
       enabled.current = false;
@@ -326,7 +333,7 @@ export default function BoosterOpening({
       </div>
       <header className="po-header">
         <span className="po-brand">
-          ✧ FAERIE <small>{economy ? `${save.pendingSource === "free" ? "BOOSTER GRATUIT" : "BOOSTER ACHETÉ"} · ${economy.freeBoosters} / ${economy.capacity} disponibles` : "LES MURMURES DE LA FORÊT"}</small>
+          ✧ FAERIE <small>{economy ? `${save.pendingSource === "free" ? "BOOSTER GRATUIT" : "BOOSTER ACHETÉ"} · ${economy.freeBoosters} / ${economy.capacity} disponibles${economy.rewardBoosters ? ` · +${economy.rewardBoosters} récompenses` : ""}` : "LES MURMURES DE LA FORÊT"}{fast ? " · MODE RAPIDE" : ""}</small>
         </span>
         <button
           className="po-sound"
@@ -606,6 +613,7 @@ export default function BoosterOpening({
             <div className="po-controls">
               {economy ? <>
                 <p>{economy.freeBoosters} / {economy.capacity} boosters gratuits disponibles</p>
+                {!!economy.rewardBoosters && <p>+{economy.rewardBoosters} booster(s) de récompense · hors stockage</p>}
                 {economy.nextSource && onNext && <button className="po-primary" data-opening-focus onClick={()=>onNext(economy.nextSource!)}>{economy.nextSource==="free"?"Ouvrir le booster suivant":`Acheter et ouvrir un autre · ${economy.price.toLocaleString("fr-FR")} ✦`}</button>}
                 <div className="po-summary-actions"><button className="po-secondary" data-opening-focus={!economy.nextSource?"":undefined} onClick={()=>callbacks.current.onClose("machine")}>Retour à la machine</button><button className="po-secondary" onClick={()=>callbacks.current.onClose("collection")}>Voir ma collection</button></div>
               </> : <button className="po-primary" data-opening-focus onClick={()=>callbacks.current.onClose()}>Continuer</button>}

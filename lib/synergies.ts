@@ -19,3 +19,10 @@ export const BUILD_ARCHETYPES = [
  {name:"Idle",ids:ids(10,11,12,19,20,21),description:"Chœur mycélien et bassin de rosée : production passive."},
  {name:"Collection",ids:ids(10,15,31,32,59,60),description:"Mycète et Astral : boosters, rencontres rares et doublons."},
 ];
+
+// Basic pairs remain available from the start. Triples add a modest exploration reward.
+export function advancedSynergies(deck:string[],level:number) {
+ return SYNERGIES.map(s=>{const count=[...new Set(deck)].filter(id=>byId(id)?.type===s.type).length;
+  return {type:s.type,required:3,count,unlocked:level>=3,active:level>=3&&count>=3,effect:{energyMultiplier:.03}};
+ });
+}

@@ -164,3 +164,20 @@ Le réglage reste préparatoire : les bots optimisés découvrent environ 57–5
 Les six illustrations sont archivées hors de `public/` dans `design/archive/2026-10-02-prestige-art/illustrations/`. Les empreintes SHA256 avant/après déplacement sont identiques. Composant et styles de prestige archivés pour référence, imports actifs et galerie peinte retirés, titres de capacités antérieurs restaurés.
 
 Vérification TypeScript et compilation de production réussies. Navigateur Edge, 1440 et 390 px : les six cartes prestigieuses utilisent à nouveau les sprites et habitats du roster, avec les cadres antérieurs ; aucun rendu ni requête d’illustration peinte, aucun débordement horizontal ou erreur JavaScript. L’ancienne URL publique d’une illustration retourne 404. Les changements de progression ne sont pas concernés par ce retour visuel.
+
+
+## Phase 7 — Progression long terme — 2 octobre 2026
+
+- `npm test` : 64 tests passent, dont 11 tests couvrant les règles Phase 7.
+- `npm run typecheck` et `npm run build` : réussis.
+- Edge / Playwright, contextes isolés : départ à 1 point/clic, aucun XP par clic ; seuils de niveaux et fonctionnalités verrouillées ; migration v1/v2/v3 et v4 antérieure, copie brute de secours, deck/énergie/cartes/ouverture/timers conservés, XP non répété au rechargement.
+- Achats slots 7 puis 8 : débits 5 000 et 25 000, capacité sauvegardée ; préférence rapide conservée après rechargement.
+- 60/60 : récompense unique 10 000 éclats, 2 000 XP et cinq boosters hors stockage ; réserve rechargeable pleine préservée ; titre Gardien du Portail sélectionnable ; récompense de lignée et badge persistants.
+- Booster de récompense en mode rapide : aucune énergie débitée, réserve consommée une fois, cinq cartes attribuées exactement et statistiques cumulées.
+- Ouverture interrompue après deux cartes : reprise jusqu’à cinq, sans nouvelle attribution des deux premières ni double XP.
+- Mythique en mode rapide sans mouvement réduit : découpe + levée + suspense normaux, durée constatée supérieure à 2,9 secondes ; feedback 60/60 absent pendant l’ouverture et visible après fermeture.
+- Simulation de visibilité cachée dans le navigateur : temps actif arrêté, reprise sans rattrapage de la période cachée. La gestion réelle des onglets cachés n’est pas reproduite par le navigateur headless utilisé ; cette branche est également testée dans le moteur avec `visible=false`.
+- Collection et trois onglets Progression : contrôle mobile 390×844 et desktop 1440×1050, sans débordement horizontal. Images et cadres antérieurs conservés. Aucun appel à un asset de prestige peint ni aucune nouvelle génération d’image.
+- Aucune erreur console ou JavaScript sur les parcours vérifiés. Captures : `test-results/phase7-level.png`, `phase7-mobile.png`, `phase7-completion.png`.
+
+Courbe, 42 objectifs, 20 lignées, récompenses, statistiques et migration : `design/phase7-progression.md` (généré depuis les données avec `npx tsx scripts/document-phase7.ts`).

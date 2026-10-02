@@ -1,27 +1,18 @@
 import { useState } from "react";
 import { RARITIES } from "../../lib/cards";
 import { TYPES } from "../../lib/content/model";
-import { CARDS, byId } from "../../lib/cards";
+import { CARDS } from "../../lib/cards";
 import { deckCapacity, equipBlockedReason, savedCardLevel, Save } from "../../lib/game";
 import { cardUpgradeCost } from "../../lib/progression";
 import Card from "../Card";
-import Sprite from "../Sprite";
-export default function CollectionView({ save, onEquip, onUpgrade }: { save: Save; onEquip: (id: string) => void; onUpgrade: (id: string) => void }) {
+import { CollectionSummary, LineageGoals } from "./ProgressionView";
+export default function CollectionView({ save, onEquip, onUpgrade, onClaim }: { save: Save; onEquip: (id: string) => void; onUpgrade: (id: string) => void; onClaim: (id: string) => void }) {
   const [search,setSearch]=useState(""),[type,setType]=useState(""),[rarity,setRarity]=useState(""),[discovery,setDiscovery]=useState("");
   const filtered=CARDS.filter(c=>(!search || (save.owned[c.id] ? c.name : "À découvrir").toLocaleLowerCase("fr").includes(search.toLocaleLowerCase("fr")))&&(!type||c.type===type)&&(!rarity||c.rarity===Number(rarity))&&(!discovery||(discovery==="owned"?!!save.owned[c.id]:!save.owned[c.id])));
-  const roots = CARDS.filter(c => !c.evolvesFrom && c.evolvesTo);
   return <>
     <div className="section-title"><div><h2>Classeur Faerie</h2><p>{Object.keys(save.owned).length} / {CARDS.length} espèces découvertes · 20 lignées et 8 uniques.</p></div></div>
-    <details className="collection-lineages"><summary>Voir les 20 lignées d’évolution</summary><section className="lineages" aria-label="Lignées d’évolution">
-      {roots.map(root => {
-        const lineage = [root];
-        while (lineage.at(-1)!.evolvesTo) lineage.push(byId(lineage.at(-1)!.evolvesTo!));
-        return <div className="lineage" key={root.id}>{lineage.map((c, i) => <div className="lineage-stage" key={c.id}>
-          {i > 0 && <span aria-hidden="true">→</span>}
-          <div><Sprite creature={c} silhouette={!save.owned[c.id]} /><strong>{save.owned[c.id] ? c.name : "???"}</strong><small>{c.stage}</small></div>
-        </div>)}</div>;
-      })}
-    </section></details>
+    <CollectionSummary save={save}/>
+    <details className="collection-lineages"><summary>Voir les 20 lignées d’évolution et leurs récompenses</summary><LineageGoals save={save} onClaim={onClaim}/></details>
     <p className="progression-hint">Les formes restent indépendantes. Découvrez la forme précédente pour équiper une évolution. Améliorer une carte consomme 2, puis 3, 4 et 5 doublons de cette même carte. Une copie reste toujours conservée ; le niveau acquis est permanent.</p>
     <div className="collection-filters">
       <label>Recherche<input type="search" value={search} onChange={e=>setSearch(e.target.value)}/></label>

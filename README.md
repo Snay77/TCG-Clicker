@@ -232,3 +232,10 @@ Fichiers principaux de Phase 6 : `lib/booster-economy.ts`, `lib/game.ts`, `lib/s
 Les illustrations peintes des six cartes de prestige sont mises de côté dans `design/archive/2026-10-02-prestige-art/`. Le jeu utilise à nouveau ses illustrations en pixels et ses cadres précédents.
 
 Sauvegarde actuelle v4 : `cardLevels` conserve les niveaux permanents séparément du stock de copies. Les anciennes sauvegardes gardent leurs niveaux acquis et leurs copies, avec une copie brute de secours avant migration. Les résultats de simulation Phase 6 ci-dessus datent de la base de clic 5 et doivent être relus comme historiques.
+
+
+## Phase 7 — Progression long terme
+
+Une vue **Progression** regroupe Niveau, Objectifs et Statistiques. Niveau d’exploration indépendant, 42 objectifs dont 20 lignées, milestones 10/25/40/50/60 espèces, titres cosmétiques et récompenses uniques. Les boosters gagnés disposent d’une réserve hors du stockage rechargeable. Slots de deck 7/8 : niveaux 8/15 et achats de 5 000/25 000 éclats. Ouverture rapide optionnelle au niveau 12, animation mythique conservée. Le temps actif exclut les périodes sans visibilité ou focus.
+
+La v4 est étendue avec `account` au format 1 ; les sauvegardes v1–v4 antérieures sont migrées avec copie brute de secours. Les statistiques historiques impossibles à reconstruire sont signalées comme estimées. Style en pixels conservé. Courbe d’XP, objectifs, récompenses, statistiques et migrations : [bilan Phase 7](design/phase7-progression.md).

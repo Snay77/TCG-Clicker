@@ -3,8 +3,9 @@ import { CARDS, byId } from "../../lib/cards";
 import { changeDeck, deckCapacity, deckEffects, equipBlockedReason, Save, stats, savedCardLevel } from "../../lib/game";
 import { describeEffect } from "../../lib/effects";
 import { leveledEffect } from "../../lib/progression";
-import { BUILD_ARCHETYPES, synergies } from "../../lib/synergies";
+import { BUILD_ARCHETYPES, synergies, advancedSynergies } from "../../lib/synergies";
 import Sprite from "../Sprite";
+import { explorationLevel } from "../../lib/exploration";
 export function statImpact(before: ReturnType<typeof stats>, after: ReturnType<typeof stats>): string {
   const delta = (n: number) => `${n >= 0 ? "+" : ""}${Number(n.toFixed(2))}`;
   return `${delta(after.click - before.click)} / clic · ${delta(after.auto - before.auto)} / sec · ${delta((after.crit - before.crit) * 100)} points critique · ${delta(after.critMultiplier - before.critMultiplier)} × critique · ${delta((after.discount - before.discount) * 100)} points réduction booster`;
@@ -29,6 +30,7 @@ export default function DeckView({ save, onEquip }: { save: Save; onEquip: (id: 
       <p className="progression-hint">Statistiques incluant les améliorations permanentes, hors combo. Rare+ : poids +{(power.rareChance * 100).toFixed(1)} % · doublon : +{power.duplicateBonus.toFixed(1)} éclats.</p>
     </section>
     <section className="synergy-panel"><h2>Synergies de type</h2><div className="synergy-grid">{synergies(save.deck).map(s => <div className={s.active ? "synergy active" : "synergy"} key={s.type}><strong>{s.active ? "✦" : "◇"} {s.type} · {s.count}/{s.required}</strong><small>{describeEffect(s.effect)}</small><span>{s.active ? "Active" : `Encore ${s.required - s.count} compagnon(s)`}</span></div>)}</div></section>
+    <section className="synergy-panel"><h2>Synergies avancées · exploration niveau 3</h2><div className="synergy-grid">{advancedSynergies(save.deck,explorationLevel(save.account.xp)).map(s=><div className={s.active?"synergy active":"synergy"} key={s.type}><strong>{s.type} · {s.count}/3</strong><small>+3 % énergie globale</small><span>{!s.unlocked?"Exploration niveau 3 requis":s.active?"Active":"Trois compagnons de ce type requis"}</span></div>)}</div></section>
     <section className="archetype-grid" aria-label="Styles de build">{BUILD_ARCHETYPES.map(b => <div key={b.name}><h3>Build {b.name}</h3><p>{b.description}</p><small>{b.ids.map(id => byId(id).name).join(" · ")}</small></div>)}</section>
     <div className="section-title"><div><h2>{replacement ? `Remplacer ${byId(replacement).name}` : "Choisir vos compagnons"}</h2><p>Impact calculé avec les niveaux de carte et les synergies.</p></div></div>
     <div className="build-candidates">{CARDS.filter(c => save.owned[c.id]).map(c => {
