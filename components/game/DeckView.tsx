@@ -5,6 +5,7 @@ import { describeEffect } from "../../lib/effects";
 import { leveledEffect } from "../../lib/progression";
 import { BUILD_ARCHETYPES, synergies, advancedSynergies } from "../../lib/synergies";
 import Sprite from "../Sprite";
+import { TYPE_SIGNS } from "../../lib/ux";
 import { explorationLevel } from "../../lib/exploration";
 export function statImpact(before: ReturnType<typeof stats>, after: ReturnType<typeof stats>): string {
   const delta = (n: number) => `${n >= 0 ? "+" : ""}${Number(n.toFixed(2))}`;
@@ -21,7 +22,7 @@ export default function DeckView({ save, onEquip }: { save: Save; onEquip: (id: 
       <div className="deck-slots">{Array.from({ length: deckCapacity(save) }, (_, i) => {
         const c = save.deck[i] ? byId(save.deck[i]) : null;
         return c ? <div className={`equipped-slot ${replacement === c.id ? "selected-slot" : ""}`} key={i}>
-          <button onClick={() => setReplaceId(replacement === c.id ? "" : c.id)} aria-pressed={replacement === c.id}><Sprite creature={c} /><strong>{c.name}</strong><small>Niv. {savedCardLevel(save, c.id)}</small></button>
+          <button onClick={() => setReplaceId(replacement === c.id ? "" : c.id)} aria-pressed={replacement === c.id}><Sprite creature={c} /><strong>{c.name}</strong><small>{TYPE_SIGNS[c.type]} {c.type} · Niv. {savedCardLevel(save,c.id)}</small><small>{describeEffect(leveledEffect(c.effect,savedCardLevel(save,c.id)))}</small></button>
           <button onClick={() => onEquip(c.id)}>Retirer −</button>
         </div> : <div className="empty-slot" key={i}><span>+</span><small>EMPLACEMENT {i + 1}</small></div>;
       })}</div>
@@ -29,15 +30,15 @@ export default function DeckView({ save, onEquip }: { save: Save; onEquip: (id: 
       <p><strong>Bonus du deck : </strong>{describeEffect(bonuses) || "Équipez votre premier compagnon."}</p>
       <p className="progression-hint">Statistiques incluant les améliorations permanentes, hors combo. Rare+ : poids +{(power.rareChance * 100).toFixed(1)} % · doublon : +{power.duplicateBonus.toFixed(1)} éclats.</p>
     </section>
-    <section className="synergy-panel"><h2>Synergies de type</h2><div className="synergy-grid">{synergies(save.deck).map(s => <div className={s.active ? "synergy active" : "synergy"} key={s.type}><strong>{s.active ? "✦" : "◇"} {s.type} · {s.count}/{s.required}</strong><small>{describeEffect(s.effect)}</small><span>{s.active ? "Active" : `Encore ${s.required - s.count} compagnon(s)`}</span></div>)}</div></section>
-    <section className="synergy-panel"><h2>Synergies avancées · exploration niveau 3</h2><div className="synergy-grid">{advancedSynergies(save.deck,explorationLevel(save.account.xp)).map(s=><div className={s.active?"synergy active":"synergy"} key={s.type}><strong>{s.type} · {s.count}/3</strong><small>+3 % énergie globale</small><span>{!s.unlocked?"Exploration niveau 3 requis":s.active?"Active":"Trois compagnons de ce type requis"}</span></div>)}</div></section>
+    <section className="synergy-panel"><h2>Synergies de type</h2><div className="synergy-grid">{synergies(save.deck).map(s => <div data-type={s.type} className={s.active ? "synergy active" : s.count===s.required-1?"synergy almost":"synergy"} key={s.type}><strong>{TYPE_SIGNS[s.type]} {s.type} · {s.count}/{s.required}</strong><small>{describeEffect(s.effect)}</small><span>{s.active ? "Active" : `Encore ${s.required - s.count} compagnon(s)`}</span></div>)}</div></section>
+    <section className="synergy-panel"><h2>Synergies avancées · exploration niveau 3</h2><div className="synergy-grid">{advancedSynergies(save.deck,explorationLevel(save.account.xp)).map(s=><div data-type={s.type} className={s.active?"synergy active":s.unlocked&&s.count===2?"synergy almost":"synergy"} key={s.type}><strong>{TYPE_SIGNS[s.type]} {s.type} · {s.count}/3</strong><small>+3 % énergie globale</small><span>{!s.unlocked?"Exploration niveau 3 requis":s.active?"Active":`Encore ${Math.max(0,3-s.count)} compagnon(s)`}</span></div>)}</div></section>
     <section className="archetype-grid" aria-label="Styles de build">{BUILD_ARCHETYPES.map(b => <div key={b.name}><h3>Build {b.name}</h3><p>{b.description}</p><small>{b.ids.map(id => byId(id).name).join(" · ")}</small></div>)}</section>
     <div className="section-title"><div><h2>{replacement ? `Remplacer ${byId(replacement).name}` : "Choisir vos compagnons"}</h2><p>Impact calculé avec les niveaux de carte et les synergies.</p></div></div>
     <div className="build-candidates">{CARDS.filter(c => save.owned[c.id]).map(c => {
       const candidate = replacement && !save.deck.includes(c.id) ? { ...save, deck: save.deck.filter(id => id !== replacement) } : save;
       const reason = equipBlockedReason(candidate, c.id);
       const preview = changeDeck(save, c.id, replacement);
-      return <div className="build-candidate" key={c.id}><Sprite creature={c} /><div><strong>{c.name} · niv. {savedCardLevel(save, c.id)}</strong><p>{describeEffect(leveledEffect(c.effect, savedCardLevel(save, c.id)))}</p><small>{reason || statImpact(power, stats(preview))}</small></div><button disabled={!!reason} onClick={() => { onEquip(c.id, replacement); setReplaceId(""); }}>{save.deck.includes(c.id) ? "Retirer" : replacement ? "Remplacer" : "Équiper"}</button></div>;
+      return <div className="build-candidate" key={c.id}><Sprite creature={c} /><div><strong>{c.name} · niv. {savedCardLevel(save, c.id)}</strong><p>{describeEffect(leveledEffect(c.effect, savedCardLevel(save, c.id)))}</p>{reason?<small>{reason}</small>:<div className="replacement-comparison"><span>Clic <b>{power.click.toFixed(2)} → {stats(preview).click.toFixed(2)}</b></span><span>Passif <b>{power.auto.toFixed(2)} → {stats(preview).auto.toFixed(2)} / s</b></span><small>{statImpact(power,stats(preview))}</small></div>}</div><button disabled={!!reason} onClick={() => { onEquip(c.id, replacement); setReplaceId(""); }}>{save.deck.includes(c.id) ? "Retirer" : replacement ? "Remplacer" : "Équiper"}</button></div>;
     })}</div>
     {!Object.keys(save.owned).length && <div className="notice">Votre deck est vide. Ouvrez un booster pour rencontrer vos premiers compagnons.</div>}
   </>;

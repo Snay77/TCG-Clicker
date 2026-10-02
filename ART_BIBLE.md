@@ -1,6 +1,6 @@
 # TCG Clicker — Art Bible
 
-**État actuel — Phase 5 (2 octobre 2026) : 60 cartes produites et jouables, 25 anatomies, 16 habitats. Les sections des phases précédentes constituent l’historique ; la section Phase 5 décrit le comportement actuel.**
+**État actuel — Phase 8 (2 octobre 2026) : Set 01 complet, progression, onboarding, UX, audio synthétique et sauvegarde v4. Les sections des phases précédentes constituent l’historique.**
 
 ## Direction générale
 
@@ -220,3 +220,11 @@ Les 48 compositions supplémentaires sont construites dans `lib/content/producti
 
 
 Les six illustrations peintes proposées le 2 octobre 2026 ont été archivées dans `design/archive/2026-10-02-prestige-art/` pour une éventuelle utilisation ultérieure. Le style actif reste celui des sprites, habitats et cadres antérieurs.
+
+## Phase 8 — Lisibilité et sensations
+
+Les sprites, habitats et cadres restent ceux du Set 01. Aucun nouvel asset ni image générée. La première arrivée utilise la machine existante sur une surface sombre, avec illumination brève et deux actions immédiates. Le clic produit un recul court, un flash, des particules et un montant flottant ; le critique renforce ces mêmes signes. Les paliers de combo sont lumineux mais la scène demeure lisible.
+
+Achats possibles, synergies et récompenses utilisent les verts doux, l’or pâle et les couleurs des types ; aucun badge rouge. L’inspection agrandit la vraie carte et montre la lignée en sprites. À 390/430 px, le dialogue défile verticalement, la carte reste au centre et les actions gardent leur place. Navigation avec compteurs et points discrets, focus doré visible, labels explicites.
+
+Les enveloppes Web Audio sont courtes et légères. Chaque famille possède ses notes, les quatre raretés hautes une séquence distincte. Pas de musique ni fichier audio. Sons et volume suivent les paramètres communs au jeu et au booster. Les animations réduites (forcées ou système) retirent déplacements, pulsations et transitions ; les temporisations d’ouverture suivent la même préférence. Spécification UX : `design/phase8-ux.md`.

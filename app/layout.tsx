@@ -6,6 +6,7 @@ import "./progression.css";
 import "./roster.css";
 import "./economy.css";
 import "./exploration.css";
+import "./ux.css";
 export const metadata: Metadata = {
   title: "TCG Clicker · La Clairière",
   description:

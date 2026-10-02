@@ -14,8 +14,8 @@ const labels: Record<EffectKey, string> = {
   comboMultiplier: "% combo", faerieBonus: "% énergie Faerie", rareChance: "% poids Rare+",
   duplicateBonus: "éclats / doublon", energyMultiplier: "% énergie globale",
 };
-export function describeEffect(effect: Effect): string {
-  return EFFECT_KEYS.filter(key => effect[key]).map(key => {
+export function describeEffect(effect: Effect, includeZero = false): string {
+  return EFFECT_KEYS.filter(key => includeZero ? effect[key] !== undefined : effect[key]).map(key => {
     const value = effect[key]!;
     const percentage = !["clickFlat", "autoFlat", "critMultiplier", "duplicateBonus"].includes(key);
     return `+${Number((value * (percentage ? 100 : 1)).toFixed(2))} ${labels[key]}`;

@@ -1,6 +1,6 @@
-# TCG Clicker — Faerie · Phase 3
+# TCG Clicker — Faerie · Phase 8
 
-**État actuel — Phase 6 (2 octobre 2026) : Set 01 complet, recharge de boosters et sauvegarde v3. Les sections antérieures constituent l’historique ; la section Phase 6 décrit le comportement actuel.**
+**État actuel — Phase 8 (2 octobre 2026) : Set 01 complet, progression, onboarding, UX, audio synthétique et sauvegarde v4. Les sections des phases précédentes constituent l’historique.**
 
 Prototype local Next.js / React / TypeScript, sans service externe, police téléchargée, asset graphique externe ou image générée par IA. Les trois documents de conception à la racine restent la source de vérité.
 
@@ -27,9 +27,11 @@ Le portail rapporte 1 éclat par clic au départ, sans critique ni bonus de comb
 
 Le combo augmente avec les clics rapprochés et décroît après une pause ; il multiplie uniquement les clics. Les boosters coûtent initialement 100 éclats, contiennent cinq cartes, et garantissent une Peu commune ou mieux en cinquième position. Les cartes se renforcent manuellement dans le classeur : 2/3/4/5 doublons consommés pour les niveaux 2/3/4/5, avec une copie toujours conservée ; chaque doublon rapporte aussi de l'énergie. Le classeur montre les lignées et silhouettes ; les évolutions exigent la découverte du parent pour être équipées.
 
-L'écran Deck présente six emplacements, statistiques, bonus cumulés, synergies, trois exemples de builds et prévisualisation des remplacements. La capacité est centralisée, prête pour sept/huit places ultérieures. Les cartes sont numérotées /060, avec soixante espèces disponibles. Les règles chiffrées et le plan des 60 cartes sont documentés dans GAME_DESIGN.md et SET_01_FAERIE.md.
+L'écran Deck présente six emplacements, statistiques, bonus cumulés, synergies, trois exemples de builds et prévisualisation des remplacements. Les emplacements sept et huit se débloquent aux niveaux d’exploration 8/15 et s’achètent pour 5 000/25 000 éclats. Les cartes sont numérotées /060, avec soixante espèces disponibles. Les règles chiffrées et le plan des 60 cartes sont documentés dans GAME_DESIGN.md et SET_01_FAERIE.md.
 
-La sauvegarde est maintenant en version 2, toujours sous la clé locale `tcg-faerie-v1` pour retrouver les anciennes parties. La migration conserve énergie, machine, copies, deck et ouverture en cours, initialise les nouvelles familles et garde une copie v1 sous `tcg-faerie-v1-backup`. Une sauvegarde illisible ou d'une version future n'est jamais écrasée : le message indique que la session ne sera pas persistée. Le combo se réinitialise au rechargement. Pas de production hors ligne ni de synchronisation multi-onglets : jouer dans un seul onglet.
+La sauvegarde v4 reste sous la clé locale `tcg-faerie-v1`. Elle contient progression de machine, niveaux manuels des cartes, compte d’exploration et préférences UX. Les versions précédentes migrent avec une copie brute de secours, sans perdre cartes, deck ou booster en cours. Un format invalide/futur n’est pas écrasé. Le combo se réinitialise au rechargement ; les boosters se rechargent hors ligne, sans production d’énergie. Jouer dans un seul onglet. Le raccourci de reset de test mène à `/dev`, avec confirmation.
+
+Au premier lancement, éveiller le portail ou passer l’introduction. Les conseils et la checklist guident sans verrouiller les quatre vues. Paramètres (⚙) règle son, volume, animations et ouverture rapide niveau 12. La Collection permet d’examiner les cartes, filtrer les améliorables et parcourir les lignées.
 
 ## Modifier le prototype
 
@@ -239,3 +241,9 @@ Sauvegarde actuelle v4 : `cardLevels` conserve les niveaux permanents séparéme
 Une vue **Progression** regroupe Niveau, Objectifs et Statistiques. Niveau d’exploration indépendant, 42 objectifs dont 20 lignées, milestones 10/25/40/50/60 espèces, titres cosmétiques et récompenses uniques. Les boosters gagnés disposent d’une réserve hors du stockage rechargeable. Slots de deck 7/8 : niveaux 8/15 et achats de 5 000/25 000 éclats. Ouverture rapide optionnelle au niveau 12, animation mythique conservée. Le temps actif exclut les périodes sans visibilité ou focus.
 
 La v4 est étendue avec `account` au format 1 ; les sauvegardes v1–v4 antérieures sont migrées avec copie brute de secours. Les statistiques historiques impossibles à reconstruire sont signalées comme estimées. Style en pixels conservé. Courbe d’XP, objectifs, récompenses, statistiques et migrations : [bilan Phase 7](design/phase7-progression.md).
+
+## Phase 8 — Prise en main et confort
+
+Introduction unique et skippable, six conseils contextuels, checklist permanente sans récompenses. Collection filtrable/triable et vue par lignée ; boutons Examiner pour la carte en grand. Améliorations avant/après, doublons en copies avant → après, Deck avec types/effets et synergies proches, Progression avec prochain déblocage et récompense prioritaire. Paramètres sauvegardés : sons Web Audio, volume, animations et mode rapide débloqué. Navigation et dialogues vérifiés sur 390/430 px.
+
+Référence complète : `design/phase8-ux.md`. Logique UX : `lib/ux.ts` ; synthèse : `lib/game-audio.ts` ; interactions : `components/game/` ; styles : `app/ux.css`. Sauvegarde v4 étendue par `ux`, migration sans perte et copie avant Phase 8. Aucun changement d’économie, contenu ou asset.

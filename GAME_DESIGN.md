@@ -1,6 +1,6 @@
 # TCG Clicker — Game Design Document
 
-**État actuel — Phase 6 (2 octobre 2026) : Set 01 complet, recharge de boosters et sauvegarde v3. Les sections antérieures constituent l’historique ; la section Phase 6 décrit le comportement actuel.**
+**État actuel — Phase 8 (2 octobre 2026) : Set 01 complet, progression, onboarding, UX, audio synthétique et sauvegarde v4. Les sections des phases précédentes constituent l’historique.**
 
 ## Concept
 
@@ -442,3 +442,21 @@ Les mesures de simulation Phase 6 ci-dessus sont historiques (base de clic 5) ; 
 Spécification de l’implémentation dans `design/phase7-progression.md`. Courbe : 100 + 50 × (niveau − 1) XP par niveau ; niveau global indépendant. Activités : booster 20 XP, découverte 25, Rare+ 8, achat d’amélioration 5, niveau de carte N : 15 × N. Pas d’XP par clic seul. 42 objectifs déclaratifs, dont 20 lignées ; récompenses uniques en énergie, XP et boosters dans une réserve séparée. Milestones 10/25/40/50/60 ; à 60/60, 10 000 éclats + 2 000 XP + 5 boosters, animation et titre Gardien du Portail.
 
 Déblocages : 3 triples de type (+3 % énergie), 5 objectifs experts, 8 slot 7 (5 000), 12 ouverture rapide, 15 slot 8 (25 000), 20 maîtrise du set. Les paires de type et les coûts actuels des boosters et du stockage sont conservés. Temps actif uniquement visible et avec focus ; compteurs de cartes obtenues persistants malgré consommation des doublons. V4 étendue avec compte au format 1, compatible versions précédentes et v4 de cartes manuelles. Aucun nouvel asset.
+
+## Phase 8 — Onboarding, UX & Game Feel (2 octobre 2026)
+
+La première arrivée présente le portail avec deux actions immédiates : Éveiller ou passer. Elle ne se rejoue pas. Les six conseils contextuels suivent clics, amélioration abordable, prix du booster, première collection, compagnons et exploration. Chaque conseil se ferme ; Passer les conseils est permanent. Les premiers pas mémorisent cinq actions, sans récompense : produire, améliorer, finir un booster, découvrir cinq espèces, équiper. La checklist disparaît après ces cinq actions ; le dernier conseil peut encore être consulté.
+
+La machine conserve la priorité visuelle : recul court, flash, particules, montant et critique distinct. Combo chiffré sur 100, multiplicateur réel et délai avant décroissance. Les sept améliorations affichent leur contribution cumulée actuelle (y compris zéro) et celle du prochain niveau, niveau et prix. Les achats accessibles et réserves disponibles ont des contours doux ; Machine et Progression portent un point, Collection et Deck leurs compteurs sur ordinateur et mobile.
+
+Classeur : recherche, type, rareté, découverte, améliorables, tri numéro/rareté et regroupement par lignée. Examiner ouvre une vraie carte pixel en grand, avec niveau, copies, lore, effets, lignée et actions. Amélioration : niveau actuel → suivant, effet avant/après, coût consommé et copie conservée. Une forme inconnue reste une silhouette. Le booster montre les copies avant → après, en tenant compte des doublons du même sachet et d’une reprise ; « Amélioration disponible » apparaît seulement lors du franchissement du coût.
+
+Deck : type, symbole, niveau et effet dans chaque slot, synergies colorées actives ou à un compagnon du seuil, comparaison clic/passif avant → après et variations complémentaires. Progression : XP totale / prochain seuil, prochain déblocage et objectif prioritaire ; catégories Découverte, Collection, Clicker, Booster, Lignées et Experts. Les objectifs prêts précèdent les proches, les verrouillés puis les récompensés. Plusieurs niveaux gagnés sont regroupés avec tous les déblocages traversés.
+
+Récompenses et niveaux utilisent une bannière animée sans modal. Le booster rechargeable prêt produit un message discret et un point de navigation. Ces messages attendent la fermeture de l’ouverture, y compris en chaîne. Sons synthétiques Web Audio : clic, critique, amélioration, réserve prête, découpe, balayage, Rare, Épique, Légendaire, Mythique, objectif et niveau. Enveloppes douces, clics rapprochés limités ; aucun fichier audio ou musique. Le navigateur autorise le démarrage audio après une interaction.
+
+Paramètres dans un petit dialogue : sons, volume effets 0–100 %, ouverture rapide à partir du niveau 12, animations réduites ou préférence système. Le bouton son du booster modifie le même réglage. Réduction prioritaire dans CSS et temporisations d’ouverture. Dialogues natifs : focus contenu, Échap, restitution du focus, défilement interne sur mobile. Commandes alternatives aux gestes et focus visible conservés.
+
+V4 étendue par `ux` au format 1 : introduction vue, conseils fermés/ignorés, étapes terminées et paramètres. V1–V4 anciennes : progression intacte, introduction considérée vue, étapes déduites des actions conservées. V4 Phase 7 copiée avant migration sous `tcg-faerie-v1-backup-v4-before-phase8`. Le reset de test existant efface aussi cette copie. Format futur ou préférences invalides : brut conservé sans écrasement. Aucun changement des gains, coûts, tirages, XP, réserve, consommation des doublons ou déblocages.
+
+Implémentation : `lib/ux.ts`, `lib/game-audio.ts`, `components/game/Onboarding.tsx`, `Settings.tsx`, `Modal.tsx`, `CardInspection.tsx`, `app/ux.css`. Aucun nouvel asset, image IA, dépendance, contenu de carte ou système économique.

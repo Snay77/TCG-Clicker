@@ -1,6 +1,6 @@
 # Vérification de TCG Clicker
 
-**État actuel — Phase 6 (2 octobre 2026) : Set 01 complet, économie des boosters et sauvegarde v3. Les sections précédentes constituent l’historique.**
+**État actuel — Phase 8 (2 octobre 2026) : onboarding, UX, feedback, paramètres, audio synthétique et sauvegarde v4. Les sections précédentes constituent l’historique.**
 
 ## Phase 3 — Core Game Loop & Progression · 2 octobre 2026
 
@@ -181,3 +181,22 @@ Vérification TypeScript et compilation de production réussies. Navigateur Edge
 - Aucune erreur console ou JavaScript sur les parcours vérifiés. Captures : `test-results/phase7-level.png`, `phase7-mobile.png`, `phase7-completion.png`.
 
 Courbe, 42 objectifs, 20 lignées, récompenses, statistiques et migration : `design/phase7-progression.md` (généré depuis les données avec `npx tsx scripts/document-phase7.ts`).
+
+
+## Phase 8 — Onboarding, UX & Game Feel — 2 octobre 2026
+
+- 75 tests passent : les 64 antérieurs et 11 nouveaux contrôles. Introduction non rejouée, conseils contextuels/ignorables, checklist persistante sans gain, filtres et tris cumulés, niveau/copies et coût de la carte agrandie, doublon au seuil exact, préférences validées, ouverture rapide verrouillée/déverrouillée, migration v4, tri des récompenses, familles sonores et contributions des sept upgrades.
+- `npm run typecheck` et `npm run build` réussis. Les routes `/` et `/dev` compilent ; aucun package ni asset ajouté.
+- Edge / Playwright local, contextes isolés : nouvelle partie, introduction Éveiller au clavier, recharge puis absence d’introduction, conseils d’upgrade, 75 clics = 75 éclats, achat d’Amplificateur puis +2 au clic, aucun XP par clic. Passer les conseils persiste.
+- Ancienne v4 Phase 7 migrée avec copie brute avant Phase 8 ; cartes et niveaux conservés. Paramètres mute/volume 18 %/motion forcée/mode rapide persistants après recharge. Échap referme les dialogues et restitue le focus. Les sélecteurs ont des labels explicites.
+- Collection : filtre améliorable, numéro/rareté, 21 groupes (20 lignées + uniques), carte Moussillon niveau 2 avec six copies, passage 2→3 consommant trois doublons et affichage de trois copies restantes. Carte agrandie inspectée visuellement.
+- Deck : type/niveau/effet par slot ; Progression : prochain déblocage et récompense prioritaire, catégorie Experts. Récompense 60/60 : niveau 1→8 regroupé, déblocages 3/5/8 tous affichés, énergie/XP/boosters lisibles, cinq boosters de récompense conservés.
+- Vrais oscillateurs et enveloppes Web Audio observés dans le navigateur : clic 220/330 Hz, amplitude douce, aucun oscillateur supplémentaire avec mute ou volume zéro. Préférence forcée réduit les durées CSS et garde le montant du clic statique ; le système reduced-motion conserve son support antérieur. Cette vérification technique ne remplace pas une écoute sur matériel réel.
+- Mobile 390×844 et 430×844 : introduction, quatre vues, navigation avec compteurs visibles, settings et carte agrandie sans débordement horizontal. Dialogues avec scroll interne, actions accessibles au toucher ; captures inspectées. Les labels de navigation héritent de la taille du bouton, correction vérifiée après rétablissement des compteurs.
+- Tactile natif CDP à 430 px, animations normales : découpe droite→gauche puis cinq balayages, cinq attributions exactement, récapitulatif, Collection et carte agrandie. Mobile 390 px avec animations réduites : doublon 2→3, « Amélioration disponible », cinq cartes et retour machine.
+- Recharge live à dix minutes : notification et point Machine. Recharge pendant une ouverture : message absent pendant l’animation/récapitulatif, affiché après fermeture. Régression : reprise après deux cartes sans double XP ; Mythique en mode rapide garde ses durées normales (>2,9 s) ; complétion 60/60 différée jusqu’au retour. Simulation de visibilité cachée conserve l’arrêt du temps actif.
+- Aucun message d’erreur JavaScript ou console sur les parcours. Le CLI agent-browser est absent sur ce poste ; Edge et le Playwright fourni localement assurent les contrôles, sans installation de dépendance.
+
+Scripts/captures locaux ignorés : `test-results/phase8-check.cjs`, `phase8-extra.cjs`, `phase8-touch.cjs`, `phase8-regression.cjs`, `phase8-intro.png`, `phase8-card.png`, `phase8-machine-390.png`, `phase8-mobile-card-390.png`, variantes 430, `phase8-duplicate.png`, `phase8-reward.png`. Référence de comportement : `design/phase8-ux.md`.
+
+Avant alpha : playtests humains depuis zéro sur 30–60 minutes pour rythme, fatigue et compréhension ; écoute Web Audio sur vrais téléphones/casques ; contrôle Safari/Firefox et lecteur d’écran. Les tests headless ne prouvent pas le comportement des onglets réellement cachés, déjà documenté en Phase 7. Sauvegarde locale prévue pour un seul onglet actif. Aucun nouvel équilibrage ni gameplay n’est ajouté pendant cette phase.

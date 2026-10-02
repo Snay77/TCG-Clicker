@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, PointerEvent } from "react";
 import { byId, RARITIES } from "../lib/cards";
 import { atmosphere } from "../lib/visuals";
-import { packSound } from "../lib/pack-audio";
+import { GameAudio, raritySound, type SoundKind } from "../lib/game-audio";
+import { duplicateFeedback, type UX } from "../lib/ux";
 import Card from "./Card";
 import BoosterPack from "./BoosterPack";
 import type { Save, PackSource } from "../lib/game";
@@ -35,9 +36,15 @@ export default function BoosterOpening({
   onNext,
   economy,
   fast = false,
+  audioSettings,
+  onSoundChange,
+  onSound,
 }: {
   save: Save;
   fast?: boolean;
+  audioSettings?: UX;
+  onSoundChange?:(sound:boolean)=>void;
+  onSound?:(kind:SoundKind,gesture?:boolean)=>void;
   onReveal: () => void;
   onClose: (destination?: "machine" | "collection") => void;
   onNext?: (source: PackSource) => void;
@@ -52,15 +59,18 @@ export default function BoosterOpening({
   const [cutDirection, setCutDirection] = useState(1);
   const [dragging, setDragging] = useState(false);
   const [reduced, setReduced] = useState(false);
-  const [sound, setSound] = useState(true);
+  const [sound, setSound] = useState(audioSettings?.sound ?? true);
   const dialog = useRef<HTMLDialogElement>(null),
     gesture = useRef<Gesture | null>(null);
   const credited = useRef(save.revealed - 1);
   const exiting = useRef(false);
   const callbacks = useRef({ onReveal, onClose });
   callbacks.current = { onReveal, onClose };
-  const audio = useRef<AudioContext | null>(null);
-  const enabled = useRef(true);
+  const audio = useRef<GameAudio|null>(null);
+  const enabled = useRef(audioSettings?.sound ?? true);
+  const soundOptions=useRef(audioSettings);soundOptions.current=audioSettings;
+  const soundCallback=useRef(onSound);soundCallback.current=onSound;
+  useEffect(()=>{enabled.current=audioSettings?.sound??true;setSound(enabled.current);},[audioSettings?.sound]);
   const motion = useRef<HTMLDivElement>(null);
   const [originalOwned] = useState(() => {
     const counts = { ...save.owned };
@@ -74,9 +84,11 @@ export default function BoosterOpening({
   const packFast = fast && !save.pending.some(id => byId(id).rarity === 5);
   const isNew = (id: string, i: number) =>
     !originalOwned[id] && save.pending.indexOf(id) === i;
-  function play(kind: "cut" | "swipe" | "rare") {
-    if (enabled.current && audio.current?.state === "running")
-      packSound(audio.current, kind);
+  function play(kind:SoundKind,rarity=tier) {
+    if(!enabled.current)return;
+    const soundKind=kind==='rare'?raritySound(rarity):kind;
+    if(soundCallback.current) soundCallback.current(soundKind,kind==='cut'||kind==='swipe');
+    else {audio.current??=new GameAudio();audio.current.play(soundKind,soundOptions.current||{sound:true,volume:0.35},kind==='cut'||kind==='swipe');}
   }
   function commit() {
     if (credited.current >= index) return;
@@ -88,7 +100,7 @@ export default function BoosterOpening({
   useEffect(() => {
     const opener = document.activeElement;
     const preference = matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(preference.matches);
+    const update = () => setReduced(soundOptions.current?.motion==='reduce'||preference.matches);
     update();
     preference.addEventListener("change", update);
     const previous = document.body.style.overflow;
@@ -97,10 +109,11 @@ export default function BoosterOpening({
     return () => {
       preference.removeEventListener("change", update);
       document.body.style.overflow = previous;
-      void audio.current?.close().catch(() => {});
+      audio.current?.close();
       if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
     };
   }, []);
+  useEffect(()=>{setReduced(audioSettings?.motion==='reduce'||matchMedia('(prefers-reduced-motion: reduce)').matches);},[audioSettings?.motion]);
   useEffect(() => {
     dialog.current
       ?.querySelector<HTMLElement>("[data-opening-focus]")
@@ -118,12 +131,7 @@ export default function BoosterOpening({
           if (credited.current < index) {
             credited.current = index;
             callbacks.current.onReveal();
-            if (
-              tier >= 2 &&
-              enabled.current &&
-              audio.current?.state === "running"
-            )
-              packSound(audio.current, "rare");
+            if(tier>=2)play('rare');
           }
           setStage("view");
         },
@@ -142,13 +150,7 @@ export default function BoosterOpening({
             if (credited.current < index + 1) {
               credited.current = index + 1;
               callbacks.current.onReveal();
-              if (
-                nextCreature &&
-                nextCreature.rarity >= 2 &&
-                enabled.current &&
-                audio.current?.state === "running"
-              )
-                packSound(audio.current, "rare");
+              if(nextCreature&&nextCreature.rarity>=2)play('rare',nextCreature.rarity);
             }
             setIndex((i) => i + 1);
             setStage("view");
@@ -158,36 +160,13 @@ export default function BoosterOpening({
       );
     return () => clearTimeout(timer);
   }, [stage, index, tier, reduced, nextCreature, fast, packFast]);
-  async function toggleSound() {
-    if (enabled.current) {
-      enabled.current = false;
-      setSound(false);
-      return;
-    }
-    try {
-      audio.current ??= new AudioContext();
-      await audio.current.resume();
-      enabled.current = true;
-      setSound(true);
-      play("swipe");
-    } catch {
-      enabled.current = false;
-      setSound(false);
-    }
+  function toggleSound(){
+    const next=!enabled.current;enabled.current=next;setSound(next);onSoundChange?.(next);
+    if(next&&!onSound){audio.current??=new GameAudio();audio.current.play('swipe',{sound:true,volume:audioSettings?.volume??0.35},true);}
   }
-  function unlockAudio() {
-    if (!enabled.current) return;
-    try {
-      audio.current ??= new AudioContext();
-      void audio.current.resume().catch(() => {});
-    } catch {
-      enabled.current = false;
-      setSound(false);
-    }
-  }
+  function unlockAudio(){ play('swipe'); }
   function tear() {
     if (stage !== "sealed") return;
-    unlockAudio();
     gesture.current = null;
     setCut(1);
     setDragging(false);
@@ -196,7 +175,6 @@ export default function BoosterOpening({
   }
   function advance(dx = 0, dy = -160) {
     if (stage !== "view" || exiting.current) return;
-    unlockAudio();
     exiting.current = true;
     play("swipe");
     const node = motion.current;
@@ -299,6 +277,7 @@ export default function BoosterOpening({
     setCut(0);
     resetDrag();
   }
+  const duplicate=duplicateFeedback((originalOwned[creature.id]||0)+save.pending.slice(0,index).filter(id=>id===creature.id).length,savedCardLevel(save,creature.id)||1);
   const showing = ["lifting", "suspense", "view", "leaving"].includes(stage);
   const label =
     stage === "choose"
@@ -315,7 +294,7 @@ export default function BoosterOpening({
   return (
     <dialog
       ref={dialog}
-      className={`pocket-opening po-${stage} po-tier-${tier} ${dragging ? "po-dragging" : ""}`}
+      className={`pocket-opening ${reduced?'ux-reduced':''} po-${stage} po-tier-${tier} ${dragging ? "po-dragging" : ""}`}
       onCancel={(e) => e.preventDefault()}
       aria-labelledby="opening-title"
     >
@@ -566,7 +545,8 @@ export default function BoosterOpening({
                   <span>
                     {RARITIES[tier]} · {"◆".repeat(tier + 1)}
                   </span>
-                  <span>Niv. {savedCardLevel(save, creature.id)} · {save.owned[creature.id] || 1} copie(s){!isNew(creature.id, index) && " · Doublon : énergie bonus créditée !"}</span>
+                  <span>Niv. {savedCardLevel(save, creature.id)} · {isNew(creature.id,index)?'Première copie':`Doublon · Copies : ${duplicate.before} → ${duplicate.after} · énergie bonus créditée`}</span>
+                  {duplicate.newlyUpgradeable&&<strong className="duplicate-ready">Amélioration disponible !</strong>}
                 </>
               ) : (
                 <span>
