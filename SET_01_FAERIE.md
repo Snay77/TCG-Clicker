@@ -27,7 +27,7 @@ Le tableau ci-dessous conserve les anciennes valeurs pour référence. Les ident
 
 Lignées provisoires : `001 → 006 → 009` et `003 → 007`. L'équipement d'une évolution exige la découverte de son parent immédiat. La carte précédente est conservée. Les autres cartes sont indépendantes. Les doublons augmentent les effets aux seuils 1/3/6/10/15 copies, avec multiplicateurs 1/1,2/1,5/1,8/2 ; chaque doublon rapporte aussi des éclats. Voir `GAME_DESIGN.md` pour les synergies et les plafonds.
 
-## Plan du set complet — 60 cartes, non implémentées
+## Historique — plan de production du set complet
 
 | Groupe | Cartes | Communes | Peu communes | Rares | Épiques | Légendaires | Mythiques |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -38,7 +38,7 @@ Lignées provisoires : `001 → 006 → 009` et `003 → 007`. L'équipement d'u
 
 Les groupes définissent une enveloppe de production, pas les noms finaux ni un ordre strict de rareté par stade. Les lignées doivent varier entre Sylve, Lune, Rosée, Mycète, Étincelle, Aurore et Astral, avec des rôles de clic, idle et collection. Les huit créatures uniques accueillent des silhouettes et effets spécifiques. Les neuf cartes temporaires restent les seules données exécutables de `lib/cards.ts` ; leurs numéros et relations pourront être harmonisés lors de la production du set. Toute répartition future doit conserver les totaux ci-dessus et des parents accessibles pour les évolutions.
 
-## Données et rendu
+## Historique — données et rendu du prototype
 
 - `lib/cards.ts` : contenu, effets, seeds et palettes.
 - `lib/visuals.ts` : habitats, capacités, textes d’ambiance et finitions.
@@ -46,7 +46,7 @@ Les groupes définissent une enveloppe de production, pas les noms finaux ni un 
 
 Les habitats couvrent bosquets, champignons, lune, mare, braises, aurore et monde astral. Tous les sprites et décors sont produits en code.
 
-## Validation
+## Historique — validation du prototype
 
 L’atelier `/dev` affiche les neuf créatures et leurs cartes. Le booster de démonstration contient Moussillon, Flamèche, Noctipapille, Auralis et Éon de la clairière, sans modifier la sauvegarde.
 
@@ -57,9 +57,9 @@ Les boosters jouables contiennent cinq cartes, avec une Peu commune ou mieux gar
 
 Roster conçu : 60 cartes, 12 lignées de trois, 8 lignées de deux, 8 uniques. Répartition maintenue : 24 Communes, 14 Peu communes, 10 Rares, 6 Épiques, 4 Légendaires, 2 Mythiques.
 
-Les identifiants `F01-001` à `F01-060` sont des IDs de design, distincts des IDs `001` à `009` jouables. Aucun changement de pool, d'économie, de sauvegarde ou d'ouverture. Les effets ci-dessous sont des propositions à équilibrer ; les capacités conditionnelles ne sont pas actives. Les 12 sprites sont un échantillon artistique à valider, pas des assets définitifs. Les 48 autres restent des fiches, sans sprite de substitution.
+Les 60 identités sont jouables : neuf IDs historiques restent liés au design, les 51 autres utilisent leur ID F01. Les 60 sprites sont produits (12 références préservées et 48 compositions). Les effets simples ci-dessous sont actifs ; les capacités conditionnelles restent déclaratives. L’équilibrage sera évalué en playtest.
 
-Les neuf noms du prototype sont conservés dans le roster avec des numéros de design différents : Moussillon 001 → F01-001 ; Chantignon 002 → F01-010 ; Lunailée 003 → F01-037 ; Roséclair 004 → F01-019 ; Flamèche 005 → F01-039 ; Sylvérêve 006 → F01-002 ; Noctipapille 007 → F01-038 ; Auralis 008 → F01-058 ; Éon 009 → F01-003. Leurs raretés et effets suivent maintenant le set complet ; copies, deck et ouverture partielle conservent leur identité. Le format v2 reste inchangé, et la migration v1 → v2 reste disponible.
+Les neuf noms du prototype sont conservés dans le roster avec des numéros de design différents : Moussillon 001 → F01-001 ; Chantignon 002 → F01-010 ; Lunailée 003 → F01-037 ; Roséclair 004 → F01-019 ; Flamèche 005 → F01-039 ; Sylvérêve 006 → F01-002 ; Noctipapille 007 → F01-038 ; Auralis 008 → F01-058 ; Éon 009 → F01-003. Leurs raretés et effets suivent maintenant le set complet ; copies, deck et ouverture partielle conservent leur identité. La sauvegarde courante est en v4 ; les versions v1 à v3 et les anciennes v4 sont migrées en conservant ces identités.
 
 Données éditables : `design/set01-faerie.json`. Contrats et validation : `lib/content/model.ts`, `lib/content/roster.ts`. Ce bloc documentaire est généré depuis ces données avec `npx tsx scripts/generate-set-doc.ts`. Les tests vérifient que la référence et les données restent identiques.
 

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./polish.css";
 import "./opening.css";
@@ -7,11 +7,13 @@ import "./roster.css";
 import "./economy.css";
 import "./exploration.css";
 import "./ux.css";
+import "./alpha.css";
 export const metadata: Metadata = {
-  title: "TCG Clicker · La Clairière",
+  title: "TCG Clicker — Faerie",
   description:
     "Une machine, un monde à découvrir. Clicker et collection féerique.",
 };
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, viewportFit: 'cover', themeColor: '#192c36' };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">

@@ -1,11 +1,12 @@
 "use client";
 import type { CSSProperties, PointerEvent } from "react";
+import { memo, useEffect, useRef, useState } from 'react';
 import { Creature, RARITIES } from "../lib/cards";
 import { FINISHES, VISUALS } from "../lib/visuals";
 import CardArt from "./CardArt";
 import { describeEffect } from "../lib/effects";
 import { leveledEffect } from "../lib/progression";
-export default function Card({
+function Card({
   card,
   owned = 1,
   level = 1,
@@ -18,6 +19,14 @@ export default function Card({
   children?: React.ReactNode;
   animated?: boolean;
 }) {
+  const ref = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    if (!ref.current || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { rootMargin: '100px' });
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
   function reflect(e: PointerEvent<HTMLElement>) {
     if (e.pointerType === "touch") return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -36,6 +45,8 @@ export default function Card({
   const v = VISUALS[card.id];
   return (
     <article
+      ref={ref}
+      data-offscreen={!visible || undefined}
       className={`card rarity-${card.rarity} ${!owned ? "unknown" : ""} ${animated ? "" : "card-still"}`}
       style={{ "--accent": v.accent } as CSSProperties}
       onPointerMove={reflect}
@@ -98,3 +109,4 @@ export default function Card({
     </article>
   );
 }
+export default memo(Card);

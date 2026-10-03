@@ -12,11 +12,11 @@ export function synthSound(context:AudioContext,kind:SoundKind,volume:number){
 }
 export class GameAudio {
  private context:AudioContext|null=null;
- private lastClick=0;
+ private lastClick=-Infinity;
  play(kind:SoundKind,settings:Pick<UX,'sound'|'volume'>,gesture=false){
   if(!settings.sound||settings.volume===0)return;
-  if(kind==='click'&&performance.now()-this.lastClick<45)return;
-  if(kind==='click')this.lastClick=performance.now();
+  if((kind==='click'||kind==='critical')&&performance.now()-this.lastClick<45)return;
+  if(kind==='click'||kind==='critical')this.lastClick=performance.now();
   try{
    if(gesture)this.context??=new AudioContext();
    const context=this.context;if(!context)return;

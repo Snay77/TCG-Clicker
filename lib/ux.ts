@@ -16,7 +16,7 @@ export function parseUX(value:unknown,s:Save):UX {
  if(value===undefined){const ux={...initialUX(),introSeen:true};return {...ux,completed:completedSteps({...s,ux})};}
  const v=value as UX;
  if(!v||v.format!==1||typeof v.introSeen!=='boolean'||typeof v.skipTips!=='boolean'||typeof v.sound!=='boolean'||!Number.isFinite(v.volume)||v.volume<0||v.volume>1||!['system','reduce'].includes(v.motion)||!Array.isArray(v.dismissed)||v.dismissed.some(id=>!TIP_IDS.includes(id))||!Array.isArray(v.completed)||v.completed.some(i=>!Number.isInteger(i)||i<0||i>4))throw Error('Préférences invalides');
- return {...v,dismissed:[...new Set(v.dismissed)],completed:[...new Set(v.completed)]};
+ return {format:1,introSeen:v.introSeen,skipTips:v.skipTips,sound:v.sound,volume:v.volume,motion:v.motion,dismissed:[...new Set(v.dismissed)],completed:[...new Set(v.completed)]};
 }
 export function markIntroSeen(s:Save):Save{return s.ux.introSeen?s:{...s,ux:{...s.ux,introSeen:true}};}
 export function dismissTip(s:Save,id:TipId):Save{return s.ux.dismissed.includes(id)?s:{...s,ux:{...s.ux,dismissed:[...s.ux.dismissed,id]}};}

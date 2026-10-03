@@ -17,7 +17,6 @@ import {
   buyUpgrade,
   rarityProbabilities,
   initialSave,
-  parseSave,
   price,
   reveal,
   Save,
@@ -42,7 +41,9 @@ import Settings from './game/Settings';
 import { completedSteps, contextualTip, dismissTip, markIntroSeen, type UX } from '../lib/ux';
 import { GameAudio, type SoundKind } from '../lib/game-audio';
 import { UNLOCKS, rewardDescription } from '../lib/exploration';
-import {SAVE_KEY as KEY} from "../lib/save-storage";
+import { ALPHA_VERSION, devToolsEnabled } from '../lib/release';
+import { useSaveSession } from './game/useSaveSession';
+import SaveGate from './game/SaveGate';
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
   const [save, setSave] = useState<Save>(() => initialSave());
@@ -55,68 +56,23 @@ export default function Game() {
     if(target==='upgrades'||target==='booster') {setTab('machine');requestAnimationFrame(()=>document.getElementById(target)?.scrollIntoView({behavior:latest.current.ux.motion==='reduce'?'instant':'smooth',block:'center'}));}
     else setTab(target);
   }
-  const [ready, setReady] = useState(false);
+  const session = useSaveSession(save, setSave);
+  const ready = session.status === 'active';
   const [tab, setTab] = useState("machine");
   const [notice, setNotice] = useState("");
-  const [storageOk, setStorageOk] = useState(true);
+  const storageOk = session.storageOk;
   const [combo, setCombo] = useState(initialCombo);
   const comboRef = useRef(initialCombo());
-  const storageBlocked = useRef(false);
   const [sparks, setSparks] = useState<
-    { id: number; x: number; y: number; gain: number; crit: boolean }[]
+    { id: number; born: number; x: number; y: number; gain: number; crit: boolean }[]
   >([]);
   const serial = useRef(0);
-  const latest = useRef(save);
+  const latest = useRef(save); latest.current = save;
   const progressBaseline = useRef<{level:number;ready:Set<string>;species:number;lineages:number;free:number;claimed:string[]}|null>(null);
   const queuedFeedback = useRef<string[]>([]);
   const queuedLevels=useRef<{from:number;to:number}|null>(null);
 
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const migrated = parseSave(raw);
-        setSave(migrated);
-        const previousVersion=JSON.parse(raw).version;
-        if (!JSON.parse(raw).ux && previousVersion===4 && JSON.parse(raw).account) localStorage.setItem(`${KEY}-backup-v4-before-phase8`,raw);
-        if (previousVersion<4 || !JSON.parse(raw).account) {
-          localStorage.setItem(previousVersion===1 ? `${KEY}-backup` : previousVersion===4 ? `${KEY}-backup-v4-before-phase7` : `${KEY}-backup-v${previousVersion}`, raw);
-          setNotice(`Sauvegarde migrée en v4. Progression d’exploration ajoutée. Niveaux de carte et copies conservés. Progression et booster en cours conservés ; copie v${previousVersion} gardée.`);
-        }
-      }
-    } catch {
-      storageBlocked.current = true;
-      setSave(s=>({...s,ux:{...s.ux,introSeen:true,skipTips:true}}));
-      setStorageOk(false);
-      setNotice(
-        "La sauvegarde est illisible ou inaccessible. Elle est conservée sans écrasement ; cette session ne sera pas sauvegardée.",
-      );
-    }
-    setWallTime(Date.now());
-    setReady(true);
-  }, []);
-  useEffect(() => {
-    latest.current = save;
-  }, [save]);
-  useEffect(() => {
-    if (!ready) return;
-    const persist = () => {
-      if (storageBlocked.current) return;
-      try {
-        localStorage.setItem(KEY, JSON.stringify(latest.current));
-      } catch {
-        setStorageOk(false);
-      }
-    };
-    const t = setTimeout(persist, 180);
-    window.addEventListener("pagehide", persist);
-    return () => {
-      clearTimeout(t);
-      persist();
-      window.removeEventListener("pagehide", persist);
-    };
-  }, [save, ready]);
   useEffect(() => {
     if (!ready) return;
     let last = performance.now();
@@ -124,6 +80,7 @@ export default function Game() {
     window.addEventListener("focus",resetClock);
     document.addEventListener("visibilitychange",resetClock);
     const t = setInterval(() => {
+      if (!session.writable()) return;
       const now = performance.now();
       const epoch = Date.now();
       const elapsed = Math.min((now - last) / 1000, 5);
@@ -141,14 +98,14 @@ export default function Game() {
   }, [ready]);
   useEffect(() => {
     if(!ready)return;
-    const update=()=>{const now=Date.now();setWallTime(now);setSave(s=>rechargeFreePacks(s,now));};
+    const update=()=>{if (!session.writable()) return;const now=Date.now();setWallTime(now);setSave(s=>rechargeFreePacks(s,now));};
     const timer=setInterval(update,1000);
     window.addEventListener("focus",update);document.addEventListener("visibilitychange",update);
     return ()=>{clearInterval(timer);window.removeEventListener("focus",update);document.removeEventListener("visibilitychange",update);};
   },[ready]);
   useEffect(() => {
     const t = setInterval(
-      () => setSparks((s) => s.filter((x) => Date.now() - x.id < 950)),
+      () => setSparks((s) => s.length ? s.filter((x) => Date.now() - x.born < 950) : s),
       300,
     );
     return () => clearInterval(t);
@@ -188,6 +145,7 @@ export default function Game() {
   const power = stats(save);
   const discovered = Object.keys(save.owned).length;
   function click(e: React.MouseEvent<HTMLButtonElement>) {
+    if (!session.writable()) return;
     const current = latest.current;
     const currentPower = stats(current);
     const nextCombo = advanceCombo(comboRef.current, performance.now());
@@ -201,7 +159,8 @@ export default function Game() {
     setSparks((s) => [
       ...s.slice(-18),
       {
-        id: Date.now() + serial.current++ / 1000,
+        id: serial.current++,
+        born: Date.now(),
         x: e.detail ? e.clientX - box.left : box.width / 2,
         y: e.detail ? e.clientY - box.top : box.height / 2,
         gain,
@@ -221,6 +180,7 @@ export default function Game() {
     setSave((s) => changeDeck(s, id, replaceId));
   }
   function startPack(source:PackSource,chain=false) {
+    if (!session.writable()) return;
     const now=Date.now();
     const cards=drawPack(Math.random,stats(latest.current).rareChance);
     setSave(s=>{
@@ -230,6 +190,7 @@ export default function Game() {
   }
   const available=rechargeFreePacks(save,wallTime || Date.now());
   const nextSource:PackSource|null=freePackCount(available)>0?"free":available.energy>=price(available)?"paid":null;
+  if (!ready) return <SaveGate session={session}/>;
   return (
     <div className={`app-shell ${contextualTip(save)==='click'?'onboarding-machine':''}`}>
       <aside className="sidebar">
@@ -273,8 +234,8 @@ export default function Game() {
               un nouveau possible.
             </p>
           </div>
-          <Link href="/dev">⌘ Atelier des sprites ↗</Link>
-          <Link className="playtest-reset-link" href="/dev#playtest-reset">↺ Réinitialiser la sauvegarde · test</Link>
+          {devToolsEnabled(process.env.NODE_ENV) && <><Link href="/dev">⌘ Atelier des sprites ↗</Link>
+          <Link className="playtest-reset-link" href="/dev#playtest-reset">↺ Réinitialiser la sauvegarde · test</Link></>}
           <small>EXPLORATION · niv. {explorationLevel(save.account.xp)}</small>
         </div>
       </aside>
@@ -516,14 +477,15 @@ export default function Game() {
           ) : (
             <CollectionView save={save} onEquip={toggle} onUpgrade={id => {if(upgradeCard(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>upgradeCard(s,id));}} onClaim={claim} />
           )}
-          <Link className="mobile-dev-link" href="/dev">
+          {devToolsEnabled(process.env.NODE_ENV) && <><Link className="mobile-dev-link" href="/dev">
             ⌘ Atelier des sprites ↗
           </Link>
           <Link className="mobile-dev-link playtest-reset-link" href="/dev#playtest-reset">
             ↺ Réinitialiser la sauvegarde · test
           </Link>
+          </>}
           <footer className="page-footer">
-            <span>✧ Une petite machine pour de grandes découvertes.</span>
+            <span>{ALPHA_VERSION} · Une petite machine pour de grandes découvertes.</span>
             <span>
               {fmt(save.clicks)} clics · {save.packs} boosters ouverts
             </span>
@@ -531,7 +493,7 @@ export default function Game() {
         </div>
       </main>
       {ready&&!opening&&!save.ux.introSeen&&<PortalIntro onDone={()=>{playSound('level',true);setSave(markIntroSeen);}}/>}
-      {settingsOpen&&!opening&&<Settings save={save} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
+      {settingsOpen&&!opening&&<Settings save={save} onReplace={next=>{session.replace(next);comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
       {opening && (
         <BoosterOpening
           key={save.packs}
@@ -540,7 +502,7 @@ export default function Game() {
           audioSettings={save.ux}
           onSoundChange={sound=>updateSettings({sound})}
           onSound={playSound}
-          onReveal={() => setSave(reveal)}
+          onReveal={() => {if(session.writable())setSave(reveal);}}
           economy={{freeBoosters:available.freeBoosters,rewardBoosters:available.account.rewardBoosters,capacity:available.freeBoosterCapacity,price:price(available),nextSource}}
           onNext={source=>startPack(source,true)}
           onClose={destination => {

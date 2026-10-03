@@ -1,6 +1,13 @@
 # TCG Clicker — Game Design Document
 
-**État actuel — Phase 8 (2 octobre 2026) : Set 01 complet, progression, onboarding, UX, audio synthétique et sauvegarde v4. Les sections des phases précédentes constituent l’historique.**
+**État actuel — Alpha 0.1.0 / Phase 9 (2 octobre 2026) : gameplay Phase 8 gelé, 60 cartes, progression complète et sauvegarde v4. Les sections des phases antérieures constituent l’historique.**
+
+## Alpha navigateur — état actuel
+
+Export/import JSON v4, reset confirmé, diagnostics et récupération sont dans Paramètres ou l’écran de secours. Les copies de sauvegarde restent locales. Une seule session peut jouer par origine : verrou Web Locks, fallback bail localStorage, second onglet en pause. L’atelier est disponible uniquement en développement. L’alpha ne crée aucun nouveau gameplay et conserve les sprites, habitats et finitions du set complet.
+
+Voir `README.md`, `ALPHA_RELEASE_CHECKLIST.md`, `ALPHA_TEST.md` et `design/alpha-audit.md` pour la préparation de publication, les contrôles et les limites. Safari/iOS et les playtests humains restent à valider.
+
 
 ## Concept
 

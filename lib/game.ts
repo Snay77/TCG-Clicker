@@ -1,3 +1,4 @@
+import { boundedTotal } from './numbers';
 import { initialFreePacks, rechargeFreePacks, progressivePackPrice, storageCost, MAX_FREE_CAPACITY, type FreePackState } from "./booster-economy";
 import { byId, CARDS } from "./cards";
 import { resolveEffects } from "./effects";
@@ -28,7 +29,7 @@ export function upgradeCard(s: Save, id: string): Save {
   if (cost === null || s.owned[id] - 1 < cost) return s;
   return { ...s, owned: { ...s.owned, [id]: s.owned[id] - cost },
     cardLevels: { ...s.cardLevels, [id]: level + 1 },
-    account: { ...s.account, xp: s.account.xp + XP.cardLevel * (level + 1) } };
+    account: { ...s.account, xp: boundedTotal(s.account.xp + XP.cardLevel * (level + 1)) } };
 }
 export function deckEffects(s: Save) {
   return resolveEffects([
@@ -57,7 +58,7 @@ export function buyUpgrade(s: Save, id: UpgradeId): Save {
   const u = UPGRADES.find(u => u.id === id)!;
   const cost = upgradeCost(id, s.upgrades);
   if (s.energy < cost || s.upgrades[id] >= u.max) return s;
-  return { ...s, energy: s.energy - cost, level: s.level + (id === "click" ? 1 : 0), upgrades: { ...s.upgrades, [id]: s.upgrades[id] + 1 }, account: { ...s.account, xp: s.account.xp + XP.upgrade } };
+  return { ...s, energy: s.energy - cost, level: s.level + (id === "click" ? 1 : 0), upgrades: { ...s.upgrades, [id]: s.upgrades[id] + 1 }, account: { ...s.account, xp: boundedTotal(s.account.xp + XP.upgrade) } };
 }
 export const RARITY_WEIGHTS = [50, 27, 14, 6, 2.5, 0.5];
 export function rarityProbabilities(rareChance = 0, guaranteed = false): number[] {
@@ -85,9 +86,9 @@ export function openPack(s: Save, cards: string[], source: PackSource, now = Dat
   return {...current,energy:current.energy-(source === "paid" ? price(current) : 0),
     freeBoosters:current.freeBoosters-(source === "free" && !useReward ? 1 : 0),
     freeBoosterTimerStartedAt:source === "free" && !useReward && full ? now : current.freeBoosterTimerStartedAt,
-    paidBoostersPurchased:current.paidBoostersPurchased+(source === "paid" ? 1 : 0),
-    account:{...current.account,xp:current.account.xp+XP.booster,rewardBoosters:current.account.rewardBoosters-(useReward?1:0),totals:{...current.account.totals,freeOpened:current.account.totals.freeOpened+(source==="free"?1:0)}},
-    packs:current.packs+1,pending:[...cards],revealed:0,pendingSource:source};
+    paidBoostersPurchased:boundedTotal(current.paidBoostersPurchased+(source === "paid" ? 1 : 0)),
+    account:{...current.account,xp:boundedTotal(current.account.xp+XP.booster),rewardBoosters:current.account.rewardBoosters-(useReward?1:0),totals:{...current.account.totals,freeOpened:boundedTotal(current.account.totals.freeOpened+(source==="free"?1:0))}},
+    packs:boundedTotal(current.packs+1),pending:[...cards],revealed:0,pendingSource:source};
 }
 export function finishPack(s: Save): Save {
   return s.pending.length && s.revealed === 5 ? {...s,pending:[],revealed:0,pendingSource:null}:s;
@@ -108,9 +109,9 @@ export function reveal(s: Save): Save {
   if (s.revealed >= s.pending.length) return s;
   const id = s.pending[s.revealed];
   const duplicate = !!s.owned[id];
-  return { ...s, revealed: s.revealed + 1, energy: s.energy + (duplicate ? stats(s).duplicateBonus : 0), owned: { ...s.owned, [id]: (s.owned[id] || 0) + 1 },
-    account: { ...s.account, xp: s.account.xp + (duplicate ? 0 : XP.discovery) + (byId(id).rarity >= 2 ? XP.rare : 0),
-      totals: { ...s.account.totals, cardsObtained:s.account.totals.cardsObtained+1, duplicatesObtained:s.account.totals.duplicatesObtained+(duplicate?1:0) } } };
+  return { ...s, revealed: s.revealed + 1, energy: boundedTotal(s.energy + (duplicate ? stats(s).duplicateBonus : 0)), owned: { ...s.owned, [id]: boundedTotal((s.owned[id] || 0) + 1) },
+    account: { ...s.account, xp: boundedTotal(s.account.xp + (duplicate ? 0 : XP.discovery) + (byId(id).rarity >= 2 ? XP.rare : 0)),
+      totals: { ...s.account.totals, cardsObtained:boundedTotal(s.account.totals.cardsObtained+1), duplicatesObtained:boundedTotal(s.account.totals.duplicatesObtained+(duplicate?1:0)) } } };
 
 }
 export function equipBlockedReason(s: Save, id: string): string | null {
@@ -134,7 +135,7 @@ export function changeDeck(s: Save, id: string, replaceId?: string): Save {
 export function parseSave(raw: string, now = Date.now()): Save {
   const s = JSON.parse(raw);
   const num = (n: unknown) => typeof n === "number" && Number.isFinite(n) && n >= 0;
-  if (!s || (s.version !== 1 && s.version !== 2 && s.version !== 3 && s.version !== 4) || !num(s.energy) || !Number.isSafeInteger(s.level) || s.level < 0 || s.level > (s.version === 1 ? 100 : 500) || !num(s.clicks) || !num(s.packs) || !s.owned || typeof s.owned !== "object" || Array.isArray(s.owned) || !Array.isArray(s.deck) || !Array.isArray(s.pending)) throw Error("Sauvegarde invalide ou version non prise en charge");
+  if (!s || (s.version !== 1 && s.version !== 2 && s.version !== 3 && s.version !== 4) || !num(s.energy) || !Number.isSafeInteger(s.level) || s.level < 0 || s.level > (s.version === 1 ? 100 : 500) || !Number.isSafeInteger(s.clicks) || s.clicks < 0 || !Number.isSafeInteger(s.packs) || s.packs < 0 || !s.owned || typeof s.owned !== "object" || Array.isArray(s.owned) || !Array.isArray(s.deck) || !Array.isArray(s.pending)) throw Error("Sauvegarde invalide ou version non prise en charge");
   const owned: Record<string, number> = {};
   for (const c of CARDS) if (Number.isSafeInteger(s.owned[c.id]) && s.owned[c.id] > 0) owned[c.id] = s.owned[c.id];
   const pending = s.pending;

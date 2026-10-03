@@ -1,6 +1,25 @@
 # Vérification de TCG Clicker
 
-**État actuel — Phase 8 (2 octobre 2026) : onboarding, UX, feedback, paramètres, audio synthétique et sauvegarde v4. Les sections précédentes constituent l’historique.**
+## Alpha 0.1.0 — Phase 9 · 2 octobre 2026
+
+Gameplay gelé. Build local de production ; aucun déploiement distant effectué.
+
+- `npm test` : **96 tests réussis** (75 antérieurs, 21 nouveaux). `npm run typecheck` et `npm run build` réussis. Les nouveaux tests couvrent export/import, refus des formats invalides/futurs, limites de taille, données numériques extrêmes, backups, migration, restauration, quota, reset, diagnostics, version, masquage de l’atelier, lease et rafales audio.
+- Simulations de **1, 3 et 8 heures** : état borné, production/clics/timers, boosters et cinq attributions, XP et récompenses, nombres finis et JSON <16 Ko. Retours **10 minutes, 1 heure, 6 heures, 24 heures et 7 jours** : stock plafonné, timestamp arrêté au plein, énergie, prix et temps actif inchangés. Ce sont des tests accélérés du moteur, pas huit heures sur matériel réel.
+- Chrome **154.0.8037.97** et Edge **154.0.4258.48**, binaires installés, Playwright local : introduction au clavier, import invalide puis import avec résumé/confirmation/copie, export JSON téléchargé, diagnostics, 24 tabulations dans les paramètres, Échap et retour du focus, collection 60/60, filtres, inspection, deck, progression, rafale de 200 clics (≤19 particules puis cleanup), sauvegarde ordinaire ≤3 écritures en 2,2 s, second onglet bloqué, booster partiel repris sans double attribution, jeu déjà chargé utilisable hors réseau, titre/métadonnées et `/dev` HTTP 404 sans lien interne.
+- Chrome : récupération d’un principal endommagé sans écrasement avant choix, restauration avec copie brute `unreadable`, reset RESET avec copie `before-replacement`, fallback sans Web Locks et perte de bail. Les contrôles complémentaires couvrent la course de deux onglets fallback, le stockage interdit et l’export depuis l’écran d’erreur React après une exception injectée volontairement.
+- Firefox **138.0.3**, binaire installé et moteur réel via WebDriver BiDi dans un contexte utilisateur isolé : introduction, 50 clics, import via le vrai contrôle fichier, paramètres/diagnostics, 60 cartes, pause hors écran, inspection, deck, progression, deux onglets, booster partiel et cinq révélations, collection à 390 px sans débordement, `/dev` 404. Aucune erreur JavaScript de l’application sur le parcours final. Il faut refaire une passe sur Firefox récent avant annonce publique ; la version locale est ancienne.
+- Mobile émulé **360, 390, 430 × 844 et 768 × 844** : quatre vues, paramètres, booster et commandes du récapitulatif accessibles, sans débordement horizontal. Réduction des mouvements système et manuelle conservées. Tactile natif CDP en mouvement normal : découpe de droite à gauche, petite découpe et petit balayage annulés, cinq balayages et cinq attributions, retour avec scroll restauré ; paysage 844 × 390.
+- Profilage Chrome headless 1440 × 1000 : 56/60 cartes hors écran suspendues, zéro mutation des enfants des cartes pendant 1,5 s au repos. Douze visites Machine/Collection : 239–450 ms par transition, heap après GC 7,04 → 7,61 Mo (+0,57 Mo), 5 781 nœuds de collection. requestAnimationFrame moyen 34 ms, pic 42,6 ms sur cet environnement logiciel ; aucune promesse de 60 FPS mobile.
+- Le CLI agent-browser est absent ; les contrôles utilisent le Playwright fourni localement et BiDi pour Firefox. Aucune dépendance de production ni asset ajouté. Les erreurs initiales de Firefox étaient produites par des objets d’instrumentation injectés via preload ; elles disparaissent quand les fixtures passent par le contrôle d’import réel. Elles ne sont pas masquées dans le jeu.
+
+Scripts versionnés : `scripts/verify-alpha.cjs`, `scripts/verify-firefox.cjs`. Rapports/captures locaux ignorés : `test-results/alpha-unit.log`, `alpha-browser-report.json`, `alpha-firefox-report.json`, `alpha-performance.json`, `alpha-chrome.png`, `alpha-edge.png`, `alpha-firefox.png`, `alpha-360.png`, `alpha-390.png`, `alpha-430.png`, `alpha-768.png`, `alpha-recovery.png`, `alpha-tactile-summary.png`.
+
+**Contrôles restant manuels :** Safari macOS/iOS réel, iPhone/Android, barre navigateur et encoche, écoute Web Audio, VoiceOver/lecteur d’écran, clavier virtuel et autonomie/session prolongée. Checklist exhaustive : `ALPHA_RELEASE_CHECKLIST.md`. Playtest 3 à 5 personnes pendant 30–45 min : `ALPHA_TEST.md`. Publication Vercel et origine stable : `README.md`. Le build est préparé ; ces cases ouvertes ne sont pas présentées comme validées.
+
+## Historique des contrôles
+
+Les sections suivantes sont des instantanés des versions précédentes. Leurs mentions de neuf cartes, de sauvegardes v1–v3, de `/dev` public ou d’un seul onglet décrivent l’état de leur époque.
 
 ## Phase 3 — Core Game Loop & Progression · 2 octobre 2026
 

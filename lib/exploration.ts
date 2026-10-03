@@ -1,3 +1,4 @@
+import { boundedTotal } from './numbers';
 import { CARDS, byId, runtimeId } from './cards';
 import data from '../design/set01-faerie.json';
 import type { Save } from './game';
@@ -65,7 +66,7 @@ export function claimAchievement(s:Save,id:string):Save {
  const a=ACHIEVEMENTS.find(a=>a.id===id);
  if(!a||s.pending.length||!achievementReady(s,a))return s;
  let energy=s.energy,xp=s.account.xp,rewardBoosters=s.account.rewardBoosters;
- for(const reward of a.rewards){if(reward.type==='energy')energy+=reward.amount;else if(reward.type==='xp')xp+=reward.amount;else rewardBoosters+=reward.amount;}
+ for(const reward of a.rewards){if(reward.type==='energy')energy=boundedTotal(energy+reward.amount);else if(reward.type==='xp')xp=boundedTotal(xp+reward.amount);else rewardBoosters=boundedTotal(rewardBoosters+reward.amount);}
  return {...s,energy,account:{...s.account,xp,rewardBoosters,claimed:[...s.account.claimed,id]}};
 }
 export const rewardDescription=(list:Reward[])=>list.map(r=>r.type==='energy'?`${r.amount.toLocaleString('fr-FR')} ✦`:r.type==='xp'?`${r.amount} XP`:`${r.amount} booster${r.amount>1?'s':''}`).join(' · ');
@@ -85,18 +86,19 @@ export function buyDeckSlot(s:Save):Save {
 }
 export function recordClick(s:Save,gain:number,critical:boolean,combo:number):Save {
  if(!Number.isFinite(gain)||gain<0)return s;
- return {...s,energy:s.energy+gain,clicks:s.clicks+1,account:{...s.account,totals:{...s.account.totals,generatedEnergy:s.account.totals.generatedEnergy+gain,criticalClicks:s.account.totals.criticalClicks+(critical?1:0),maxCombo:Math.max(s.account.totals.maxCombo,Math.min(100,Math.max(0,combo)))}}};
+ return {...s,energy:boundedTotal(s.energy+gain),clicks:boundedTotal(s.clicks+1),account:{...s.account,totals:{...s.account.totals,generatedEnergy:boundedTotal(s.account.totals.generatedEnergy+gain),criticalClicks:boundedTotal(s.account.totals.criticalClicks+(critical?1:0)),maxCombo:Math.max(s.account.totals.maxCombo,Math.min(100,Math.max(0,combo)))}}};
 }
 export function recordTick(s:Save,seconds:number,passive:number,visible:boolean):Save {
+ if(!Number.isFinite(passive))return s;
  const elapsed=Math.min(5,Math.max(0,Number.isFinite(seconds)?seconds:0)),gain=Math.max(0,passive)*elapsed;
  if(!elapsed||(!gain&&!visible))return s;
- return {...s,energy:s.energy+gain,account:{...s.account,totals:{...s.account.totals,generatedEnergy:s.account.totals.generatedEnergy+gain,playSeconds:s.account.totals.playSeconds+(visible?elapsed:0)}}};
+ return {...s,energy:boundedTotal(s.energy+gain),account:{...s.account,totals:{...s.account.totals,generatedEnergy:boundedTotal(s.account.totals.generatedEnergy+gain),playSeconds:boundedTotal(s.account.totals.playSeconds+(visible?elapsed:0))}}};
 }
 export function migrateAccount(s:Save):Account {
  const a=initialAccount(),species=Object.keys(s.owned).length;
  const spent=Object.values(s.cardLevels).reduce((sum,level)=>sum+CARD_UPGRADE_COSTS.slice(0,level-1).reduce((a,b)=>a+b,0),0);
- const cards=Math.max(Object.values(s.owned).reduce((a,b)=>a+b,0)+spent,Math.max(0,s.packs-(s.pending.length?1:0))*5+s.revealed);
- a.xp=Math.floor(s.packs)*XP.booster+species*XP.discovery+Object.values(s.upgrades).reduce((a,b)=>a+b,0)*XP.upgrade+Object.values(s.cardLevels).reduce((sum,l)=>sum+(l-1)*XP.cardLevel,0);
+ const cards=boundedTotal(Math.max(Object.values(s.owned).reduce((a,b)=>a+b,0)+spent,Math.max(0,s.packs-(s.pending.length?1:0))*5+s.revealed));
+ a.xp=boundedTotal(Math.floor(s.packs)*XP.booster+species*XP.discovery+Object.values(s.upgrades).reduce((a,b)=>a+b,0)*XP.upgrade+Object.values(s.cardLevels).reduce((sum,l)=>sum+(l-1)*XP.cardLevel,0));
  a.totals={...a.totals,generatedEnergy:s.energy,freeOpened:Math.max(0,s.packs-s.paidBoostersPurchased),cardsObtained:cards,duplicatesObtained:Math.max(0,cards-species)};
  a.historicalEstimate=!!(s.clicks||s.packs||species||s.energy);
  return a;
@@ -109,7 +111,7 @@ export function parseAccount(raw:unknown,s:Save):Account {
  if(!a||a.format!==1||!integer(a.xp)||!integer(a.rewardBoosters)||!Array.isArray(a.claimed)||new Set(a.claimed).size!==a.claimed.length||a.claimed.some(id=>!ACHIEVEMENTS.some(x=>x.id===id))||typeof a.fastOpening!=='boolean'||typeof a.historicalEstimate!=='boolean'||!a.totals||!TITLES.some(t=>t.id===a.activeTitle))throw Error('Progression de compte invalide');
  const t=a.totals;
  if(!finite(t.generatedEnergy)||!finite(t.playSeconds)||!finite(t.maxCombo)||t.maxCombo>100||!integer(t.criticalClicks)||t.criticalClicks>s.clicks||!integer(t.freeOpened)||t.freeOpened>s.packs||!integer(t.cardsObtained)||!integer(t.duplicatesObtained)||t.duplicatesObtained>t.cardsObtained)throw Error('Statistiques invalides');
- const next={...a,claimed:[...a.claimed],totals:{...t}};
+ const next:Account={format:1,xp:a.xp,rewardBoosters:a.rewardBoosters,activeTitle:a.activeTitle,fastOpening:a.fastOpening,historicalEstimate:a.historicalEstimate,claimed:[...a.claimed],totals:{generatedEnergy:t.generatedEnergy,playSeconds:t.playSeconds,maxCombo:t.maxCombo,criticalClicks:t.criticalClicks,freeOpened:t.freeOpened,cardsObtained:t.cardsObtained,duplicatesObtained:t.duplicatesObtained}};
  if(!TITLES.find(t=>t.id===next.activeTitle)!.unlocked({...s,account:next}))throw Error('Titre verrouillé');
  if(next.fastOpening&&explorationLevel(next.xp)<12)throw Error('Ouverture rapide verrouillée');
  return next;

@@ -10,6 +10,7 @@ import BoosterPack from "./BoosterPack";
 import type { Save, PackSource } from "../lib/game";
 import { savedCardLevel } from "../lib/game";
 import { openingDelay } from "../lib/exploration";
+import { trapDialogTab } from '../lib/dialog-focus';
 
 type Stage =
   | "choose"
@@ -294,8 +295,9 @@ export default function BoosterOpening({
   return (
     <dialog
       ref={dialog}
+      onKeyDown={trapDialogTab}
       className={`pocket-opening ${reduced?'ux-reduced':''} po-${stage} po-tier-${tier} ${dragging ? "po-dragging" : ""}`}
-      onCancel={(e) => e.preventDefault()}
+      onCancel={(e) => {e.preventDefault();if(stage==='summary')callbacks.current.onClose('machine');}}
       aria-labelledby="opening-title"
     >
       <div className="po-atmosphere" aria-hidden="true">
