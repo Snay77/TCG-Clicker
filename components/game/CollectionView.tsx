@@ -2,7 +2,7 @@ import { memo, useCallback, useRef, useMemo, useState } from "react";
 import { RARITIES } from "../../lib/cards";
 import { TYPES } from "../../lib/content/model";
 import { deckCapacity, equipBlockedReason, type Save } from "../../lib/game";
-import { filterCollection, cardInspection, type CollectionFilters } from "../../lib/ux";
+import { filterCollection, cardInspection, TYPE_SIGNS, type CollectionFilters } from "../../lib/ux";
 import { LINEAGES } from "../../lib/exploration";
 import Card from "../Card";
 import { CollectionSummary, LineageGoals } from "./ProgressionView";
@@ -10,10 +10,10 @@ import CardInspection, { CardUpgrade } from "./CardInspection";
 import BottomSheet from './BottomSheet';
 import { useMobileLayout } from './useMobileLayout';
 const emptyFilters:CollectionFilters={search:"",type:"",rarity:"",discovery:"",upgradeable:false,sort:"number"};
-const CollectionCard=memo(function CollectionCard({c,save,onEquip,onUpgrade,onInspect}:{c:ReturnType<typeof filterCollection>[number];save:Save;onEquip:(id:string)=>void;onUpgrade:(id:string)=>void;onInspect:(id:string)=>void}){const v=cardInspection(save,c.id),reason=equipBlockedReason(save,c.id);return <Card key={c.id} card={c} owned={v.copies} level={v.level}>
+const CollectionCard=memo(function CollectionCard({c,save,onEquip,onUpgrade,onInspect}:{c:ReturnType<typeof filterCollection>[number];save:Save;onEquip:(id:string)=>void;onUpgrade:(id:string)=>void;onInspect:(id:string)=>void}){const v=cardInspection(save,c.id),reason=equipBlockedReason(save,c.id);return <article className="archive-entry" data-type={v.copies?c.type:undefined}><header className="archive-label"><span>{String(c.number).padStart(3,'0')}</span><div><strong>{v.copies?c.name:'Non répertoriée'}</strong><small>{v.copies?`${TYPE_SIGNS[c.type]} ${c.type} / SET 01`:'À découvrir'}</small></div></header><Card key={c.id} card={c} owned={v.copies} level={v.level}>
   <button className="inspect-button" aria-label={`Examiner ${v.copies?c.name:`la carte ${c.number}`}`} onClick={()=>onInspect(c.id)}>Examiner la carte ↗</button>
   {v.copies>0&&<><CardUpgrade save={save} id={c.id} onUpgrade={onUpgrade}/><button className={save.deck.includes(c.id)?"equipped":"equip-button"} disabled={!!reason} title={reason||undefined} onClick={()=>onEquip(c.id)}>{save.deck.includes(c.id)?"✓ Équipée · Retirer":reason||`Équiper · ${save.deck.length}/${deckCapacity(save)}`}</button></>}
- </Card>;},(a,b)=>a.c===b.c&&a.save.owned===b.save.owned&&a.save.cardLevels===b.save.cardLevels&&a.save.deck===b.save.deck&&a.save.extraDeckSlots===b.save.extraDeckSlots&&a.save.pending===b.save.pending&&a.onEquip===b.onEquip&&a.onUpgrade===b.onUpgrade&&a.onInspect===b.onInspect);
+ </Card></article>;},(a,b)=>a.c===b.c&&a.save.owned===b.save.owned&&a.save.cardLevels===b.save.cardLevels&&a.save.deck===b.save.deck&&a.save.extraDeckSlots===b.save.extraDeckSlots&&a.save.pending===b.save.pending&&a.onEquip===b.onEquip&&a.onUpgrade===b.onUpgrade&&a.onInspect===b.onInspect);
 export default function CollectionView({save,onEquip,onUpgrade,onClaim}:{save:Save;onEquip:(id:string)=>void;onUpgrade:(id:string)=>void;onClaim:(id:string)=>void}){
  const mobile=useMobileLayout();
  const [filtersOpen,setFiltersOpen]=useState(false);
@@ -31,6 +31,7 @@ export default function CollectionView({save,onEquip,onUpgrade,onClaim}:{save:Sa
    <label className="checkbox-filter"><input type="checkbox" checked={filters.upgradeable} onChange={e=>change({upgradeable:e.target.checked})}/>Améliorables</label><button onClick={()=>setFilters(emptyFilters)}>Effacer les filtres</button>
   </div>);
  return <>
+  {!Object.keys(save.owned).length&&<div className="archive-empty"><strong>REGISTRE / 000 RENCONTRE</strong>Les 60 emplacements attendent vos découvertes. Ouvrez un booster pour identifier vos premiers compagnons.</div>}
   <div className="section-title"><div><h2>Classeur Faerie</h2><p>{Object.keys(save.owned).length} / 60 espèces · 20 lignées et 8 uniques.</p></div></div>
   {mobile?<details className="collection-mobile-summary"><summary>{Object.keys(save.owned).length} / 60 espèces · Voir la progression</summary><CollectionSummary save={save}/></details>:<CollectionSummary save={save}/>}<details className="collection-lineages"><summary>Voir les 20 lignées d’évolution et leurs récompenses</summary><LineageGoals save={save} onClaim={onClaim}/></details>
   <div className="collection-search"><label>Recherche<input type="search" value={filters.search} onChange={e=>change({search:e.target.value})}/></label>{mobile&&<button className="mobile-filter-button" onClick={()=>setFiltersOpen(true)}>Filtres</button>}</div>

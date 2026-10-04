@@ -49,6 +49,7 @@ import BottomSheet from './game/BottomSheet';
 import MobileBooster from './game/MobileBooster';
 import BoostersView from './game/BoostersView';
 import Rune from './game/Rune';
+import ArcaneMark from './game/ArcaneMark';
 import { usePWA } from './game/usePWA';
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
@@ -202,9 +203,10 @@ export default function Game() {
   }
   const available=rechargeFreePacks(save,wallTime || Date.now());
   const nextSource:PackSource|null=freePackCount(available)>0?"free":available.energy>=price(available)?"paid":null;
+  const brutal=!opening;
   if (!ready) return <SaveGate session={session}/>;
   return (
-    <div className={`app-shell tab-${tab} ${contextualTip(save)==='click'?'onboarding-machine':''}`}>
+    <div className={`app-shell tab-${tab} ${brutal?"brutal-shell":""} ${contextualTip(save)==='click'?'onboarding-machine':''}`}>
       <aside className="sidebar">
         <Link href="/" className="brand">
           <span className="brand-icon">✦</span>
@@ -222,14 +224,14 @@ export default function Game() {
             ["collection", "▦", "Collection"],
             ["deck", "▤", "Mon deck"],
             ["progression", "✧", "Progression"],
-          ].map(([id, icon, label]) => (
+          ].map(([id, icon, label], navIndex) => (
             <button
               key={id}
               className={tab === id ? "active" : ""}
               aria-current={tab===id?"page":undefined}
               onClick={() => {setTab(id);window.scrollTo({top:0});if(id==='collection'||id==='deck'||id==='progression')setSave(s=>dismissTip(s,id));}}
             >
-              <span>{icon}</span>
+              <span className="nav-glyph">{icon}</span><span className="nav-index" aria-hidden="true">{String(navIndex+1).padStart(2,"0")}</span>
               <span className="nav-label">{mobile ? ({machine:'Machine',boosters:'Boosters',collection:'Collection',deck:'Deck',progression:'Voyage'}[id]) : label}</span>
               {(((id==='machine'||id==='boosters')&&freePackCount(save)>0)||(id==='progression'&&ACHIEVEMENTS.some(a=>achievementReady(save,a))))&&<i className="availability-dot" aria-label={id!=='progression'?'Booster gratuit disponible':'Récompense disponible'}/>}
               {id === "collection" && <small>{discovered}/{CARDS.length}</small>}
@@ -280,8 +282,9 @@ export default function Game() {
           <div className="page-heading">
             <div>
               <div className="eyebrow">EXPÉDITION 001 · LE MONDE FÉERIQUE</div>
+              {brutal && <ArcaneMark label={tab === "machine" ? "TCG / INSTRUMENT 001" : tab === "collection" ? "FAERIE / REGISTRE 060" : tab === "deck" ? "FAERIE / ÉQUIPE ACTIVE" : tab === "boosters" ? "FAERIE / CATALOGUE" : "TCG / REGISTRE DE VOYAGE"} index={tab === "machine" ? "SECTEUR 01" : tab === "deck" ? `${save.deck.length} / ${deckCapacity(save)} LIENS` : "SET 01"} />}
               <h1>
-                {tab === "machine"
+                {brutal ? (tab === "machine" ? "TCG CLICKER / 01" : tab === "collection" ? "ARCHIVE / SET 01" : tab === "deck" ? "ACTIVE DECK" : tab === "boosters" ? "BOOSTERS / SET 01" : "EXPLORATION / 05") : tab === "machine"
                   ? "Un passage vers l’inconnu."
                   : tab === "boosters" ? "Une rencontre dans chaque paquet."
                   : tab === "deck"
@@ -358,6 +361,7 @@ export default function Game() {
                     <span className="level">NIV. {save.level + 1} · {machineTier(save.level).name}</span>
                   </div>
                   <div className="forest">
+                    {brutal && <div className="portal-readout" aria-hidden="true"><span>⌖ FAERIE / 01</span><span>{combo.charge >= 100 ? "◇ RÉSONANCE" : combo.charge > 0 ? "◇ CHARGE ACTIVE" : "◇ EN VEILLE"}</span></div>}
                     <div className="forest-trees" />
                     <div className="orbital orbit-one" />
                     <div className="orbital orbit-two" />
@@ -512,7 +516,7 @@ export default function Game() {
           </footer>
         </div>
       </main>
-      {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>Cliquer sur le portail produit de l’énergie. Les boosters contiennent vos compagnons ; équipez-les dans le Deck et réclamez vos récompenses dans Voyage.</p></BottomSheet>}
+      {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>Portail → Boosters → Deck → Voyage.</p></BottomSheet>}
       {ready&&!opening&&!save.ux.introSeen&&<PortalIntro onDone={()=>{playSound('level',true);setSave(markIntroSeen);}}/>}
       {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
       {opening && (

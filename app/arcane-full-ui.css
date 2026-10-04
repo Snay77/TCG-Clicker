@@ -1,0 +1,186 @@
+/* Phase 11E. Shared 11D tokens; pack art, cards and the opening scene keep their styles. */
+.brutal-shell :is(.eyebrow,.goal-state) { color:var(--ab-muted); font:10px/1.5 ui-monospace,monospace; letter-spacing:1px; }
+.brutal-shell.tab-boosters :is(.stats-row,.exploration-strip) { display:none; }
+.brutal-shell :is(.journal-view,.boosters-view) { color:var(--ab-ink); max-width:1140px; }
+.brutal-shell :is(.journal-view,.boosters-view,.ux-modal,.alpha-gate) :is(h2,h3,h4) { font-family:system-ui,sans-serif; color:var(--ab-ink); }
+.brutal-shell :is(.journal-view,.boosters-view,.ux-modal,.alpha-gate) h2 { font-size:24px; font-weight:750; letter-spacing:-.5px; }
+.brutal-shell :is(.journal-view,.boosters-view,.ux-modal) h3 { font-size:18px; font-weight:650; }
+.brutal-shell :is(.journal-view,.boosters-view,.ux-modal,.alpha-gate) :is(p,small) { color:var(--ab-muted); }
+.brutal-shell :is(.journal-view,.boosters-view,.ux-modal,.alpha-gate) button:not(.booster-choice),
+.brutal-shell .ui-action { min-height:44px; border:1px solid var(--ab-line); border-radius:0; background:transparent; color:var(--ab-ink); box-shadow:none; padding:var(--ab-space-3) var(--ab-space-4); cursor:pointer; }
+.brutal-shell :is(.journal-view,.boosters-view,.ux-modal,.alpha-gate) button:not(.booster-choice):not(:disabled):hover,
+.brutal-shell .ui-action:not(:disabled):hover { border-color:var(--ab-ink); background:var(--ab-ink); color:var(--ab-bg); }
+.brutal-shell :is(.journal-view,.boosters-view,.ux-modal,.alpha-gate) button:disabled { opacity:.5; background:transparent; color:var(--ab-muted); cursor:not-allowed; }
+.brutal-shell :is(.ux-modal,.boosters-view,.journal-view) button.ux-primary,
+.brutal-shell :is(.ux-modal,.boosters-view,.journal-view,.alpha-gate) button.ui-action-primary,
+.brutal-shell .journal-view :is(.achievement.ready,.recommended-goal.available,.exploration-panel.available) > button { background:var(--ab-ink); color:var(--ab-bg); border-color:var(--ab-ink); font-weight:700; }
+.brutal-shell :is(.ux-modal,.boosters-view,.journal-view,.alpha-gate) button:is(.ux-primary,.ui-action-primary):not(:disabled):hover { background:var(--ab-bg); color:var(--ab-ink); }
+.brutal-shell .ux-modal button.ui-action-destructive { border-color:var(--type-etincelle); color:var(--type-etincelle); background:none; }
+.brutal-shell .ux-modal button.ui-action-destructive:not(:disabled):hover { color:var(--ab-bg); background:var(--type-etincelle); }
+.brutal-shell :is(.ux-modal,.journal-view) :is(input,select,textarea) { accent-color:var(--ab-ink); border-radius:0; }
+.brutal-shell .ux-modal :is(select,textarea,input:not([type=checkbox]):not([type=range])) { min-height:44px; background:var(--ab-bg); border:1px solid var(--ab-line); color:var(--ab-ink); padding:var(--ab-space-3); max-width:100%; }
+.brutal-shell .ux-modal :is(select,input[type=file]) { width:100%; }
+.brutal-shell .ux-modal input[type=file]::file-selector-button { padding:var(--ab-space-2); background:var(--ab-surface-2); color:var(--ab-ink); border:1px solid var(--ab-line); border-radius:0; margin-right:var(--ab-space-2); }
+.brutal-shell :is(.journal-view,.collection-summary,.lineage-goals) progress { border-radius:0; accent-color:var(--ab-ink); }
+.brutal-shell :is(.journal-view,.collection-summary,.lineage-goals) progress::-webkit-progress-bar { background:var(--ab-surface-2); }
+.brutal-shell :is(.journal-view,.collection-summary,.lineage-goals) progress::-webkit-progress-value { background:var(--ab-ink); }
+.brutal-shell :is(.journal-view,.collection-summary,.lineage-goals) progress::-moz-progress-bar { background:var(--ab-ink); }
+
+/* Exploration: an instrument header, a straight path and reward register. */
+.brutal-shell .journal-view .exploration-header { padding:var(--ab-space-6) 0; gap:var(--ab-space-6); border-color:var(--ab-line); }
+.brutal-shell .journal-level { width:112px; height:96px; outline:0; border:0; border-left:2px solid var(--type-lune); border-radius:0; background:none; align-items:flex-start; padding-left:var(--ab-space-4); }
+.brutal-shell .journal-level small { font:10px ui-monospace,monospace; letter-spacing:1px; }
+.brutal-shell .journal-level b { font:800 64px/1 ui-monospace,monospace; color:var(--ab-ink); letter-spacing:-3px; }
+.brutal-shell .journal-view .xp-display strong { color:var(--ab-ink); font:15px ui-monospace,monospace; }
+.brutal-shell .journal-view .exploration-tabs { gap:var(--ab-space-6); border-color:var(--ab-line); margin:var(--ab-space-4) 0 var(--ab-space-6); }
+.brutal-shell .journal-view .exploration-tabs button { background:none; border:0; border-bottom:2px solid transparent; padding:var(--ab-space-3) 0; font:12px ui-monospace,monospace; color:var(--ab-muted); }
+.brutal-shell .journal-view .exploration-tabs [aria-selected=true] { color:var(--ab-ink); border-bottom-color:var(--ab-ink); }
+.brutal-shell .journey-overview.with-path { gap:var(--ab-space-12); }
+.brutal-shell .journey-path { padding:0 var(--ab-space-6) var(--ab-space-3) 0; }
+.brutal-shell .journey-caption > span { font:700 20px system-ui,sans-serif; text-transform:uppercase; }
+.brutal-shell .journey-path strong { font:600 20px ui-monospace,monospace; color:var(--ab-ink); }
+.brutal-shell .journey-node { color:var(--ab-muted); }
+.brutal-shell .journey-current .journey-node { color:var(--type-lune); }
+.brutal-shell .journey-path li:not(:last-child)::before { background:var(--ab-line); }
+.brutal-shell .journey-path .journey-unlock { border-color:var(--ab-line); }
+.brutal-shell .journal-view :is(.next-unlock,.recommended-goal,.exploration-panel,.unlock-grid article,.lineage-goal) { background:none; border-radius:0; border-color:var(--ab-line); box-shadow:none; padding-top:var(--ab-space-6); padding-bottom:var(--ab-space-6); }
+.brutal-shell .journal-view :is(.next-unlock,.recommended-goal) .eyebrow { color:var(--ab-muted); font:10px ui-monospace,monospace; letter-spacing:1px; }
+.brutal-shell .journal-view .recommended-goal.available { border-top:2px solid var(--type-aurore); }
+.brutal-shell .journal-view .ready-goals { border-top:2px solid var(--type-aurore); background:none; padding:var(--ab-space-4) 0; }
+.brutal-shell .journal-view .ready-goals button { display:block; width:100%; margin-bottom:var(--ab-space-2); text-align:left; }
+.brutal-shell .journal-view .unlock-grid article > span { color:var(--ab-muted); font:10px ui-monospace,monospace; }
+.brutal-shell .journal-view .unlock-grid .unlocked > span { color:var(--ab-ink); }
+.brutal-shell .journal-view .title-grid button { border:0; border-bottom:1px solid var(--ab-line); padding:var(--ab-space-4) 0; }
+.brutal-shell .journal-view .title-grid button[aria-pressed=true] { background:var(--ab-surface); border-left:2px solid var(--type-lune); padding-left:var(--ab-space-3); color:var(--ab-ink); }
+.brutal-shell .journal-view .fast-opening-setting { color:var(--ab-ink); }
+.brutal-shell .journal-view .collection-summary { background:none; border-color:var(--ab-line); border-radius:0; box-shadow:none; }
+.brutal-shell .journal-view .collection-summary h2 { font:750 32px system-ui,sans-serif; }
+.brutal-shell .rarity-progress > div { color:var(--ab-muted); }
+.brutal-shell .journal-view .set-completion { background:none; border:0; border-left:2px solid var(--type-aurore); border-radius:0; }
+.brutal-shell .journal-view .set-completion > span { color:var(--type-aurore); animation:none; }
+.brutal-shell .journal-view .set-completion strong { color:var(--ab-ink); font:650 15px system-ui,sans-serif; }
+.brutal-shell .journal-view .goal-categories button { border:0; border-bottom:1px solid var(--ab-line); padding:var(--ab-space-3); }
+.brutal-shell .journal-view .goal-categories [aria-pressed=true] { background:var(--ab-ink); color:var(--ab-bg); }
+.brutal-shell .journal-view .achievement { grid-template-columns:minmax(0,1fr) 240px; border-color:var(--ab-line); padding:var(--ab-space-6) 0 var(--ab-space-6) var(--ab-space-6); }
+.brutal-shell .journal-view .achievement::before { color:var(--ab-muted); }
+.brutal-shell .journal-view .achievement.ready { border-top:2px solid var(--type-aurore); }
+.brutal-shell .journal-view .achievement.ready::before { color:var(--type-aurore); }
+.brutal-shell .journal-view .achievement.claimed::before { color:var(--ab-ink); }
+.brutal-shell .journal-view .achievement h3 { font:700 20px system-ui,sans-serif; }
+.brutal-shell .journal-view .achievement > strong { grid-row:3; color:var(--ab-ink); font:12px ui-monospace,monospace; text-align:right; }
+.brutal-shell .journal-view .achievement > button { grid-row:4/7; }
+.brutal-shell .journal-view .achievement :is(.eyebrow,.goal-state,h3,p,progress,small) { grid-column:1; }
+.brutal-shell .journal-view .achievement .goal-state { color:var(--ab-muted); }
+.brutal-shell .journal-view .achievement.ready .goal-state { color:var(--type-aurore); }
+.brutal-shell .journal-view .lineage-goal { border-color:var(--ab-line); }
+.brutal-shell .journal-view .lineage-goal.complete { border-top-color:var(--type-aurore); }
+.brutal-shell .journal-view .lineage-goal header span { color:var(--ab-ink); }
+.brutal-shell .journal-view .lifetime-stats article { display:flex; border-color:var(--ab-line); gap:var(--ab-space-6); padding:var(--ab-space-4) 0; }
+.brutal-shell .journal-view .lifetime-stats small { font:11px/1.5 ui-monospace,monospace; letter-spacing:.5px; text-transform:uppercase; }
+.brutal-shell .journal-view .lifetime-stats strong { font:600 24px ui-monospace,monospace; color:var(--ab-ink); margin:0; }
+.brutal-shell .journal-view[data-view=stats] .journey-overview { display:none; }
+
+/* Boosters: neutral catalogue framing; the pack remains untouched. */
+.brutal-shell .boosters-heading { border-bottom:1px solid var(--ab-line); padding-bottom:var(--ab-space-4); }
+.brutal-shell .boosters-stock { border:0; border-left:1px solid var(--ab-line); border-radius:0; color:var(--ab-ink); font:12px ui-monospace,monospace; padding:var(--ab-space-3); }
+.brutal-shell .booster-gallery { padding:var(--ab-space-6) var(--ab-space-4); gap:var(--ab-space-6); }
+.brutal-shell .booster-choice { border:1px solid var(--ab-line); border-radius:0; background:var(--ab-bg); color:var(--ab-ink); box-shadow:none; }
+.brutal-shell .booster-choice.selected { border-color:var(--ab-ink); box-shadow:inset 0 -3px var(--ab-ink); }
+.brutal-shell .booster-stage-ring { border-color:var(--ab-line); background:none; box-shadow:none; }
+.brutal-shell .booster-choice-name { font:750 24px system-ui,sans-serif; text-transform:uppercase; letter-spacing:1px; }
+.brutal-shell .booster-choice > small { color:var(--ab-muted); font:10px ui-monospace,monospace; }
+.brutal-shell .booster-selection { border:0; border-top:1px solid var(--ab-line); border-radius:0; background:none; padding:var(--ab-space-6) 0; }
+.brutal-shell .booster-selection-heading h3 { margin:var(--ab-space-2) 0; }
+.brutal-shell .boosters-view .booster-favorite-button[aria-pressed=true] { background:var(--ab-ink); color:var(--ab-bg); }
+.brutal-shell .boosters-view :is(.booster-page-recharge,.booster-favorite-hint) { color:var(--ab-muted); font:11px/1.6 ui-monospace,monospace; }
+.brutal-shell .booster-page-details { border-color:var(--ab-line); }
+.brutal-shell .choose-favorite { background:none; border-color:var(--ab-line); border-radius:0; color:var(--ab-ink); }
+.brutal-shell .choose-favorite small { color:var(--ab-muted); }
+
+/* Shared dialogs, settings, inspection framing and feedback. */
+.brutal-shell .ux-modal { color:var(--ab-ink); background:var(--ab-surface); border:1px solid var(--ab-line); border-radius:0; padding:var(--ab-space-8); box-shadow:0 24px 64px #0008; }
+.brutal-shell .ux-modal::backdrop { background:#0b0e0fe6; }
+.brutal-shell .ux-modal .modal-close { padding:0; width:44px; height:44px; border-radius:0; background:var(--ab-surface); border-color:var(--ab-line); color:var(--ab-ink); }
+.brutal-shell .ux-modal .sheet-title { border-bottom:1px solid var(--ab-line); padding-bottom:var(--ab-space-4); }
+.brutal-shell .bottom-sheet { padding-top:0; }
+.brutal-shell .sheet-grip span { border-radius:0; background:var(--ab-muted); }
+.brutal-shell .settings-modal > h2 { padding-bottom:var(--ab-space-4); border-bottom:1px solid var(--ab-line); }
+.brutal-shell .settings-modal label { margin:var(--ab-space-6) 0; color:var(--ab-ink); }
+.brutal-shell :is(.save-settings,.alpha-settings,.pwa-settings,.save-confirmation) { border-color:var(--ab-line); border-radius:0; background:none; }
+.brutal-shell .save-confirmation { padding:var(--ab-space-4); border-left:2px solid var(--type-etincelle); }
+.brutal-shell .inspection-details .card-progression { border:0; border-top:1px solid var(--ab-line); border-bottom:1px solid var(--ab-line); border-radius:0; background:none; padding:var(--ab-space-4) 0; box-shadow:none; }
+.brutal-shell .inspection-details .card-progression strong { color:var(--ab-ink); }
+.brutal-shell .inspection-lineage { border-top:1px solid var(--ab-line); padding-top:var(--ab-space-4); }
+.brutal-shell .notice:not(.deck-empty) { border:1px solid var(--ab-line); border-left:2px solid var(--type-aurore); border-radius:0; background:var(--ab-surface); color:var(--ab-ink); box-shadow:none; }
+.brutal-shell .notice button { background:none; color:var(--ab-ink); border:0; border-radius:0; }
+.brutal-shell .portal-intro { width:640px; text-align:center; }
+.brutal-shell .portal-intro .arcane-signature { font-size:9px; padding-right:var(--ab-space-8); margin-bottom:var(--ab-space-6); }
+.brutal-shell .intro-brand { display:block; font:900 36px/1.1 system-ui,sans-serif; letter-spacing:-1px; margin-bottom:var(--ab-space-3); }
+.brutal-shell .portal-intro > svg { filter:none; margin:var(--ab-space-6) auto; }
+.brutal-shell .portal-intro h2 { font-size:24px; margin:var(--ab-space-6) 0 var(--ab-space-2); }
+.brutal-shell .portal-intro .text-button { border:0; border-bottom:1px solid var(--ab-line); }
+.brutal-shell.alpha-gate { background:var(--ab-bg); }
+.brutal-shell.alpha-gate h1 { font:800 32px system-ui,sans-serif; color:var(--ab-ink); }
+@media(max-width:850px) {
+ .brutal-shell .journal-level { width:88px; height:80px; }
+ .brutal-shell .journal-level b { font-size:48px; }
+ .brutal-shell .journal-view .exploration-header { gap:var(--ab-space-4); padding:var(--ab-space-3) 0 var(--ab-space-4); }
+ .brutal-shell .journal-view .exploration-header h2 { font-size:21px; }
+ .brutal-shell .journal-view .journey-overview.with-path { grid-template-columns:minmax(0,1fr); gap:0; }
+ .brutal-shell .journal-view .achievement { grid-template-columns:minmax(0,1fr); padding-left:var(--ab-space-6); }
+ .brutal-shell .journal-view .achievement > strong,.brutal-shell .journal-view .achievement > button { grid-column:1; grid-row:auto; text-align:left; }
+ .brutal-shell .journal-view .lifetime-stats article { gap:var(--ab-space-3); }
+ .brutal-shell .journal-view .lifetime-stats small { max-width:62%; font-size:10px; }
+ .brutal-shell .journal-view .lifetime-stats strong { font-size:17px; }
+ .brutal-shell .boosters-heading h2 { font-size:22px; }
+ .brutal-shell .boosters-stock { font-size:10px; }
+ .brutal-shell .booster-gallery { padding:var(--ab-space-4) var(--ab-space-3); }
+ .brutal-shell .ux-modal { padding:var(--ab-space-6) var(--ab-space-4); }
+ .brutal-shell .bottom-sheet { padding-top:0; }
+ .brutal-shell .card-inspection[open] { grid-template-columns:minmax(0,1fr); }
+ .brutal-shell .portal-intro { padding-top:var(--ab-space-16); }
+ .brutal-shell .portal-intro .arcane-signature { gap:var(--ab-space-2); font-size:8px; padding-right:0; }
+ .brutal-shell .intro-brand { font-size:28px; }
+ .brutal-shell .portal-intro > svg { width:190px; height:190px; margin:var(--ab-space-4) auto; }
+ .brutal-shell .portal-intro h2 { font-size:21px; }
+ .brutal-shell .bottom-sheet .collection-filters { display:grid; width:100%; }
+}
+
+body:has(.brutal-shell) { background:#0b0e0f; }
+
+.brutal-shell .page-footer { color:var(--ab-muted); border-color:var(--ab-line); }
+
+/* Small finishing touches: native controls, framed whitespace, concise guidance. */
+.brutal-shell .settings-modal > label { min-height:44px; gap:var(--ab-space-3); }
+.brutal-shell .settings-modal input[type=checkbox] { appearance:none; flex:0 0 22px; width:22px; height:22px; border:1px solid var(--ab-line); background:var(--ab-bg); display:grid; place-content:center; margin:0; cursor:pointer; }
+.brutal-shell .settings-modal input[type=checkbox]:checked { background:var(--ab-ink); border-color:var(--ab-ink); }
+.brutal-shell .settings-modal input[type=checkbox]:checked::before { content:""; width:10px; height:6px; border:solid var(--ab-bg); border-width:0 0 2px 2px; transform:translateY(-2px) rotate(-45deg); }
+.brutal-shell .settings-modal input:disabled { opacity:.4; cursor:not-allowed; }
+.brutal-shell .settings-modal :is(input,select):focus-visible { outline:2px solid var(--type-lune); outline-offset:4px; }
+.brutal-shell .settings-modal .motion-setting { display:grid; gap:var(--ab-space-2); }
+.brutal-shell .settings-modal select { appearance:none; padding-right:40px; background-image:linear-gradient(45deg,transparent 50%,var(--ab-ink) 50%),linear-gradient(135deg,var(--ab-ink) 50%,transparent 50%); background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%; background-size:6px 6px; background-repeat:no-repeat; font:12px ui-monospace,monospace; }
+.brutal-shell .settings-modal input[type=range] { appearance:none; width:100%; height:44px; margin:var(--ab-space-2) 0 0; background:transparent; cursor:pointer; }
+.brutal-shell .settings-modal input[type=range]::-webkit-slider-runnable-track { height:4px; background:var(--ab-line); }
+.brutal-shell .settings-modal input[type=range]::-webkit-slider-thumb { appearance:none; width:18px; height:24px; margin-top:-10px; border:2px solid var(--ab-bg); border-radius:0; background:var(--ab-ink); box-shadow:0 0 0 1px var(--ab-line); }
+.brutal-shell .settings-modal input[type=range]::-moz-range-track { height:4px; background:var(--ab-line); }
+.brutal-shell .settings-modal input[type=range]::-moz-range-thumb { width:14px; height:20px; border:2px solid var(--ab-bg); border-radius:0; background:var(--ab-ink); }
+.brutal-shell .journal-view .achievement.near .goal-state { color:var(--type-lune); }
+.brutal-shell .journal-view .achievement.near { border-left:2px solid var(--type-lune); }
+.brutal-shell .portal-intro::before { content:""; position:absolute; inset:12px; pointer-events:none; background:linear-gradient(var(--type-lune),var(--type-lune)) left top/20px 1px no-repeat,linear-gradient(var(--type-lune),var(--type-lune)) left top/1px 20px no-repeat,linear-gradient(var(--type-lune),var(--type-lune)) right bottom/20px 1px no-repeat,linear-gradient(var(--type-lune),var(--type-lune)) right bottom/1px 20px no-repeat; }
+.brutal-shell .portal-intro .intro-brand::after { content:"◇ — ⌖ — ◇"; display:block; margin-top:var(--ab-space-4); color:var(--type-lune); font:12px ui-monospace,monospace; letter-spacing:4px; }
+@media(min-width:851px) {
+ .brutal-shell .journey-overview.with-path .journey-notes { position:relative; align-self:stretch; padding-left:var(--ab-space-6); border-left:1px solid var(--ab-line); border-bottom:1px solid var(--ab-line); padding-bottom:var(--ab-space-12); }
+ .brutal-shell .journey-overview.with-path .journey-notes::after { content:"◇"; position:absolute; bottom:var(--ab-space-3); right:0; color:var(--ab-line); font:12px ui-monospace,monospace; }
+}
+@media(max-width:850px) {
+ .brutal-shell .first-steps ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--ab-space-3); padding:0; }
+ .brutal-shell .first-steps li { font-size:12px; line-height:1.5; }
+ .brutal-shell .context-tip p { font-size:13px; line-height:1.5; margin:0; }
+ .brutal-shell .context-tip { display:grid; grid-template-columns:minmax(0,1fr) 44px; }
+ .brutal-shell .context-tip p { grid-column:1/-1; }
+ .brutal-shell .context-tip button { padding:var(--ab-space-2); }
+}
+@media(forced-colors:active) {
+ .brutal-shell .settings-modal :is(input[type=checkbox],input[type=range],select) { appearance:auto; }
+ .brutal-shell .settings-modal input[type=checkbox]::before { content:none; }
+}
