@@ -1,0 +1,163 @@
+/* Phase 11A. Scoped to the Machine, its workshop and the Voyage journal. */
+:root {
+  --night-0:#0d171b; --night-1:#142429; --night-2:#1c3032;
+  --faerie-green:#bbd999; --faerie-green-muted:#8ca58a;
+  --ancient-gold:#d8bd82; --astral-violet:#bba8dd; --danger:#e6a59a;
+  --ink:#e7ebdb; --ink-muted:#bac8bb; --rule:#50645d;
+  --surface-machine:var(--night-1); --surface-journal:var(--night-0); --surface-card:var(--night-2);
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px;
+  --command-radius:2px; --engraved-shadow:inset 0 1px #e0e6c30c; --reward-glow:0 0 16px #d8bd8220;
+  --font-display:Georgia,serif; --font-ui:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.ui-rune { flex-shrink:0; color:var(--ancient-gold); }
+.tab-machine .machine-panel { position:relative; border:1px solid var(--rule); border-radius:2px; box-shadow:var(--engraved-shadow); }
+.tab-machine .machine-panel::before,.tab-machine .machine-panel::after { content:''; position:absolute; width:16px; height:16px; z-index:2; pointer-events:none; border-color:var(--ancient-gold); }
+.tab-machine .machine-panel::before { left:4px; top:4px; border-left:2px solid var(--ancient-gold); border-top:2px solid var(--ancient-gold); }
+.tab-machine .machine-panel::after { right:4px; bottom:4px; border-right:2px solid var(--ancient-gold); border-bottom:2px solid var(--ancient-gold); }
+.tab-machine .panel-heading { background:var(--night-1); }
+.tab-machine .panel-heading .eyebrow { letter-spacing:1px; color:var(--ink-muted); }
+.tab-machine .machine-panel .level { background:transparent; border:0; color:var(--ancient-gold); font-variant-numeric:tabular-nums; }
+.tab-machine .stats-row { background:transparent; border:0; border-bottom:1px solid var(--rule); border-radius:0; }
+.tab-machine .stats-row > div { background:transparent; border:0; }
+.tab-machine .stats-row .energy-stat { background:var(--surface-machine); border:1px solid var(--rule); border-left:3px solid var(--ancient-gold); border-radius:2px; }
+.tab-machine .energy-stat strong { font-variant-numeric:tabular-nums; color:var(--ink); }
+.tab-machine .stat-icon { color:var(--ancient-gold); }
+.tab-machine .page-heading .eyebrow { color:var(--ink-muted); letter-spacing:1px; }
+.tab-machine .combo-panel { background:var(--night-1); border-top:1px solid var(--rule); }
+.tab-machine .combo-panel strong { color:var(--ancient-gold); letter-spacing:.3px; }
+.tab-machine .combo-panel span { font-variant-numeric:tabular-nums; color:var(--ink); }
+.tab-machine .combo-track { border-radius:0; background:repeating-linear-gradient(90deg,transparent 0,transparent calc(25% - 2px),var(--rule) calc(25% - 2px),var(--rule) 25%),var(--night-0); border-bottom:1px solid var(--rule); }
+.tab-machine .combo-track i { border-radius:0; background:linear-gradient(90deg,var(--faerie-green-muted),var(--faerie-green)); }
+.tab-machine .shop-panel { background:transparent; border:0; border-left:1px solid var(--rule); border-radius:0; box-shadow:none; }
+.tab-machine .shop-panel .panel-heading { background:transparent; }
+.tab-machine .exploration-strip button { background:transparent; border:0; border-radius:0; border-bottom:1px solid var(--rule); }
+.arcane-upgrades { background:var(--surface-machine); border-radius:2px; border:1px solid var(--rule); box-shadow:none; }
+.arcane-upgrades .section-title h2 { font:24px var(--font-display); color:var(--ink); }
+.arcane-upgrades .upgrade-grid { gap:0 32px; }
+.arcane-upgrades .upgrade-item { display:flex; align-items:center; gap:16px; min-width:0; border:0; border-bottom:1px solid var(--rule); border-radius:0; background:transparent; padding:20px 0; box-shadow:none; }
+.arcane-upgrades .upgrade-item > .ui-rune { width:36px; height:36px; }
+.arcane-upgrades .upgrade-item > div { flex:1; min-width:0; }
+.arcane-upgrades .upgrade-item strong { color:var(--ink); font:600 14px var(--font-ui); }
+.arcane-upgrades .upgrade-item small { font-size:12px; color:var(--ink-muted); line-height:1.6; }
+.arcane-upgrades .upgrade-item button { flex-shrink:0; min-height:44px; border-radius:var(--command-radius); background:var(--night-2); border:1px solid var(--rule); color:var(--ink); font-variant-numeric:tabular-nums; }
+.arcane-upgrades .upgrade-item.available button { border-color:var(--faerie-green-muted); color:var(--faerie-green); }
+.arcane-upgrades .storage-upgrade { border-bottom:2px solid var(--rule); }
+.journal-view { color:var(--ink); font-family:var(--font-ui); max-width:1120px; margin:0 auto; }
+.tab-progression .page-heading { margin-bottom:12px; }
+.tab-progression .page-heading h1 { font:32px var(--font-display); }
+.tab-progression .page-heading .eyebrow,.tab-progression .page-heading p,.tab-progression .exploration-strip,.tab-progression .stats-row { display:none; }
+.journal-view .exploration-header { gap:24px; background:none; border:0; border-bottom:1px solid var(--rule); border-radius:0; padding:24px 0; }
+.journal-level { width:94px; height:94px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px solid var(--ancient-gold); outline:1px solid var(--rule); outline-offset:5px; background:var(--night-1); border-radius:50%; }
+.journal-level small { color:var(--ancient-gold); font-size:12px; }
+.journal-level b { font:44px var(--font-display); color:var(--ink); font-variant-numeric:tabular-nums; }
+.journal-view .exploration-header h2 { font:30px var(--font-display); margin:0 0 8px; }
+.journal-view .exploration-header p { color:var(--ink-muted); }
+.journal-view .xp-display { margin-left:auto; max-width:340px; }
+.journal-view .xp-display strong { font-weight:500; color:var(--ancient-gold); font-variant-numeric:tabular-nums; }
+.journal-view progress { height:4px; border-radius:0; accent-color:var(--ancient-gold); }
+.journal-view progress::-webkit-progress-bar { background:var(--night-2); }
+.journal-view progress::-webkit-progress-value { background:var(--ancient-gold); }
+.journal-view progress::-moz-progress-bar { background:var(--ancient-gold); }
+.journal-view .exploration-tabs { gap:24px; margin:16px 0 24px; border-bottom:1px solid var(--rule); }
+.journal-view .exploration-tabs button { min-height:44px; border:0; border-bottom:2px solid transparent; background:none; border-radius:0; padding:12px 0; color:var(--ink-muted); }
+.journal-view .exploration-tabs [aria-selected=true] { color:var(--ancient-gold); border-bottom-color:var(--ancient-gold); background:none; }
+.journey-overview.with-path { display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-bottom:24px; }
+.journey-path { padding:0 24px 12px 0; }
+.journey-caption { margin:0 0 24px; }
+.journey-caption > span { display:block; font:24px var(--font-display); margin-bottom:8px; }
+.journey-caption small { font-size:12px; color:var(--ink-muted); }
+.journey-path ol { list-style:none; margin:0; padding:0; }
+.journey-path li { position:relative; display:flex; gap:24px; padding:0 0 28px; min-height:96px; }
+.journey-path li:not(:last-child)::before { content:''; position:absolute; left:17px; top:32px; bottom:0; width:1px; background:linear-gradient(var(--ancient-gold),var(--rule)); }
+.journey-node { width:36px; height:36px; display:grid; place-items:center; flex-shrink:0; color:var(--faerie-green-muted); font-size:24px; }
+.journey-current .journey-node { color:var(--ancient-gold); }
+.journey-path strong { font:22px var(--font-display); }
+.journey-path p { margin:6px 0; font-size:13px; color:var(--ink-muted); }
+.journey-path small { color:var(--ancient-gold); font-size:12px; font-variant-numeric:tabular-nums; }
+.journey-path .journey-unlock { border-left:1px solid var(--rule); padding-left:12px; }
+.journal-view .next-unlock,.journal-view .recommended-goal { margin:0 0 24px; border:0; border-top:1px solid var(--rule); border-radius:0; padding:20px 0; background:none; box-shadow:none; }
+.journal-view .next-unlock .eyebrow,.journal-view .recommended-goal .eyebrow { letter-spacing:0; font:12px var(--font-ui); color:var(--ancient-gold); }
+.journal-view .next-unlock h3,.journal-view .recommended-goal h3 { font:22px var(--font-display); color:var(--ink); }
+.journal-view .next-unlock p,.journal-view .recommended-goal p { color:var(--ink-muted); font-size:13px; }
+.journal-view .recommended-goal button,.journal-view .exploration-panel > button,.journal-view .achievement button,.journal-view .lineage-goal button { min-height:44px; border-radius:var(--command-radius); background:var(--faerie-green); color:var(--night-0); border:1px solid var(--faerie-green-muted); }
+.journal-view .recommended-goal button:disabled,.journal-view .achievement button:disabled,.journal-view .lineage-goal button:disabled { color:var(--ink-muted); background:transparent; border:1px solid var(--rule); }
+.journal-view .ready-goals { background:none; border:0; padding:0 0 16px; }
+.journal-view .ready-goals h3 { font:18px var(--font-display); color:var(--ancient-gold); }
+.journal-view .ready-goals button { border-radius:0; background:none; color:var(--faerie-green); border:0; border-bottom:1px solid var(--rule); padding:12px 0; }
+.journal-view .ready-goals summary { font-size:12px; min-height:44px; padding:12px 0; color:var(--ink-muted); }
+.journal-view .unlock-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 32px; }
+.journal-view .unlock-grid article,.journal-view .exploration-panel { background:none; border:0; border-bottom:1px solid var(--rule); border-radius:0; padding:24px 0; box-shadow:none; }
+.journal-view .unlock-grid article > span { color:var(--ancient-gold); font-size:10px; letter-spacing:0; }
+.journal-view .unlock-grid h3 { font:18px var(--font-display); }
+.journal-view .title-grid button { border:0; border-bottom:1px solid var(--rule); border-radius:0; background:none; }
+.journal-view .title-grid button[aria-pressed=true] { color:var(--ancient-gold); border-left:2px solid var(--ancient-gold); }
+.journal-view .collection-summary { background:none; border:0; border-top:1px solid var(--rule); border-radius:0; padding:24px 0; box-shadow:none; }
+.journal-view .set-completion { background:none; border:0; border-left:2px solid var(--ancient-gold); border-radius:0; padding:12px 20px; }
+.journal-view .set-completion > span { animation:none; font-size:36px; }
+.journal-view .set-completion strong { font-size:18px; }
+.journal-view .goal-categories button { border:0; border-bottom:1px solid var(--rule); border-radius:0; background:none; color:var(--ink-muted); }
+.journal-view .goal-categories button[aria-pressed=true] { color:var(--ancient-gold); border-bottom-color:var(--ancient-gold); }
+.journal-view .achievement-grid { display:block; }
+.journal-view .achievement { display:grid; grid-template-columns:minmax(0,1fr) 200px; column-gap:32px; row-gap:8px; position:relative; padding:24px 0 24px 24px; border:0; border-bottom:1px solid var(--rule); border-radius:0; background:none; box-shadow:none; }
+.journal-view .achievement::before { content:'◇'; position:absolute; top:50px; left:0; color:var(--ink-muted); }
+.journal-view .achievement.ready::before { content:'◆'; color:var(--ancient-gold); }
+.journal-view .achievement.claimed::before { content:'✓'; color:var(--faerie-green); }
+.journal-view .achievement .eyebrow,.journal-view .achievement h3,.journal-view .achievement > p,.journal-view .achievement progress,.journal-view .achievement > small { grid-column:1; }
+.journal-view .achievement .eyebrow { letter-spacing:0; font-size:10px; color:var(--ink-muted); }
+.journal-view .achievement h3 { margin:0; font:22px var(--font-display); }
+.journal-view .achievement > p { margin:0; font-size:13px; }
+.journal-view .achievement > strong { grid-column:2; grid-row:2; align-self:center; color:var(--ancient-gold); font-size:12px; }
+.journal-view .achievement > button { grid-column:2; grid-row:3/6; align-self:center; margin:0; }
+.journal-view .achievement > small { font-size:12px; }
+.journal-view .lineage-goal { border:0; border-top:1px solid var(--rule); border-radius:0; padding:24px 0; background:none; box-shadow:none; animation:none; }
+.journal-view .lifetime-stats { display:block; padding:12px 0; }
+.journal-view .lifetime-stats article { display:flex; justify-content:space-between; align-items:center; gap:24px; border:0; border-bottom:1px solid var(--rule); border-radius:0; padding:18px 0; background:none; }
+.journal-view .lifetime-stats small { font-size:14px; color:var(--ink-muted); }
+.journal-view .lifetime-stats strong { color:var(--ancient-gold); font:20px var(--font-ui); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.journal-view button:focus-visible,.arcane-upgrades button:focus-visible { outline:3px solid var(--ancient-gold); outline-offset:3px; }
+.journal-view button,.arcane-upgrades button { transition:border-color 140ms,color 140ms; }
+.journal-view button:not(:disabled):hover,.arcane-upgrades button:not(:disabled):hover { border-color:var(--ancient-gold); }
+@media(max-width:850px) {
+  .tab-machine .mobile-resources strong { padding:6px 10px; border-left:2px solid var(--ancient-gold); border-bottom:1px solid var(--rule); background:var(--night-0); font-size:16px; }
+  .tab-machine .machine-panel { border-radius:2px; }
+  .tab-machine .machine-panel .panel-heading { padding:8px 12px; }
+  .tab-machine .machine-panel .panel-heading h2 { font-family:var(--font-display); }
+  .tab-machine .mobile-machine-actions { background:var(--night-1); border-top:1px solid var(--rule); }
+  .tab-machine .mobile-machine-actions button { display:flex; gap:8px; align-items:center; border-radius:var(--command-radius); background:var(--night-2); border-color:var(--rule); }
+  .tab-machine .mobile-machine-actions button:first-child { color:var(--ancient-gold); }
+  .tab-machine .mobile-machine-actions .ui-rune { width:16px; height:16px; }
+  .tab-machine .mobile-machine-actions button:first-child { padding:8px; gap:5px; }
+  .tab-machine .mobile-booster { background:var(--night-1); border-color:var(--rule); }
+  .tab-machine .mobile-booster-actions button { border-radius:var(--command-radius); background:var(--night-2); border-color:var(--rule); }
+  .tab-machine .mobile-booster-actions .ux-primary { background:var(--faerie-green); }
+  .tab-machine .bottom-sheet:has(.arcane-upgrades) { border-radius:4px 4px 0 0; background:var(--surface-machine); border-color:var(--rule); }
+  .arcane-upgrades .upgrade-item { gap:12px; padding:18px 0; flex-wrap:nowrap; }
+  .arcane-upgrades .upgrade-item > div { min-width:0; }
+  .arcane-upgrades .upgrade-item > .ui-rune { width:28px; height:28px; }
+  .arcane-upgrades .upgrade-item button { padding:10px; }
+  .arcane-upgrades .upgrade-item strong { font-size:13px; }
+  .tab-progression .page-heading { display:none; }
+  .journal-view .exploration-header { flex-direction:row; align-items:center; flex-wrap:wrap; gap:18px; padding:12px 4px 20px; }
+  .journal-level { width:70px; height:70px; }
+  .journal-level b { font-size:34px; }
+  .journal-view .exploration-header h2 { font-size:25px; }
+  .journal-view .xp-display { flex-basis:100%; margin:8px 0 0; max-width:none; min-width:0; }
+  .journal-view .xp-display strong { text-align:left; font-size:14px; }
+  .journal-view .xp-display small { font-size:12px; }
+  .journal-view .exploration-tabs { gap:20px; margin-bottom:24px; }
+  .journal-view .exploration-tabs button { padding:12px 0; font-size:12px; }
+  .journey-overview.with-path { grid-template-columns:minmax(0,1fr); gap:0; }
+  .journey-path { padding:0; }
+  .journey-path li { min-height:88px; }
+  .journey-path strong { font-size:21px; }
+  .journal-view .next-unlock { padding:16px 0; margin-bottom:12px; }
+  .journal-view .recommended-goal { align-items:stretch; gap:12px; padding:16px 0; }
+  .journal-view .unlock-grid { grid-template-columns:1fr; }
+  .journal-view .achievement { grid-template-columns:1fr; gap:8px; padding:20px 0 20px 20px; }
+  .journal-view .achievement > strong,.journal-view .achievement > button { grid-column:1; grid-row:auto; }
+  .journal-view .achievement > button { justify-self:start; }
+  .journal-view .lifetime-stats small { font-size:12px; }
+  .journal-view .lifetime-stats strong { font-size:16px; }
+}
+@media(prefers-reduced-motion:reduce) { .journal-view button,.arcane-upgrades button { transition:none; } }
+html[data-motion=reduce] .journal-view button,html[data-motion=reduce] .arcane-upgrades button { transition:none; }

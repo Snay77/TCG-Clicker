@@ -10,6 +10,7 @@ import "./ux.css";
 import "./alpha.css";
 import "./mobile.css";
 import "./boosters.css";
+import "./art-direction.css";
 export const metadata: Metadata = {
   applicationName: 'TCG Clicker',
   appleWebApp: { capable: true, title: 'TCG Clicker', statusBarStyle: 'black-translucent' },

@@ -48,6 +48,7 @@ import { useMobileLayout } from './game/useMobileLayout';
 import BottomSheet from './game/BottomSheet';
 import MobileBooster from './game/MobileBooster';
 import BoostersView from './game/BoostersView';
+import Rune from './game/Rune';
 import { usePWA } from './game/usePWA';
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
@@ -412,7 +413,7 @@ export default function Game() {
                     </div>
                   </div>
                   <ComboBar combo={combo} bonus={power.comboBonus} />
-                  {mobile && <><div className="mobile-machine-actions"><button onClick={() => setUpgradesOpen(true)}>Améliorations <span>↗</span></button><button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{Number(power.click.toFixed(2))} / clic · {power.auto.toFixed(1)} / sec</small></div><MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/></>}
+                  {mobile && <><div className="mobile-machine-actions"><button onClick={() => setUpgradesOpen(true)}><Rune/>Améliorations <span>↗</span></button><button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{Number(power.click.toFixed(2))} / clic · {power.auto.toFixed(1)} / sec</small></div><MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/></>}
                 </section>
                 <section className={`shop-panel ${nextSource?'pack-available':''}`} id="booster">
                   <div className="panel-heading">

@@ -1,3 +1,9 @@
+# Prototype visuel 11A — 4 octobre 2026
+
+Machine et Voyage, direction Faerie Field Journal × Arcane Machine. 103 tests, TypeScript et build réussis. Parcours responsive/PWA et boosters rejoués Chrome/Edge ; Machine sans scroll sur les formats Phase 10. Voyage vérifié sur desktop 1440 × 1000 et mobile 390 × 844 : seuils existants, 42 objectifs, 14 statistiques, récompense unique et persistante, focus et reduced motion. Galerie `test-results/ui-redesign/index.html` : 85 comparaisons avec les mêmes fixtures que l’audit. Aucun moteur, carte ou format de sauvegarde modifié. Prototype local en attente de validation artistique avant 11B ; voir `design/UI_BIBLE.md` et `design/phase11a-prototype.md`. Pas de test Safari ou téléphone réel dans cette passe.
+
+---
+
 # Vérification courante — Alpha 0.2.0 / Phase 10
 
 3 octobre 2026, build local de production. Les résultats Alpha 0.1.0 ci-dessous sont historiques, particulièrement la passe Firefox qui n’a pas été rejouée pour Phase 10.
