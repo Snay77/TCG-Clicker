@@ -1,3 +1,22 @@
+# Vérification courante — Alpha 0.2.0 / Phase 10
+
+3 octobre 2026, build local de production. Les résultats Alpha 0.1.0 ci-dessous sont historiques, particulièrement la passe Firefox qui n’a pas été rejouée pour Phase 10.
+
+- 103 tests unitaires, TypeScript et build réussis. Les 96 tests de règles/sauvegarde restent verts ; quatre tests de service worker et trois tests de préférence de booster ajoutés. Aucune modification des coûts, récompenses, probabilités, cartes ou règles.
+- Catalogue Boosters et favori : Chrome aux formats 360 × 800, 390 × 844, 430 × 932, 768 × 1024 et 1440 × 1000 ; Edge à 390 × 844 et 1440 × 1000. Paquet visible, cinq onglets mobiles, Machine sans scroll, aucun débordement horizontal. Anciennes préférences reprises, favori ajouté/retiré puis conservé au rechargement, ouvertures gratuites/payantes avec coût exact et cinq attributions. Zéro erreur console/JavaScript. Rapports/captures ignorés dans test-results/boosters/ ; reproduction : scripts/verify-boosters.cjs.
+- Chrome 154 et Edge 154 réels sur Windows, profils de test isolés. Chrome : 360 × 800, 390 × 844, 393 × 852, 430 × 932, 768 × 1024 et desktop 1440 × 1000. Edge : 390 × 844 et desktop 1440 × 1000. Touches émulées sur les formats mobiles, zéro erreur JavaScript sur les parcours.
+- Machine : hauteur du document égale à celle du viewport sur les cinq formats portrait. Énergie, combo, boosters, upgrades et navigation restent visibles sans scroll global. Douze taps/clics enregistrés, achats en panneau, focus piégé puis restauré, fermeture de panneau sans déplacement du fond.
+- Collection : filtres en panneau, deux colonnes, inspection ; Deck : slots prioritaires et sélection en panneau ; Voyage : niveau et récompenses ; export JSON et version Alpha 0.2.0. Captures des huit états demandés et comparaison avant/après (baseline commit abe8e99).
+- Manifest/PNG/standalone, service worker et /dev HTTP 404 vérifiés. Relance offline après première préparation : machine fonctionnelle, données conservées et navigation locale. Le cache ne contient aucune sauvegarde ni /dev.
+- Régression Alpha complète Chrome/Edge : import refusé/validé, export, diagnostics, récupération/reset, deux onglets, fallback/bail expiré/course de leases, stockage interdit, erreur React/export, booster interrompu repris, rafale/limite de particules, rythme des écritures, tactile normal et paysage. Zéro erreur console après ajout du favicon local.
+- Nouvelle version de worker réellement installée sur une origine de proxy isolée : elle reste en attente pendant l’ouverture, puis activation manuelle depuis Paramètres, rechargement et collection conservée. Le handler beforeinstallprompt consomme le prompt ; un prompt refusé disparaît. Ce test du handler n’est pas une installation Android réelle.
+- Chrome normal, profil neuf : Page.getInstallabilityErrors renvoie une liste vide. En contexte privé, le blocage in-incognito est attendu. Aide iOS et détection navigator.standalone vérifiées par émulation, pas par Safari.
+- Lighthouse indisponible localement ; aucun score PWA. Tests physiques Android/iPhone/iPad, Safari, safe areas avec encoche, clavier, audio et stockage entre Safari/PWA restent à effectuer. Firefox Phase 10 reste à vérifier.
+
+Rapports/captures ignorés : test-results/phase10/report.json, update-report.json, install-report.json et gallery.html. Reproduction : README et design/phase10-mobile-pwa.md.
+
+---
+
 # Vérification de TCG Clicker
 
 ## Alpha 0.1.0 — Phase 9 · 2 octobre 2026

@@ -1,5 +1,17 @@
 # Changelog
 
+## Alpha 0.2.0 — 3 octobre 2026
+
+- Machine mobile centrée sur un écran : énergie, portail, combo, boosters et améliorations.
+- Navigation fixe en bas, header compact et safe areas.
+- Onglet Boosters : choix par paquet illustré, ouverture gratuite ou payante et favori conservé dans la sauvegarde ; miniature du favori sur la Machine mobile. Seul Faerie est proposé.
+- Panneaux pour améliorations, filtres, détails booster et remplacement d’un compagnon ; Collection à deux colonnes et détail plein écran.
+- Progression compacte avec récompenses disponibles mises en avant.
+- PWA : manifest, icônes issues du symbole existant, installation Android et aide Safari iOS, mode standalone.
+- Relance hors connexion après préparation du cache et mise à jour explicite avec sauvegarde préalable.
+
+Règles, coûts, probabilités et progression inchangés ; sauvegarde v4 conservée. Aucun nouveau set, système majeur, notification push ou tracking. Version préparée localement, installation réelle Android/iOS à valider.
+
 ## Alpha 0.1.0 — 2 octobre 2026
 
 Première alpha navigateur de TCG Clicker — Faerie.

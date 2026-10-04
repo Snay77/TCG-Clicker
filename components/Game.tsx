@@ -44,8 +44,17 @@ import { UNLOCKS, rewardDescription } from '../lib/exploration';
 import { ALPHA_VERSION, devToolsEnabled } from '../lib/release';
 import { useSaveSession } from './game/useSaveSession';
 import SaveGate from './game/SaveGate';
+import { useMobileLayout } from './game/useMobileLayout';
+import BottomSheet from './game/BottomSheet';
+import MobileBooster from './game/MobileBooster';
+import BoostersView from './game/BoostersView';
+import { usePWA } from './game/usePWA';
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
+  const mobile = useMobileLayout();
+  const [upgradesOpen, setUpgradesOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const pwa = usePWA();
   const [save, setSave] = useState<Save>(() => initialSave());
   const [wallTime,setWallTime]=useState(0);
   const [settingsOpen,setSettingsOpen]=useState(false);
@@ -53,6 +62,8 @@ export default function Game() {
   function playSound(kind:SoundKind,gesture=false) { audioEngine.current ??= new GameAudio();audioEngine.current.play(kind,latest.current.ux,gesture); }
   function updateSettings(change:Partial<UX>) { setSave(s=>({...s,ux:{...s.ux,...change}})); }
   function navigate(target:string) {
+    if (target === 'booster') { setTab('boosters'); window.scrollTo({top:0}); return; }
+    if (mobile && target === 'upgrades') { setTab('machine'); setUpgradesOpen(true); return; }
     if(target==='upgrades'||target==='booster') {setTab('machine');requestAnimationFrame(()=>document.getElementById(target)?.scrollIntoView({behavior:latest.current.ux.motion==='reduce'?'instant':'smooth',block:'center'}));}
     else setTab(target);
   }
@@ -192,7 +203,7 @@ export default function Game() {
   const nextSource:PackSource|null=freePackCount(available)>0?"free":available.energy>=price(available)?"paid":null;
   if (!ready) return <SaveGate session={session}/>;
   return (
-    <div className={`app-shell ${contextualTip(save)==='click'?'onboarding-machine':''}`}>
+    <div className={`app-shell tab-${tab} ${contextualTip(save)==='click'?'onboarding-machine':''}`}>
       <aside className="sidebar">
         <Link href="/" className="brand">
           <span className="brand-icon">✦</span>
@@ -206,6 +217,7 @@ export default function Game() {
         <nav aria-label="Navigation principale">
           {[
             ["machine", "◈", "La machine"],
+            ["boosters", "▣", "Boosters"],
             ["collection", "▦", "Collection"],
             ["deck", "▤", "Mon deck"],
             ["progression", "✧", "Progression"],
@@ -214,11 +226,11 @@ export default function Game() {
               key={id}
               className={tab === id ? "active" : ""}
               aria-current={tab===id?"page":undefined}
-              onClick={() => {setTab(id);if(id==='collection'||id==='deck'||id==='progression')setSave(s=>dismissTip(s,id));}}
+              onClick={() => {setTab(id);window.scrollTo({top:0});if(id==='collection'||id==='deck'||id==='progression')setSave(s=>dismissTip(s,id));}}
             >
               <span>{icon}</span>
-              <span className="nav-label">{label}</span>
-              {((id==='machine'&&freePackCount(save)>0)||(id==='progression'&&ACHIEVEMENTS.some(a=>achievementReady(save,a))))&&<i className="availability-dot" aria-label={id==='machine'?'Booster gratuit disponible':'Récompense disponible'}/>}
+              <span className="nav-label">{mobile ? ({machine:'Machine',boosters:'Boosters',collection:'Collection',deck:'Deck',progression:'Voyage'}[id]) : label}</span>
+              {(((id==='machine'||id==='boosters')&&freePackCount(save)>0)||(id==='progression'&&ACHIEVEMENTS.some(a=>achievementReady(save,a))))&&<i className="availability-dot" aria-label={id!=='progression'?'Booster gratuit disponible':'Récompense disponible'}/>}
               {id === "collection" && <small>{discovered}/{CARDS.length}</small>}
               {id === "deck" && <small>{save.deck.length}/{deckCapacity(save)}</small>}
             </button>
@@ -241,12 +253,14 @@ export default function Game() {
       </aside>
       <main>
         <header className="topbar">
+          <div className="mobile-resources"><strong aria-label="Énergie">✦ {fmt(save.energy)}</strong><button onClick={() => setTab('progression')}>Nv. {explorationLevel(save.account.xp)}</button><span aria-label="Boosters disponibles">▣ {freePackCount(available)}</span></div>
           <span>
             La Clairière{" "}
             <span className="muted">
               /{" "}
               {tab === "machine"
                 ? "Portail interdimensionnel"
+                : tab === "boosters" ? "Choix des boosters"
                 : tab === "deck"
                   ? "Compagnons actifs"
                   : tab === "progression" ? "Votre voyage" : "Classeur de créatures"}
@@ -268,6 +282,7 @@ export default function Game() {
               <h1>
                 {tab === "machine"
                   ? "Un passage vers l’inconnu."
+                  : tab === "boosters" ? "Une rencontre dans chaque paquet."
                   : tab === "deck"
                     ? "De petites créatures. De grands pouvoirs."
                     : tab === "progression" ? "Chaque rencontre ouvre un chemin." : "Votre petit monde prend vie."}
@@ -297,7 +312,7 @@ export default function Game() {
               </button>
             </div>
           )}
-          {ready&&!opening&&<Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={navigate}/>}
+          {ready&&!opening&&!mobile&&<div className="onboarding-container"><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={navigate}/></div>}
           <section className="stats-row" aria-label="Ressources">
             <div className="energy-stat">
               <span className="stat-icon">✦</span>
@@ -397,12 +412,14 @@ export default function Game() {
                     </div>
                   </div>
                   <ComboBar combo={combo} bonus={power.comboBonus} />
+                  {mobile && <><div className="mobile-machine-actions"><button onClick={() => setUpgradesOpen(true)}>Améliorations <span>↗</span></button><button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{Number(power.click.toFixed(2))} / clic · {power.auto.toFixed(1)} / sec</small></div><MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/></>}
                 </section>
                 <section className={`shop-panel ${nextSource?'pack-available':''}`} id="booster">
                   <div className="panel-heading">
                     <div>
                       <span className="eyebrow">UNE NOUVELLE RENCONTRE</span>
                       <h2>Booster Faerie</h2>
+                      <button className="desktop-booster-browse" onClick={()=>setTab("boosters")}>Choisir un booster →</button>
                     </div>
                     <span>✧</span>
                   </div>
@@ -429,7 +446,7 @@ export default function Game() {
                   </details>
                 </section>
               </div>
-              <UpgradesView save={save} ready={ready} onBuy={id => {if(buyUpgrade(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>buyUpgrade(s,id));}} onBuyStorage={()=>{if(buyStorage(latest.current)!==latest.current)playSound("upgrade",true);setSave(s=>buyStorage(s));}} />
+              {(!mobile || upgradesOpen) && (mobile ? <BottomSheet title="Améliorations" onClose={() => setUpgradesOpen(false)}><UpgradesView save={save} ready={ready} onBuy={id => {if(buyUpgrade(latest.current,id)!==latest.current)playSound('upgrade',true);setSave(s=>buyUpgrade(s,id));}} onBuyStorage={() => {if(buyStorage(latest.current)!==latest.current)playSound('upgrade',true);setSave(buyStorage);}}/></BottomSheet> : <UpgradesView save={save} ready={ready} onBuy={id => {if(buyUpgrade(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>buyUpgrade(s,id));}} onBuyStorage={()=>{if(buyStorage(latest.current)!==latest.current)playSound("upgrade",true);setSave(s=>buyStorage(s));}} />)}
               <section className="deck-panel">
                 <div className="section-title">
                   <div>
@@ -470,6 +487,8 @@ export default function Game() {
                 </div>
               </section>
             </>
+          ) : tab === "boosters" ? (
+            <BoostersView save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onFavorite={id=>updateSettings({favoriteBooster:id})} onOpen={(id,source)=>{if(id==='faerie')startPack(source);}}/>
           ) : tab === "progression" ? (
             <ProgressionView save={save} onClaim={claim} onSlot={()=>{if(buyDeckSlot(latest.current)!==latest.current)playSound("upgrade",true);setSave(buyDeckSlot);}} onTitle={id=>setSave(s=>selectTitle(s,id))} onFast={()=>setSave(toggleFastOpening)}/>
           ) : tab === "deck" ? (
@@ -492,8 +511,9 @@ export default function Game() {
           </footer>
         </div>
       </main>
+      {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>Cliquer sur le portail produit de l’énergie. Les boosters contiennent vos compagnons ; équipez-les dans le Deck et réclamez vos récompenses dans Voyage.</p></BottomSheet>}
       {ready&&!opening&&!save.ux.introSeen&&<PortalIntro onDone={()=>{playSound('level',true);setSave(markIntroSeen);}}/>}
-      {settingsOpen&&!opening&&<Settings save={save} onReplace={next=>{session.replace(next);comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
+      {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
       {opening && (
         <BoosterOpening
           key={save.packs}

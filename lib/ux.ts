@@ -3,11 +3,12 @@ import { price, savedCardLevel, type Save } from './game';
 import { cardUpgradeCost, leveledEffect } from './progression';
 import { describeEffect } from './effects';
 import { ACHIEVEMENTS, achievementProgress, achievementReady, explorationLevel, freePackCount } from './exploration';
+import { isBoosterId, type BoosterId } from './boosters';
 export const FIRST_STEPS = ['Générer de l’énergie','Acheter une amélioration','Ouvrir un booster','Découvrir 5 créatures','Équiper un compagnon'] as const;
 export const TIP_IDS = ['click','upgrade','booster','collection','deck','progression'] as const;
 export type TipId = typeof TIP_IDS[number];
-export type UX = {format:1;introSeen:boolean;skipTips:boolean;dismissed:TipId[];completed:number[];sound:boolean;volume:number;motion:'system'|'reduce'};
-export const initialUX = ():UX => ({format:1,introSeen:false,skipTips:false,dismissed:[],completed:[],sound:true,volume:0.35,motion:'system'});
+export type UX = {format:1;introSeen:boolean;skipTips:boolean;dismissed:TipId[];completed:number[];sound:boolean;volume:number;motion:'system'|'reduce';favoriteBooster?:BoosterId|null};
+export const initialUX = ():UX => ({format:1,introSeen:false,skipTips:false,dismissed:[],completed:[],sound:true,volume:0.35,motion:'system',favoriteBooster:'faerie'});
 export function completedSteps(s:Save):number[] {
  const done=[s.clicks>0,Object.values(s.upgrades).some(n=>n>0),s.packs>0&&(!s.pending.length||s.revealed===5),Object.keys(s.owned).length>=5,s.deck.length>0];
  return [...new Set([...s.ux.completed,...done.flatMap((v,i)=>v?[i]:[])])].sort();
@@ -16,7 +17,9 @@ export function parseUX(value:unknown,s:Save):UX {
  if(value===undefined){const ux={...initialUX(),introSeen:true};return {...ux,completed:completedSteps({...s,ux})};}
  const v=value as UX;
  if(!v||v.format!==1||typeof v.introSeen!=='boolean'||typeof v.skipTips!=='boolean'||typeof v.sound!=='boolean'||!Number.isFinite(v.volume)||v.volume<0||v.volume>1||!['system','reduce'].includes(v.motion)||!Array.isArray(v.dismissed)||v.dismissed.some(id=>!TIP_IDS.includes(id))||!Array.isArray(v.completed)||v.completed.some(i=>!Number.isInteger(i)||i<0||i>4))throw Error('Préférences invalides');
- return {format:1,introSeen:v.introSeen,skipTips:v.skipTips,sound:v.sound,volume:v.volume,motion:v.motion,dismissed:[...new Set(v.dismissed)],completed:[...new Set(v.completed)]};
+ const favorite=v.favoriteBooster===undefined?'faerie':v.favoriteBooster;
+ if(favorite!==null&&!isBoosterId(favorite))throw Error('Booster favori invalide');
+ return {format:1,introSeen:v.introSeen,skipTips:v.skipTips,sound:v.sound,volume:v.volume,motion:v.motion,dismissed:[...new Set(v.dismissed)],completed:[...new Set(v.completed)],favoriteBooster:favorite};
 }
 export function markIntroSeen(s:Save):Save{return s.ux.introSeen?s:{...s,ux:{...s.ux,introSeen:true}};}
 export function dismissTip(s:Save,id:TipId):Save{return s.ux.dismissed.includes(id)?s:{...s,ux:{...s.ux,dismissed:[...s.ux.dismissed,id]}};}

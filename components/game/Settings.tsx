@@ -6,7 +6,9 @@ import { useEffect, useRef, useState } from 'react';
 import { initialSave } from '../../lib/game';
 import { diagnostics, downloadJSON, exportSave, MAX_IMPORT_BYTES, saveSummary, validateSave } from '../../lib/save-manager';
 import { ALPHA_VERSION } from '../../lib/release';
-export default function Settings({save,onChange,onFast,onClose,onReplace}:{save:Save;onChange:(change:Partial<UX>)=>void;onFast:()=>void;onClose:()=>void;onReplace:(next:Save)=>void}){
+import PWASettings from './PWASettings';
+import type { PWAState } from './usePWA';
+export default function Settings({save,onChange,onFast,onClose,onReplace,pwa,beforeReload}:{save:Save;onChange:(change:Partial<UX>)=>void;onFast:()=>void;onClose:()=>void;onReplace:(next:Save)=>void;pwa:PWAState;beforeReload:()=>boolean}){
  const unlocked=explorationLevel(save.account.xp)>=12;
  const [candidate,setCandidate]=useState<Save|null>(null),[message,setMessage]=useState(''),[reset,setReset]=useState(false),[confirmation,setConfirmation]=useState(''),[diagnosticText,setDiagnosticText]=useState('');
  const reading=useRef(0),mounted=useRef(true);
@@ -33,6 +35,7 @@ export default function Settings({save,onChange,onFast,onClose,onReplace}:{save:
   <label className="volume-setting">Volume des effets · {Math.round(save.ux.volume*100)} %<input aria-label="Volume des effets" type="range" min="0" max="100" value={Math.round(save.ux.volume*100)} onChange={e=>onChange({volume:Number(e.target.value)/100})}/></label>
   <label>Animations<select aria-label="Animations" value={save.ux.motion} onChange={e=>onChange({motion:e.target.value as UX['motion']})}><option value="system">Respecter le système</option><option value="reduce">Animations réduites</option></select></label>
   <label><input type="checkbox" checked={save.account.fastOpening} disabled={!unlocked} onChange={onFast}/>Ouverture rapide {unlocked?'':'· niveau 12 requis'}</label><p>Les Mythiques gardent leur mise en scène. Les animations réduites restent prioritaires.</p>
+  <PWASettings pwa={pwa} beforeReload={beforeReload} busy={!!candidate||reset||!!save.pending.length}/>
   <section className="save-settings" aria-label="Sauvegarde"><h3>Sauvegarde</h3><p>Votre progression reste dans ce navigateur. Exportez une copie avant de changer d’appareil ou d’effacer les données du site.</p>
    <button onClick={()=>{try{downloadJSON(exportSave(save),'tcg-clicker-sauvegarde-v4.json');setMessage('Sauvegarde exportée.');}catch{setMessage('Export impossible.');}}}>Exporter la sauvegarde</button>
    <label className="import-label">Importer une sauvegarde<input ref={fileInput} type="file" accept=".json,application/json" onChange={e=>void read(e.target.files?.[0])}/></label>

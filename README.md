@@ -2,15 +2,17 @@
 
 ## État actuel
 
-**Alpha 0.1.0** : un clicker de collection jouable dans le navigateur, avec 60 créatures originales, 20 lignées et six raretés. Cliquer sur le portail produit de l’énergie ; améliorations, deck et synergies développent clics, production passive, critiques et combo. Les boosters contiennent cinq cartes et garantissent une Peu commune ou mieux. Les doublons renforcent manuellement les cartes jusqu’au niveau 5.
+**Alpha 0.2.0** : un clicker de collection jouable dans le navigateur, avec 60 créatures originales, 20 lignées et six raretés. Cliquer sur le portail produit de l’énergie ; améliorations, deck et synergies développent clics, production passive, critiques et combo. Les boosters contiennent cinq cartes et garantissent une Peu commune ou mieux. Les doublons renforcent manuellement les cartes jusqu’au niveau 5.
 
 La progression d’exploration comprend 42 objectifs, récompenses et titres. Six emplacements de deck au départ, deux supplémentaires à débloquer. Les boosters gratuits se rechargent toutes les dix minutes, même après fermeture du jeu, jusqu’au stockage maximal. **Aucune énergie n’est produite hors ligne.** Introduction, conseils, audio synthétique, ouverture rapide et préférence de mouvement réduit sont disponibles.
+
+L’onglet **Boosters** permet de sélectionner le paquet illustré puis de l’ouvrir. L’étoile mémorise le favori, également conservé à l’export/import. Sur mobile, sa miniature et les commandes d’ouverture se retrouvent en bas de la Machine. Le catalogue contient uniquement Faerie ; les prochains sets devront fournir leurs illustrations et leurs règles de tirage.
 
 La sauvegarde v4 est locale à l’origine du site, sous `tcg-faerie-v1`. Paramètres permet export JSON, import validé avec résumé et confirmation, reset avec saisie RESET, et copie des diagnostics. Un import/reset crée une copie de secours avant remplacement. Une sauvegarde illisible déclenche un écran de récupération, sans écrasement automatique. Un second onglet est bloqué ; fermer le premier puis recharger pour reprendre.
 
 Aucun compte, service de gameplay, tracking, police téléchargée ou asset graphique externe. Sprites, habitats et finitions sont produits en code. Les illustrations de l’ancien essai artistique restent archivées hors des fichiers publics.
 
-**Publication :** build local vérifié ; Safari/iOS et playtests humains restent à valider avant annonce publique. Les résultats et limites sont dans `VERIFICATION.md` et `ALPHA_RELEASE_CHECKLIST.md`.
+**Publication :** Alpha 0.1.0 publiée sur Vercel selon le retour du propriétaire. La Phase 10 / Alpha 0.2.0 est préparée localement ; installation sur téléphones réels et playtests humains restent à valider. Les résultats et limites sont dans `VERIFICATION.md` et `ALPHA_RELEASE_CHECKLIST.md`.
 
 ## Installation
 
@@ -59,13 +61,29 @@ Tests navigateur reproductibles : `scripts/verify-alpha.cjs` utilise Playwright 
 
 Les simulations de 1/3/8 heures contrôlent règles, valeurs finies, sauvegardes et taille d’état. Elles ne remplacent pas huit heures sur un téléphone réel.
 
+## Mobile et application installable — Alpha 0.2.0
+
+Sous 850 px, la navigation Machine / Collection / Deck / Voyage reste fixée en bas avec les safe areas. Le header conserve énergie, niveau et boosters. Sur la Machine, portail, combo, boosters et accès aux améliorations tiennent sans scroll global sur les formats portrait validés (360 × 800 à 768 × 1024). Un paysage très bas ou un fort agrandissement du texte peut demander du scroll : le contenu reste accessible.
+
+Améliorations, détails booster, filtres et sélection d’un compagnon utilisent un panneau avec scroll interne, fermeture clavier/bouton, restauration du focus et glissement vers le bas depuis la poignée. Les conseils sont accessibles par le bouton « ? ». Collection utilise deux colonnes et un détail plein écran ; Deck présente les emplacements avant ses détails repliables. Les récompenses prêtes sont prioritaires dans Voyage. Desktop conserve sa sidebar et ses panneaux.
+
+Installation Android : ouvrir l’URL stable HTTPS dans Chrome, puis Paramètres → Installer TCG Clicker lorsque le navigateur propose le prompt. Sinon, utiliser son menu → Installer l’application / Ajouter à l’écran d’accueil. Ne pas utiliser une session privée pour tester l’installation.
+
+Installation iPhone/iPad : ouvrir la même URL dans Safari → Partager → Ajouter à l’écran d’accueil ; activer « Ouvrir comme app » si proposé. L’aide disparaît en mode installé, remplacée par « Application installée ». Le manifest utilise display: standalone. Voir le [guide PWA officiel Next.js](https://nextjs.org/docs/app/guides/progressive-web-apps).
+
+Hors ligne : après une première visite connectée et préparation du cache (statut dans Paramètres), le jeu peut être relancé sans réseau. Le service worker met en cache la page publique, ses scripts/styles locaux, le manifest et les icônes ; jamais la sauvegarde, /dev ou des ressources tierces. L’installation du cache échoue si une ressource requise manque. Le navigateur peut évincer son cache : une nouvelle visite connectée sera alors nécessaire. La sauvegarde reste v4, locale et exportable ; elle peut être distincte entre Safari et l’app installée.
+
+Mises à jour : le service worker est servi sans cache HTTP et vérifié au retour au premier plan. Une version prête attend dans Paramètres → Mettre à jour. Aucun rechargement forcé pendant une ouverture. Une écriture de sauvegarde réussie est exigée avant activation/rechargement ; un import/reset en cours désactive ce bouton. Le cache courant et le précédent sont conservés pour les onglets existants. Sur Vercel, le cache est identifié par version et commit. Incrémenter la version à chaque release. Pas de notifications push, compte, synchronisation ou tracking.
+
+Vérification reproductible : lancer le build de production sur le port 3100, définir PLAYWRIGHT_PATH si nécessaire, puis exécuter node scripts/verify-mobile-pwa.cjs et node scripts/verify-pwa-update.cjs. Le second script utilise temporairement le port local 3102 pour tester une vraie mise à jour de worker sur une origine isolée. Les résultats et captures sont ignorés dans test-results/phase10/. Les tests unitaires du worker couvrent cache incomplet, offline, exclusion de /dev et activation explicite.
+
 ## Publication sur Vercel
 
 Importer le dépôt GitHub dans Vercel avec le preset **Next.js**, dossier racine du dépôt, installation `npm ci` et build `npm run build`. Garder la sortie Next.js par défaut et choisir Node.js 22. Aucune variable secrète, base de données ou intégration analytics n’est requise.
 
 Valider une preview HTTPS avec la checklist avant de la promouvoir en production. Vérifier notamment `/dev` = 404. Utiliser une URL stable pour les playtests : chaque domaine et chaque URL de preview a son stockage local distinct. Exporter/importer pour déplacer la progression vers un domaine différent. Ne pas activer les analytics Vercel pour cette alpha. Aucun déploiement n’est effectué par cette préparation.
 
-Pour une correction, incrémenter `package.json` (0.1.1, 0.1.2…) et ajouter l’entrée publique correspondante au changelog. Vérifier la nouvelle preview puis promouvoir ; en cas de régression, restaurer le déploiement précédent depuis Vercel. Un rollback du code ne restaure pas les données locales : conserver la compatibilité v4 et une copie exportée.
+Pour une correction, incrémenter `package.json` (0.2.1, 0.2.2…) et ajouter l’entrée publique correspondante au changelog. Vérifier la nouvelle preview puis promouvoir ; en cas de régression, restaurer le déploiement précédent depuis Vercel. Un rollback du code ne restaure pas les données locales : conserver la compatibilité v4 et une copie exportée.
 
 ## Documentation
 

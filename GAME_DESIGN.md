@@ -1,6 +1,14 @@
 # TCG Clicker — Game Design Document
 
-**État actuel — Alpha 0.1.0 / Phase 9 (2 octobre 2026) : gameplay Phase 8 gelé, 60 cartes, progression complète et sauvegarde v4. Les sections des phases antérieures constituent l’historique.**
+**État actuel — Alpha 0.2.0 / Phase 10 (3 octobre 2026) : refonte mobile et PWA, gameplay Phase 8 conservé, 60 cartes et sauvegarde v4. Les sections des phases antérieures constituent l’historique.**
+
+## Phase 10 — mobile et PWA
+
+La navigation comprend Machine, Boosters, Collection, Deck et Voyage. Boosters présente les paquets illustrés dans un catalogue, leur contenu et les commandes d’ouverture existantes. Le favori est une préférence de sauvegarde v4, reprise par le raccourci de la Machine mobile. Une ancienne sauvegarde sélectionne Faerie par défaut ; retirer le favori affiche une invitation à en choisir un. Seul le set Faerie existe actuellement, sans modification des tirages ni de l’économie.
+
+Machine portrait sans scroll global sur les formats validés, header de ressources compact et navigation fixe. Les améliorations et détails booster sont à portée du portail. Collection : deux colonnes, filtres en panneau et inspection plein écran. Deck : emplacements en deux colonnes, sélection/replacement avec recherche, type et comparaison des statistiques dans un panneau ; les règles de compatibilité restent identiques. Voyage : niveau, XP, prochain déblocage et récompenses à réclamer en priorité ; détails repliables et statistiques secondaires.
+
+La PWA utilise le même jeu et la même sauvegarde, sans économie distincte. Le cache contient uniquement le shell public et ses ressources ; l’installation et le mode hors ligne dépendent du navigateur. Une mise à jour attend une action explicite et une sauvegarde réussie, hors ouverture de booster. Voir README et design/phase10-mobile-pwa.md.
 
 ## Alpha navigateur — état actuel
 

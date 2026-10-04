@@ -1,3 +1,28 @@
+# Checklist courante — Alpha 0.2.0
+
+3 octobre 2026. Préparation locale ; la checklist Alpha 0.1.0 ci-dessous reste historique.
+
+- [x] Version Alpha 0.2.0, changelog, README et règles documentées sans changement d’économie.
+- [x] 100 tests, TypeScript, build de production.
+- [x] Machine sans scroll global sur 360 × 800, 390 × 844, 393 × 852, 430 × 932, 768 × 1024.
+- [x] Navigation fixe, accès direct aux boosters et aux sept améliorations.
+- [x] Panneaux à scroll interne, focus/Escape/bouton, retour du focus.
+- [x] Collection, détail carte, Deck/sélection, Progression et desktop Chrome/Edge.
+- [x] Manifest et icônes locaux ; éligibilité Chrome normal sans erreur.
+- [x] Relance offline et sauvegarde conservée après préparation du cache.
+- [x] Mise à jour explicite réelle, ouverture non interrompue et sauvegarde préalable.
+- [x] Export, import/migration/récupération et multi-onglet couverts par tests Alpha.
+- [x] /dev inaccessible en production ; cache ne stocke pas la sauvegarde.
+- [x] Aide iOS et standalone vérifiés en émulation, installation documentée.
+- [ ] Android réel : installation, lancement, offline, suspension, son, clavier et update.
+- [ ] iPhone/iPad réels : ajout Safari, safe areas, stockage Safari/PWA, offline et update.
+- [ ] Firefox récent : parcours Phase 10.
+- [ ] Lighthouse sur URL HTTPS publiée, si l’outil est disponible.
+- [ ] Déployer Alpha 0.2.0 sur Vercel et vérifier HTTPS, version, /dev et accès des testeurs.
+- [ ] Playtest humain portrait/paysage, gros texte et petit écran ; conservation et export de la progression existante.
+
+---
+
 # Checklist de publication — Alpha 0.1.0
 
 État au 2 octobre 2026. Les cases cochées sont étayées par les contrôles locaux ; les cases vides restent à effectuer. Une simulation et une émulation mobile ne constituent pas un essai sur matériel réel.

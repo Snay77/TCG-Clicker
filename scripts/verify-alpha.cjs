@@ -8,6 +8,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const base = process.env.ALPHA_URL || 'http://127.0.0.1:3100';
 const key = 'tcg-faerie-v1';
+const { ALPHA_VERSION } = require('../lib/release.ts');
 const report = { browsers: [], viewports: [], performance: {}, checks: [] };
 fs.mkdirSync('test-results', { recursive: true });
 const fixture = () => {const s=initialSave();return {...s,energy:100000,owned:Object.fromEntries(CARDS.map(c=>[c.id,6])),cardLevels:{'001':2},deck:['001','002','003','004','005','008'],ux:{...s.ux,introSeen:true,skipTips:true,sound:false,motion:'reduce'}};};
@@ -20,7 +21,7 @@ async function seed(context, save, leaseFallback=false) {
 async function start(context) {
   const page=await context.newPage();const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+  page.on('console',m=>{if(m.type()==='error')errors.push(`${m.text()} [${m.location().url}]`);});
   await page.goto(base);await page.locator('.machine-button').waitFor();
   return {page,errors};
 }
@@ -50,7 +51,7 @@ async function finishOpening(page) {
       await page.getByRole('button',{name:'Éveiller le portail',exact:true}).press('Enter');
       await page.locator('.machine-button').click({clickCount:30});
       await page.getByRole('button',{name:'Paramètres',exact:true}).click();
-      await page.getByText('Alpha 0.1.0',{exact:true}).waitFor();
+      await page.getByText(ALPHA_VERSION,{exact:true}).waitFor();
       for(let i=0;i<24;i++){await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>!!document.activeElement?.closest('dialog')),true);}
       await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.activeElement?.getAttribute('aria-label')),'Paramètres');
       const fixtureJSON=JSON.stringify(fixture());
@@ -104,8 +105,8 @@ async function finishOpening(page) {
         for(const width of [360,390,430,768]){
           const mc=await browser.newContext({viewport:{width,height:844},isMobile:width<700,hasTouch:true,reducedMotion:'reduce'});await seed(mc,fixture());const {page:mp,errors:me}=await start(mc);
           await assertWidth(mp);await mp.getByRole('button',{name:'Paramètres',exact:true}).click();await assertWidth(mp);await mp.keyboard.press('Escape');
-          for(const nav of [/Collection/,/Mon deck/,/Progression/,/La machine/]){await mp.locator('nav').getByRole('button',{name:nav}).first().click();await assertWidth(mp);}
-          await mp.getByRole('button',{name:/Acheter.*ouvrir/}).click();await finishOpening(mp);await assertWidth(mp);
+          for(const nav of [/Collection/,/Mon deck|Deck/,/Progression|Voyage/,/La machine|Machine/]){await mp.locator('nav').getByRole('button',{name:nav}).first().click();await assertWidth(mp);}
+          await mp.getByRole('button',{name:/Acheter.*ouvrir|^Acheter ·/}).click();await finishOpening(mp);await assertWidth(mp);
           const continueButton=mp.getByRole('button',{name:'Retour à la machine',exact:true});await continueButton.scrollIntoViewIfNeeded();assert.ok(await continueButton.isVisible());await continueButton.tap();
           await mp.screenshot({path:`test-results/alpha-${width}.png`});assert.deepEqual(me,[]);report.viewports.push(width);await mc.close();
         }

@@ -8,7 +8,12 @@ import "./economy.css";
 import "./exploration.css";
 import "./ux.css";
 import "./alpha.css";
+import "./mobile.css";
+import "./boosters.css";
 export const metadata: Metadata = {
+  applicationName: 'TCG Clicker',
+  appleWebApp: { capable: true, title: 'TCG Clicker', statusBarStyle: 'black-translucent' },
+  icons: { apple: '/icons/apple-touch-icon.png' },
   title: "TCG Clicker — Faerie",
   description:
     "Une machine, un monde à découvrir. Clicker et collection féerique.",

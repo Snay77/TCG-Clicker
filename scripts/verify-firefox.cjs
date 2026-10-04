@@ -1,6 +1,7 @@
 // Connect only to a Firefox launched with a disposable test profile. Never use a personal browser session.
 const assert=require('node:assert/strict'),fs=require('node:fs');require('tsx/cjs');
 const {initialSave,openPack,reveal}=require('../lib/game.ts');const {CARDS}=require('../lib/cards.ts');
+const {ALPHA_VERSION}=require('../lib/release.ts');
 const key='tcg-faerie-v1',base=process.env.ALPHA_URL||'http://127.0.0.1:3100';
 const socket=new WebSocket(process.env.FIREFOX_BIDI_URL||'ws://127.0.0.1:9225/session');let seq=0;const pending=new Map();let errors=[];let stage="initial";
 socket.onmessage=e=>{const data=JSON.parse(e.data);if(data.id){const job=pending.get(data.id);if(job){pending.delete(data.id);if(data.type==='error')job.reject(Error(JSON.stringify(data)));else job.resolve(data.result);}}else if(data.method==='log.entryAdded'&&data.params.level==='error')errors.push({stage,...data.params});};
@@ -15,7 +16,7 @@ await click(context,'Éveiller le portail');await evaluate(context,`(()=>{const 
 assert.equal(await evaluate(context,`JSON.parse(localStorage.getItem('${key}')).clicks`),50);
 const s=initialSave();const fixture={...s,energy:100000,owned:Object.fromEntries(CARDS.map(c=>[c.id,6])),deck:['001','002','003','004','005','008'],ux:{...s.ux,introSeen:true,skipTips:true,motion:'reduce',sound:false}};
 await click(context,'Paramètres');await evaluate(context,`(()=>{const dt=new DataTransfer();dt.items.add(new File([${JSON.stringify(JSON.stringify(fixture))}],'fixture.json',{type:'application/json'}));const input=document.querySelector('input[type=file]');input.files=dt.files;input.dispatchEvent(new Event('change',{bubbles:true}));return true;})()`);await wait(context,`[...document.querySelectorAll('button')].some(b=>b.textContent==='Confirmer le remplacement')`);await click(context,'Confirmer le remplacement');await wait(context,`!!document.querySelector('.machine-button')`);
-await click(context,'Paramètres');await wait(context,`!!document.querySelector('dialog[open]')`);assert.equal(await evaluate(context,`document.querySelector('dialog').textContent.includes('Alpha 0.1.0')`),true);
+await click(context,'Paramètres');await wait(context,`!!document.querySelector('dialog[open]')`);assert.equal(await evaluate(context,`document.querySelector('dialog').textContent.includes(${JSON.stringify(ALPHA_VERSION)})`),true);
 await click(context,'Copier les diagnostics');await click(context,'Revenir au jeu');await click(context,'Collection');await wait(context,`document.querySelectorAll('.collection-grid>.card').length===60`);await delay(200);
 assert.ok(await evaluate(context,`document.querySelectorAll('.card[data-offscreen=true]').length`)>20);
 await evaluate(context,`document.querySelector('.inspect-button').click()`);await wait(context,`!!document.querySelector('.card-inspection[open]')`);await evaluate(context,`document.querySelector('.modal-close').click()`);await click(context,'Mon deck');await wait(context,`!!document.querySelector('.synergy-grid')`);await click(context,'Progression');await click(context,'La machine');

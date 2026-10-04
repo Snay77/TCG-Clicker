@@ -4,6 +4,7 @@ import type { Save } from '../../lib/game';
 import { ACHIEVEMENTS, achievementProgress, achievementReady, collectionProgress, lineageProgress, explorationLevel, explorationProgress, UNLOCKS, DECK_SLOT_UNLOCKS, TITLES, rewardDescription } from '../../lib/exploration';
 import Sprite from '../Sprite';
 import { sortedAchievements } from '../../lib/ux';
+import { useMobileLayout } from './useMobileLayout';
 const fmt=(n:number)=>Math.floor(n).toLocaleString('fr-FR');
 export function CollectionSummary({save}:{save:Save}) {
  const progress=collectionProgress(save);
@@ -24,18 +25,21 @@ export function LineageGoals({save,onClaim}:{save:Save;onClaim:(id:string)=>void
  })}</div>;
 }
 export default function ProgressionView({save,onClaim,onSlot,onTitle,onFast}:{save:Save;onClaim:(id:string)=>void;onSlot:()=>void;onTitle:(id:string)=>void;onFast:()=>void}) {
+ const mobile=useMobileLayout();
  const [view,setView]=useState('level'),[category,setCategory]=useState('Découverte');
  const xp=explorationProgress(save.account.xp),offer=DECK_SLOT_UNLOCKS[save.extraDeckSlots];
  const nextUnlock=UNLOCKS.find(u=>u.level>xp.level),ordered=sortedAchievements(save),recommended=ordered.find(a=>!save.account.claimed.includes(a.id)&&xp.level>=(a.minLevel||1));
- const pending=ACHIEVEMENTS.filter(a=>achievementReady(save,a)).length;
+ const claimable=ordered.filter(a=>achievementReady(save,a));
+ const pending=claimable.length;
  return <div className="exploration-view">
   <section className="exploration-header"><div><div className="eyebrow">NIVEAU D’EXPLORATION</div><h2>Explorateur · niveau {xp.level}</h2><p>{TITLES.find(t=>t.id===save.account.activeTitle)?.name}</p></div><div className="xp-display"><strong>{fmt(save.account.xp)} / {fmt(xp.next)} XP</strong><progress value={xp.current} max={xp.needed} aria-label="XP du niveau d’exploration"/><small>Les rencontres et améliorations font avancer votre voyage.</small></div></section>
   <section className="next-unlock"><span className="eyebrow">PROCHAIN DÉBLOCAGE</span><h3>{nextUnlock?`${nextUnlock.name} · niveau ${nextUnlock.level}`:'Tous les horizons sont accessibles'}</h3><p>{nextUnlock?.description||'Continuez votre collection et les défis de maîtrise.'}</p></section>
   {recommended&&<section className={`recommended-goal ${achievementReady(save,recommended)?'available':''}`}><div><span className="eyebrow">{achievementReady(save,recommended)?'RÉCOMPENSE À RÉCLAMER':'PROCHAIN OBJECTIF'}</span><h3>{recommended.title}</h3><p>{Math.min(achievementProgress(save,recommended),recommended.target)} / {recommended.target} · {rewardDescription(recommended.rewards)}</p></div><button disabled={!achievementReady(save,recommended)||!!save.pending.length} onClick={()=>onClaim(recommended.id)}>{achievementReady(save,recommended)?'Réclamer la récompense':'En cours'}</button></section>}
+  {mobile&&pending>0&&<section className="ready-goals"><h3>Récompenses à réclamer · {pending}</h3>{claimable.slice(0,3).map(a=><button key={a.id} disabled={!!save.pending.length} onClick={()=>onClaim(a.id)}>{a.title} · Réclamer</button>)}{claimable.length>3&&<details><summary>Voir les {claimable.length-3} autres récompenses</summary>{claimable.slice(3).map(a=><button key={a.id} disabled={!!save.pending.length} onClick={()=>onClaim(a.id)}>{a.title} · Réclamer</button>)}</details>}</section>}
   <div className="exploration-tabs" role="tablist" aria-label="Progression">{[['level','Niveau'],['goals',`Objectifs${pending?` · ${pending} à réclamer`:''}`],['stats','Statistiques']].map(([id,label])=><button key={id} role="tab" aria-selected={view===id} aria-controls={`exploration-${id}`} id={`tab-${id}`} onClick={()=>setView(id)}>{label}</button>)}</div>
   <section role="tabpanel" id={`exploration-${view}`} aria-labelledby={`tab-${view}`}>
    {view==='level'?<>
-    <div className="unlock-grid">{UNLOCKS.map(u=><article className={xp.level>=u.level?'unlocked':''} key={u.level}><span>NIVEAU {u.level} · {xp.level>=u.level?'✓ DÉBLOQUÉ':'À ATTEINDRE'}</span><h3>{u.name}</h3><p>{u.description}</p></article>)}</div>
+    <details className="deck-mobile-details" open={mobile?undefined:true}><summary>Tous les déblocages</summary><div className="unlock-grid">{UNLOCKS.map(u=><article className={xp.level>=u.level?'unlocked':''} key={u.level}><span>NIVEAU {u.level} · {xp.level>=u.level?'✓ DÉBLOQUÉ':'À ATTEINDRE'}</span><h3>{u.name}</h3><p>{u.description}</p></article>)}</div></details>
     <section className={`exploration-panel ${offer&&xp.level>=offer.level&&save.energy>=offer.cost?'available':''}`}><h2>Voyager avec plus de compagnons</h2><p>{6+save.extraDeckSlots} emplacements de deck disponibles. Chaque achat est permanent.</p>{offer?<><p>Emplacement {7+save.extraDeckSlots} · niveau d’exploration {offer.level} · {fmt(offer.cost)} ✦</p><button disabled={xp.level<offer.level||save.energy<offer.cost||!!save.pending.length} onClick={onSlot}>Acheter le {7+save.extraDeckSlots}e emplacement · {fmt(offer.cost)} ✦</button></>:<strong>Les huit emplacements sont débloqués.</strong>}</section>
     <section className="exploration-panel"><h2>Votre rythme d’ouverture</h2><p>Mode rapide à partir du niveau 12. Les cartes ordinaires s’enchaînent plus vite ; les Mythiques gardent leur animation complète.</p><label className="fast-opening-setting"><input type="checkbox" checked={save.account.fastOpening} disabled={xp.level<12} onChange={onFast}/>Ouverture rapide {xp.level<12?'· niveau 12 requis':''}</label></section>
     <section className="exploration-panel"><h2>Un titre pour votre voyage</h2><div className="title-grid">{TITLES.map(t=><button key={t.id} disabled={!t.unlocked(save)} aria-pressed={save.account.activeTitle===t.id} onClick={()=>onTitle(t.id)}><strong>{save.account.activeTitle===t.id?'✦ ':''}{t.name}</strong><small>{t.description}</small></button>)}</div></section>

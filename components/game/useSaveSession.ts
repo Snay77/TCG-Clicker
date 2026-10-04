@@ -133,7 +133,12 @@ export function useSaveSession(save: Save, setSave: Dispatch<SetStateAction<Save
     lastWritten.current = JSON.stringify(safe); latest.current = safe; dirty.current = false;
     setSave(safe); setRecovery(null); setStorageOk(true); setStatus('active');
   }
-  return { status, recovery, storageOk, writable: () => status === 'active' && permission.current(), replace,
+  function saveBeforeReload() {
+    if (mode.current !== 'active' || !permission.current() || latest.current.pending.length) return false;
+    try { persistSave(localStorage, latest.current, true); lastWritten.current = JSON.stringify(latest.current); dirty.current = false; setStorageOk(true); return true; }
+    catch { setStorageOk(false); return false; }
+  }
+  return { status, recovery, storageOk, writable: () => status === 'active' && permission.current(), replace, saveBeforeReload,
     restore: () => { if (recovery?.backup) replace(recovery.backup, true); },
     startFresh: () => replace(initialSave(), true) };
 }
