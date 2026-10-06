@@ -6,8 +6,10 @@ import { cardLevel, cardUpgradeCost, initialUpgrades, leveledEffect, UPGRADES, u
 import { synergies, advancedSynergies } from "./synergies";
 import { initialAccount, parseAccount, explorationLevel, freePackCount, XP, type Account } from "./exploration";
 import { initialUX, parseUX, type UX } from './ux';
+import { advancedBonuses, advancedDuplicateBonus, parseAdvancedProgress, type AdvancedContext } from './advanced-effects';
 export type PackSource = "free" | "paid";
 export type Save = FreePackState & {
+  advancedClicks?:Record<string,number>;
   account: Account;
   ux: UX;
   version: 4; energy: number; owned: Record<string, number>; cardLevels: Record<string, number>; deck: string[];
@@ -31,15 +33,16 @@ export function upgradeCard(s: Save, id: string): Save {
     cardLevels: { ...s.cardLevels, [id]: level + 1 },
     account: { ...s.account, xp: boundedTotal(s.account.xp + XP.cardLevel * (level + 1)) } };
 }
-export function deckEffects(s: Save) {
+export function deckEffects(s: Save, context:AdvancedContext={}) {
   return resolveEffects([
     ...s.deck.map(id => leveledEffect(byId(id).effect, savedCardLevel(s, id))),
     ...synergies(s.deck).filter(x => x.active).map(x => x.effect),
     ...advancedSynergies(s.deck, explorationLevel(s.account.xp)).filter(x => x.active).map(x => x.effect),
+    advancedBonuses(s,context),
   ]);
 }
-export function stats(s: Save) {
-  const e = resolveEffects([deckEffects(s), ...upgradeEffects(s.upgrades)]);
+export function stats(s: Save, context:AdvancedContext={}) {
+  const e = resolveEffects([deckEffects(s,context), ...upgradeEffects(s.upgrades)]);
   const global = (1 + e.energyMultiplier) * (1 + e.faerieBonus);
   return {
     click: (1 + e.clickFlat) * (1 + e.clickMultiplier) * global,
@@ -109,7 +112,7 @@ export function reveal(s: Save): Save {
   if (s.revealed >= s.pending.length) return s;
   const id = s.pending[s.revealed];
   const duplicate = !!s.owned[id];
-  return { ...s, revealed: s.revealed + 1, energy: boundedTotal(s.energy + (duplicate ? stats(s).duplicateBonus : 0)), owned: { ...s.owned, [id]: boundedTotal((s.owned[id] || 0) + 1) },
+  return { ...s, revealed: s.revealed + 1, energy: boundedTotal(s.energy + (duplicate ? stats(s).duplicateBonus + advancedDuplicateBonus(s,id) : 0)), owned: { ...s.owned, [id]: boundedTotal((s.owned[id] || 0) + 1) },
     account: { ...s.account, xp: boundedTotal(s.account.xp + (duplicate ? 0 : XP.discovery) + (byId(id).rarity >= 2 ? XP.rare : 0)),
       totals: { ...s.account.totals, cardsObtained:boundedTotal(s.account.totals.cardsObtained+1), duplicatesObtained:boundedTotal(s.account.totals.duplicatesObtained+(duplicate?1:0)) } } };
 
@@ -124,11 +127,12 @@ export function equipBlockedReason(s: Save, id: string): string | null {
 }
 export function equip(s: Save, id: string): Save {
   if (equipBlockedReason(s, id)) return s;
-  return { ...s, deck: s.deck.includes(id) ? s.deck.filter(x => x !== id) : [...s.deck, id] };
+  const deck=s.deck.includes(id)?s.deck.filter(x=>x!==id):[...s.deck,id];
+  return { ...s, deck, advancedClicks:Object.fromEntries(Object.entries(s.advancedClicks||{}).filter(([cid])=>deck.includes(cid))) };
 }
 export function changeDeck(s: Save, id: string, replaceId?: string): Save {
   const candidate = replaceId && !s.deck.includes(id) && s.deck.includes(replaceId)
-    ? { ...s, deck: s.deck.filter(x => x !== replaceId) } : s;
+    ? { ...s, deck: s.deck.filter(x => x !== replaceId),advancedClicks:Object.fromEntries(Object.entries(s.advancedClicks||{}).filter(([cid])=>cid!==replaceId)) } : s;
   if (equipBlockedReason(candidate, id)) return s;
   return equip(candidate, id);
 }
@@ -171,6 +175,7 @@ export function parseSave(raw: string, now = Date.now()): Save {
   }
   // Keep already-equipped v1 evolutions: prerequisites apply to future equipment.
   migrated.deck = [...new Set<string>(s.deck.filter((id: unknown) => typeof id === "string" && owned[id]))].slice(0, deckCapacity(migrated));
+  if(s.advancedClicks!==undefined)migrated.advancedClicks=parseAdvancedProgress(s.advancedClicks,migrated);
   migrated.account = parseAccount(s.version===4?s.account:undefined,migrated);
   migrated.ux = parseUX(s.ux,migrated);
   return rechargeFreePacks(migrated,now);

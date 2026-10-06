@@ -25,7 +25,7 @@ import {
 import { rechargeFreePacks, freePackRemaining } from "../lib/booster-economy";
 import BoosterShop from "./game/BoosterShop";
 import ProgressionView from "./game/ProgressionView";
-import { ACHIEVEMENTS, achievementReady, completedLineages, explorationLevel, freePackCount, claimAchievement, buyDeckSlot, selectTitle, toggleFastOpening, recordClick, recordTick, TITLES } from "../lib/exploration";
+import { ACHIEVEMENTS, achievementReady, completedLineages, explorationLevel, freePackCount, claimAchievement, buyDeckSlot, selectTitle, toggleFastOpening, recordClick, TITLES } from "../lib/exploration";
 import Sprite from "./Sprite";
 import Machine from "./Machine";
 import BoosterPack from "./BoosterPack";
@@ -51,6 +51,10 @@ import BoostersView from './game/BoostersView';
 import Rune from './game/Rune';
 import ArcaneMark from './game/ArcaneMark';
 import { usePWA } from './game/usePWA';
+import { visibleSystems } from '../lib/disclosure';
+import { advancedEvent, consumeAdvancedClick, initialAdvancedRuntime, reconcileAdvanced, type AdvancedRuntime } from '../lib/advanced-effects';
+import { playClick, playTick } from '../lib/play-effects';
+import MachineEffects from './game/MachineEffects';
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
   const mobile = useMobileLayout();
@@ -73,9 +77,14 @@ export default function Game() {
   const ready = session.status === 'active';
   const [tab, setTab] = useState("machine");
   const [notice, setNotice] = useState("");
+  const [discoveryNotice,setDiscoveryNotice]=useState('');
+  const disclosureBaseline=useRef<ReturnType<typeof visibleSystems>|null>(null);
   const storageOk = session.storageOk;
   const [combo, setCombo] = useState(initialCombo);
   const comboRef = useRef(initialCombo());
+  const advancedRef=useRef<AdvancedRuntime>(initialAdvancedRuntime());
+  const [advancedView,setAdvancedView]=useState(()=>({runtime:initialAdvancedRuntime(),now:0}));
+  function publishAdvanced(runtime:AdvancedRuntime,now:number) { advancedRef.current=runtime;setAdvancedView({runtime,now}); }
   const [sparks, setSparks] = useState<
     { id: number; born: number; x: number; y: number; gain: number; crit: boolean }[]
   >([]);
@@ -101,10 +110,11 @@ export default function Game() {
       const nextCombo = decayCombo(comboRef.current, now);
       comboRef.current = nextCombo;
       setCombo(previous => previous.charge === nextCombo.charge ? previous : nextCombo);
+      const runtime=advancedRef.current;
+      publishAdvanced(reconcileAdvanced(latest.current,runtime,now),now);
       setSave((s) => {
         const current=rechargeFreePacks(s,epoch);
-        const passive = stats(current).auto;
-        return recordTick(current,elapsed,passive,document.visibilityState === "visible" && document.hasFocus());
+        return playTick(current,runtime,elapsed,now,document.visibilityState === "visible" && document.hasFocus()).save;
       });
     }, 200);
     return () => { clearInterval(t);window.removeEventListener("focus",resetClock);document.removeEventListener("visibilitychange",resetClock); };
@@ -124,6 +134,24 @@ export default function Game() {
     return () => clearInterval(t);
   }, []);
   const opening = save.pending.length > 0;
+  const systems=visibleSystems(save);
+  useEffect(()=>{
+    if(!ready||opening||!save.ux.introSeen)return;
+    const current=visibleSystems(save),before=disclosureBaseline.current;
+    const known={...current};
+    for(const key of Object.keys(current) as (keyof typeof current)[])known[key]=current[key]||before?.[key]||false;
+    disclosureBaseline.current=known;
+    if(!before)return;
+    const opened=(key:keyof typeof current)=>current[key]&&!before[key];
+    const message=opened('collection')&&opened('deck')?'COLLECTION + DECK DÉBLOQUÉS'
+      :opened('collection')?'COLLECTION DÉBLOQUÉE'
+      :opened('deck')?'DECK DÉBLOQUÉ'
+      :opened('boosters')?'BOOSTERS ACCESSIBLES'
+      :opened('upgrades')?'AMÉLIORATIONS ACCESSIBLES'
+      :opened('progression')?'PROGRESSION DÉBLOQUÉE'
+      :opened('synergies')?'SYNERGIES POSSIBLES':'';
+    if(message)setDiscoveryNotice(message);
+  },[ready,opening,save.ux.introSeen,systems.upgrades,systems.boosters,systems.collection,systems.deck,systems.progression,systems.synergies]);
   useEffect(()=>{
     if(!ready)return;
     const completed=completedSteps(save);
@@ -155,20 +183,23 @@ export default function Game() {
   },[ready,opening,save.account.xp,save.owned,save.level,save.cardLevels,save.packs,save.account.claimed,save.freeBoosters,save.ux.introSeen,save.account.totals.maxCombo,save.account.totals.criticalClicks,Math.floor(save.account.totals.generatedEnergy/10000)]);
   function claim(id:string) { setSave(s=>claimAchievement(s,id)); }
 
-  const power = stats(save);
+  const effectContext={runtime:advancedView.runtime,now:advancedView.now,combo:combo.charge};
+  const power = stats(save,effectContext);
+  const armedMultiplier=consumeAdvancedClick(save,advancedView.runtime,advancedView.now).multiplier;
   const discovered = Object.keys(save.owned).length;
   function click(e: React.MouseEvent<HTMLButtonElement>) {
     if (!session.writable()) return;
     const current = latest.current;
-    const currentPower = stats(current);
-    const nextCombo = advanceCombo(comboRef.current, performance.now());
+    const now=performance.now();
+    const nextCombo = advanceCombo(comboRef.current, now);
     comboRef.current = nextCombo;
     setCombo(nextCombo);
-    const critical = Math.random() < currentPower.crit;
-    const gain = currentPower.click * comboFactor(nextCombo.charge, currentPower.comboBonus) * (critical ? currentPower.critMultiplier : 1);
+    const result=playClick(current,advancedRef.current,nextCombo.charge,now,Math.random());
+    const {critical,gain}=result;
+    publishAdvanced(result.runtime,now);
     playSound(critical?"critical":"click",true);
     const box = e.currentTarget.getBoundingClientRect();
-    setSave((s) => recordClick(s,gain,critical,nextCombo.charge));
+    setSave((s) => ({...recordClick(s,gain,critical,nextCombo.charge),advancedClicks:result.save.advancedClicks}));
     setSparks((s) => [
       ...s.slice(-18),
       {
@@ -189,13 +220,17 @@ export default function Game() {
       return;
     }
     const next = changeDeck(save, id, replaceId);
-    setNotice(`${byId(id).name} · ${statImpact(stats(save), stats(next))}`);
+    publishAdvanced(reconcileAdvanced(next,advancedRef.current,performance.now()),performance.now());
+    setNotice(systems.statistics?`${byId(id).name} · ${statImpact(stats(save), stats(next))}`:`${byId(id).name} · ${next.deck.includes(id)?'rejoint votre équipe':'retiré de votre équipe'}.`);
     setSave((s) => changeDeck(s, id, replaceId));
   }
   function startPack(source:PackSource,chain=false) {
     if (!session.writable()) return;
     const now=Date.now();
     const cards=drawPack(Math.random,stats(latest.current).rareChance);
+    const before=rechargeFreePacks(latest.current,now);
+    const preview=chain?chainPack(before,cards,source,now):openPack(before,cards,source,now);
+    if(chain&&preview!==before)publishAdvanced(advancedEvent(preview,advancedRef.current,'onBoosterOpen',performance.now()),performance.now());
     setSave(s=>{
       const current=rechargeFreePacks(s,now);
       return chain ? chainPack(current,cards,source,now) : openPack(current,cards,source,now);
@@ -206,7 +241,7 @@ export default function Game() {
   const brutal=!opening;
   if (!ready) return <SaveGate session={session}/>;
   return (
-    <div className={`app-shell tab-${tab} ${brutal?"brutal-shell":""} ${contextualTip(save)==='click'?'onboarding-machine':''}`}>
+    <div className={`app-shell phase-12 tab-${tab} ${brutal?"brutal-shell":""} ${contextualTip(save)==='click'?'onboarding-machine':''}`} data-start={!systems.boosters&&!systems.collection}>
       <aside className="sidebar">
         <Link href="/" className="brand">
           <span className="brand-icon">✦</span>
@@ -224,7 +259,7 @@ export default function Game() {
             ["collection", "▦", "Collection"],
             ["deck", "▤", "Mon deck"],
             ["progression", "✧", "Progression"],
-          ].map(([id, icon, label], navIndex) => (
+          ].map(([id, icon, label], navIndex) => systems[id as 'machine'|'boosters'|'collection'|'deck'|'progression']&&(
             <button
               key={id}
               className={tab === id ? "active" : ""}
@@ -251,12 +286,12 @@ export default function Game() {
           </div>
           {devToolsEnabled(process.env.NODE_ENV) && <><Link href="/dev">⌘ Atelier des sprites ↗</Link>
           <Link className="playtest-reset-link" href="/dev#playtest-reset">↺ Réinitialiser la sauvegarde · test</Link></>}
-          <small>EXPLORATION · niv. {explorationLevel(save.account.xp)}</small>
+          {systems.progression&&<small>EXPLORATION · niv. {explorationLevel(save.account.xp)}</small>}
         </div>
       </aside>
       <main>
         <header className="topbar">
-          <div className="mobile-resources"><strong aria-label="Énergie">✦ {fmt(save.energy)}</strong><button onClick={() => setTab('progression')}>Nv. {explorationLevel(save.account.xp)}</button><span aria-label="Boosters disponibles">▣ {freePackCount(available)}</span></div>
+          <div className="mobile-resources"><strong aria-label="Énergie">✦ {fmt(save.energy)}</strong>{systems.progression&&<button onClick={() => setTab('progression')}>Nv. {explorationLevel(save.account.xp)}</button>}{systems.boosters&&<span aria-label="Boosters disponibles">▣ {freePackCount(available)}</span>}</div>
           <span>
             La Clairière{" "}
             <span className="muted">
@@ -304,7 +339,8 @@ export default function Game() {
               </span>
             </span>
           </div>
-          <div className="exploration-strip"><button onClick={()=>setTab("progression")}>✧ Exploration niv. {explorationLevel(save.account.xp)} · {TITLES.find(t=>t.id===save.account.activeTitle)?.name}</button></div>
+          {systems.progression&&<div className="exploration-strip"><button onClick={()=>setTab("progression")}>✧ Exploration niv. {explorationLevel(save.account.xp)} · {TITLES.find(t=>t.id===save.account.activeTitle)?.name}</button></div>}
+          {discoveryNotice&&!opening&&<div className="notice discovery-notice" role="status"><span className="discovery-tag">NOUVEAU</span><strong>{discoveryNotice}</strong><button aria-label="Fermer la découverte" onClick={()=>setDiscoveryNotice('')}>×</button></div>}
           {notice && (
             <div key={notice} className={`notice ${notice.includes("60/60")?"completion-notice":""}`} role="status">
               {notice}
@@ -333,23 +369,23 @@ export default function Game() {
                 +{Number(power.click.toFixed(2))} <em>/ clic</em>
               </strong>
             </div>
-            <div>
+            {power.auto>0&&<div>
               <small>PRODUCTION PASSIVE</small>
               <strong>
                 {power.auto.toFixed(1)} <em>/ sec</em>
               </strong>
-            </div>
-            <div>
+            </div>}
+            {systems.collection&&<div>
               <small>COLLECTION</small>
               <strong>
                 {discovered}
                 <em> / {CARDS.length} découvertes</em>
               </strong>
-            </div>
+            </div>}
           </section>
           {tab === "machine" ? (
             <>
-              <div className="play-grid">
+              <div className={`play-grid ${!systems.boosters?'machine-only':''}`}>
                 <section className="machine-panel">
                   <div className="panel-heading">
                     <div>
@@ -405,21 +441,22 @@ export default function Game() {
                         </span>
                       ))}
                     </button>
+                    <MachineEffects save={save} context={effectContext}/>
                     <div className="machine-prompt">
                       <span className="live-dot" /> LE PORTAIL VOUS ATTEND
                       <strong>
-                        Cliquez pour générer <b>+{Number((power.click * comboFactor(combo.charge, power.comboBonus)).toFixed(1))} ✦</b>
+                        Cliquez pour générer <b>+{Number((power.click * comboFactor(combo.charge, power.comboBonus) * armedMultiplier).toFixed(1))} ✦</b>
                       </strong>
-                      <small>
+                      {power.crit>0&&<small>
                         {Math.round(power.crit * 100)} % de chance de critique ·
                         énergie ×{Number(power.critMultiplier.toFixed(2))}
-                      </small>
+                      </small>}
                     </div>
                   </div>
-                  <ComboBar combo={combo} bonus={power.comboBonus} />
-                  {mobile && <><div className="mobile-machine-actions"><button onClick={() => setUpgradesOpen(true)}><Rune/>Améliorations <span>↗</span></button><button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{Number(power.click.toFixed(2))} / clic · {power.auto.toFixed(1)} / sec</small></div><MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/></>}
+                  {power.comboBonus>0&&<ComboBar combo={combo} bonus={power.comboBonus} />}
+                  {mobile && <><div className="mobile-machine-actions">{systems.upgrades&&<button onClick={() => setUpgradesOpen(true)}><Rune/>Améliorations <span>↗</span></button>}<button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{Number(power.click.toFixed(2))} / clic{power.auto>0&&` · ${power.auto.toFixed(1)} / sec`}</small></div>{systems.boosters&&<MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/>}</>}
                 </section>
-                <section className={`shop-panel ${nextSource?'pack-available':''}`} id="booster">
+                {systems.boosters&&<section className={`shop-panel ${nextSource?'pack-available':''}`} id="booster">
                   <div className="panel-heading">
                     <div>
                       <span className="eyebrow">UNE NOUVELLE RENCONTRE</span>
@@ -449,10 +486,10 @@ export default function Game() {
                       Doublons : +{power.duplicateBonus.toFixed(1)} éclats et progression de niveau.
                     </p>
                   </details>
-                </section>
+                </section>}
               </div>
-              {(!mobile || upgradesOpen) && (mobile ? <BottomSheet title="Améliorations" onClose={() => setUpgradesOpen(false)}><UpgradesView save={save} ready={ready} onBuy={id => {if(buyUpgrade(latest.current,id)!==latest.current)playSound('upgrade',true);setSave(s=>buyUpgrade(s,id));}} onBuyStorage={() => {if(buyStorage(latest.current)!==latest.current)playSound('upgrade',true);setSave(buyStorage);}}/></BottomSheet> : <UpgradesView save={save} ready={ready} onBuy={id => {if(buyUpgrade(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>buyUpgrade(s,id));}} onBuyStorage={()=>{if(buyStorage(latest.current)!==latest.current)playSound("upgrade",true);setSave(s=>buyStorage(s));}} />)}
-              <section className="deck-panel">
+              {systems.upgrades && (!mobile || upgradesOpen) && (mobile ? <BottomSheet title="Améliorations" onClose={() => setUpgradesOpen(false)}><UpgradesView progressive save={save} ready={ready} onBuy={id => {if(buyUpgrade(latest.current,id)!==latest.current)playSound('upgrade',true);setSave(s=>buyUpgrade(s,id));}} onBuyStorage={() => {if(buyStorage(latest.current)!==latest.current)playSound('upgrade',true);setSave(buyStorage);}}/></BottomSheet> : <UpgradesView progressive save={save} ready={ready} onBuy={id => {if(buyUpgrade(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>buyUpgrade(s,id));}} onBuyStorage={()=>{if(buyStorage(latest.current)!==latest.current)playSound("upgrade",true);setSave(s=>buyStorage(s));}} />)}
+              {systems.deck&&<section className="deck-panel">
                 <div className="section-title">
                   <div>
                     <h2>
@@ -490,14 +527,14 @@ export default function Game() {
                     );
                   })}
                 </div>
-              </section>
+              </section>}
             </>
           ) : tab === "boosters" ? (
             <BoostersView save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onFavorite={id=>updateSettings({favoriteBooster:id})} onOpen={(id,source)=>{if(id==='faerie')startPack(source);}}/>
           ) : tab === "progression" ? (
             <ProgressionView save={save} onClaim={claim} onSlot={()=>{if(buyDeckSlot(latest.current)!==latest.current)playSound("upgrade",true);setSave(buyDeckSlot);}} onTitle={id=>setSave(s=>selectTitle(s,id))} onFast={()=>setSave(toggleFastOpening)}/>
           ) : tab === "deck" ? (
-            <DeckView save={save} onEquip={toggle} />
+            <DeckView save={save} onEquip={toggle} effectContext={effectContext} />
           ) : (
             <CollectionView save={save} onEquip={toggle} onUpgrade={id => {if(upgradeCard(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>upgradeCard(s,id));}} onClaim={claim} />
           )}
@@ -516,9 +553,9 @@ export default function Game() {
           </footer>
         </div>
       </main>
-      {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>Portail → Boosters → Deck → Voyage.</p></BottomSheet>}
+      {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>{systems.deck?'Vos créatures sont prêtes à rejoindre votre équipe.':systems.collection?'Vos premières rencontres vous attendent dans Collection.':'Cliquez sur le portail pour produire de l’énergie.'}</p></BottomSheet>}
       {ready&&!opening&&!save.ux.introSeen&&<PortalIntro onDone={()=>{playSound('level',true);setSave(markIntroSeen);}}/>}
-      {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
+      {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);publishAdvanced(initialAdvancedRuntime(),performance.now());comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;disclosureBaseline.current=null;setDiscoveryNotice('');setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
       {opening && (
         <BoosterOpening
           key={save.packs}
@@ -532,7 +569,10 @@ export default function Game() {
           onNext={source=>startPack(source,true)}
           onClose={destination => {
             setSave(finishPack);
-            setTab(destination || "machine");
+            const closed=finishPack(latest.current);
+            if(closed!==latest.current)publishAdvanced(advancedEvent(closed,advancedRef.current,'onBoosterOpen',performance.now()),performance.now());
+            const unlocked=visibleSystems(closed);
+            setTab(destination&&unlocked[destination as 'machine'|'boosters'|'collection'|'deck'|'progression']?destination:'machine');
           }}
         />
       )}

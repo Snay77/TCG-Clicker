@@ -13,6 +13,8 @@ import "./boosters.css";
 import "./art-direction.css";
 import "./arcane-brutalism.css";
 import "./arcane-full-ui.css";
+import "./disclosure-card-ux.css";
+import "./advanced-effects.css";
 export const metadata: Metadata = {
   applicationName: 'TCG Clicker',
   appleWebApp: { capable: true, title: 'TCG Clicker', statusBarStyle: 'black-translucent' },

@@ -67,10 +67,11 @@ test("résolution de tous les effets, cumul et formules multiplicatives", () => 
   const e = deckEffects(s);
   near(e.clickFlat, 1);
   near(e.autoFlat, 2.2);
-  near(e.autoMultiplier, 0);
+  near(e.autoMultiplier, 0.06); // Chantignon : 60 espèces découvertes.
   near(e.energyMultiplier, 0.1);
   near(stats(s).click, 2 * 1.1 * 1.06);
-  near(stats(s).auto, 2.2 * 1.1 * 1.06);
+  near(stats(s).auto, 2.2 * 1.06 * 1.1 * 1.06);
+  near(stats(s,{enabled:false}).auto,2.2*1.1*1.06);
   assert.equal(price(s), 100);
 });
 test("synergies actives et proches, pas de double comptage d’une espèce", () => {
@@ -181,7 +182,7 @@ test("trois builds distincts jouables avec le set complet, spécialités effecti
     assert.equal(s.deck.length, deckCapacity(s));
     s.deck.forEach(id => assert.equal(equipBlockedReason(s, id), null));
   });
-  const [click, idle, collection] = builds.map(stats);
+  const [click, idle, collection] = builds.map(s=>stats(s));
   assert.ok(click.click > idle.click && click.crit > idle.crit);
   assert.ok(idle.auto > click.auto && idle.auto > collection.auto);
   assert.ok(collection.discount > 0 && collection.rareChance > 0);

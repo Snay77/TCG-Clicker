@@ -6,17 +6,16 @@ import { FINISHES, VISUALS } from "../lib/visuals";
 import CardArt from "./CardArt";
 import { describeEffect } from "../lib/effects";
 import { leveledEffect } from "../lib/progression";
+import { advancedDesign } from '../lib/advanced-card-design';
 function Card({
   card,
   owned = 1,
   level = 1,
-  children,
   animated = true,
 }: {
   card: Creature;
   owned?: number;
   level?: number;
-  children?: React.ReactNode;
   animated?: boolean;
 }) {
   const ref = useRef<HTMLElement>(null);
@@ -83,7 +82,7 @@ function Card({
           <h3>{owned ? v.title : "Rencontre inconnue"}</h3>
           <p>
             {owned
-              ? describeEffect(leveledEffect(card.effect, level))
+              ? [describeEffect(leveledEffect(card.effect, level)),advancedDesign(card.design?.id)?.text].filter(Boolean).join(' · ')
               : "Cette créature attend de croiser votre chemin."}
           </p>
         </div>
@@ -99,13 +98,12 @@ function Card({
           <b> / 060</b>
         </span>
         <span>
-          {owned ? `×${owned}` : "◇"} · {FINISHES[card.rarity]}
+          {FINISHES[card.rarity]}
         </span>
       </footer>
       <div className="card-foil" aria-hidden="true" />
       <div className="card-holo" aria-hidden="true" />
       <div className="card-reflection" aria-hidden="true" />
-      {children}
     </article>
   );
 }

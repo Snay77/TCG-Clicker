@@ -1,6 +1,6 @@
 {
   "name": "tcg-clicker",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
@@ -8,7 +8,9 @@
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "simulate:economy": "tsx scripts/simulate-booster-economy.ts"
+    "simulate:economy": "tsx scripts/simulate-booster-economy.ts",
+    "simulate:effects": "tsx scripts/simulate-advanced-effects.ts",
+    "simulate:balance": "tsx scripts/simulate-phase13b.ts"
   },
   "dependencies": {
     "next": "^16.3.8",

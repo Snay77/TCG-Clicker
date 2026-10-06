@@ -2,7 +2,7 @@
 
 ## État actuel
 
-**Alpha 0.2.0** : un clicker de collection jouable dans le navigateur, avec 60 créatures originales, 20 lignées et six raretés. Cliquer sur le portail produit de l’énergie ; améliorations, deck et synergies développent clics, production passive, critiques et combo. Les boosters contiennent cinq cartes et garantissent une Peu commune ou mieux. Les doublons renforcent manuellement les cartes jusqu’au niveau 5.
+**Alpha 0.3.0** : un clicker de collection jouable dans le navigateur, avec 60 créatures originales, 20 lignées et six raretés. Cliquer sur le portail produit de l’énergie ; améliorations, deck et synergies développent clics, production passive, critiques et combo. Les boosters contiennent cinq cartes et garantissent une Peu commune ou mieux. Les doublons renforcent manuellement les cartes jusqu’au niveau 5.
 
 La progression d’exploration comprend 42 objectifs, récompenses et titres. Six emplacements de deck au départ, deux supplémentaires à débloquer. Les boosters gratuits se rechargent toutes les dix minutes, même après fermeture du jeu, jusqu’au stockage maximal. **Aucune énergie n’est produite hors ligne.** Introduction, conseils, audio synthétique, ouverture rapide et préférence de mouvement réduit sont disponibles.
 
@@ -12,7 +12,7 @@ La sauvegarde v4 est locale à l’origine du site, sous `tcg-faerie-v1`. Param�
 
 Aucun compte, service de gameplay, tracking, police téléchargée ou asset graphique externe. Sprites, habitats et finitions sont produits en code. Les illustrations de l’ancien essai artistique restent archivées hors des fichiers publics.
 
-**Publication :** Alpha 0.1.0 publiée sur Vercel selon le retour du propriétaire. La Phase 10 / Alpha 0.2.0 est préparée localement ; installation sur téléphones réels et playtests humains restent à valider. Les résultats et limites sont dans `VERIFICATION.md` et `ALPHA_RELEASE_CHECKLIST.md`.
+**Publication :** Alpha 0.3.0 préparée pour playtest externe sur Vercel. Navigation progressive, nouvelle fiche carte et prototype d'effets avancés sur 12 cartes sont inclus. La généralisation aux 60 cartes reste interdite avant validation humaine selon `design/phase13c-playtest.md`. Installation sur téléphones réels et playtests humains restent à valider. Voir aussi `CHANGELOG.md`, `VERIFICATION.md` et `ALPHA_RELEASE_CHECKLIST.md`.
 
 ## Installation
 

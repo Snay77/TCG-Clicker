@@ -1,0 +1,126 @@
+/* Phase 12A: presentation gates and an object-first inspection. */
+.phase-12 .play-grid.machine-only { grid-template-columns:minmax(0,1fr); }
+.phase-12 .stats-row { grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+.phase-12 .sidebar nav button { animation:screen-arrive .22s ease-out; }
+@keyframes screen-arrive { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
+.phase-12 .discovery-notice { border-left-color:var(--type-lune); }
+.phase-12 .first-impulse { padding:12px 16px; margin:12px 0; }
+.phase-12 .first-impulse .first-steps-heading { display:none; }
+.phase-12 .first-impulse ul { display:none; }
+.phase-12 .first-impulse .context-tip { border:0; padding:0; margin:0; }
+.phase-12 .collection-grid .card { padding-bottom:14px; }
+.phase-12 .archive-actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; padding-top:12px; }
+.phase-12 .archive-actions button { flex:1; font:11px ui-monospace,monospace; }
+.phase-12 .archive-actions > span { color:var(--ab-muted); font:10px ui-monospace,monospace; }
+.phase-12 .card-inspection[open] { grid-template-columns:minmax(0,340px) minmax(0,1fr); gap:40px; width:920px; align-items:start; padding-top:56px; }
+.phase-12 .inspection-art { padding:0; width:100%; }
+.phase-12 .inspection-art .card { padding:16px; min-height:0; }
+.phase-12 .inspection-art .card-name strong { font:700 20px/1.2 Georgia,serif; }
+.phase-12 .inspection-art .card-ability h3 { font:600 12px/1.3 Georgia,serif; color:#f2ebd5; letter-spacing:0; }
+.phase-12 .inspection-art .card-ability p { font:11px/1.5 system-ui,sans-serif; color:#d6e1d6; }
+.phase-12 .inspection-art .card-flavor { font:italic 11px/1.4 Georgia,serif; color:#a8bcb3; min-height:0; }
+.phase-12 .inspection-art .card footer { color:#a8bcb3; font-size:9px; }
+.phase-12 .inspection-object-label { display:block; text-align:center; margin-top:16px; color:var(--ab-muted); font:9px/1.5 ui-monospace,monospace; letter-spacing:1px; }
+.phase-12 .inspection-details .inspection-section { padding:20px 0; margin:0; border:0; border-bottom:1px solid var(--ab-line); background:none; }
+.phase-12 .inspection-details .inspection-section:first-child { padding-top:0; }
+.phase-12 .inspection-details .inspection-section > h3 { margin:0 0 12px; font:10px/1.5 ui-monospace,monospace; letter-spacing:1.5px; color:var(--ab-muted); }
+.phase-12 .inspection-identity h2 { margin:0 0 16px; font:750 28px/1.1 system-ui,sans-serif; color:var(--ab-ink); }
+.phase-12 .inspection-identity dl { margin:0 0 12px; display:grid; gap:8px; }
+.phase-12 .inspection-identity dl > div { display:grid; grid-template-columns:80px minmax(0,1fr); gap:12px; }
+.phase-12 .inspection-identity dt,.phase-12 .inspection-label { font:10px/1.6 ui-monospace,monospace; color:var(--ab-muted); }
+.phase-12 .inspection-identity dd { margin:0; font:13px/1.5 system-ui,sans-serif; color:var(--ab-muted); }
+.phase-12 .inspection-metadata { color:var(--ab-muted); font:9px/1.5 ui-monospace,monospace; letter-spacing:.5px; }
+.phase-12 .inspection-details .inspection-value { display:block; color:var(--ab-ink); font:650 19px/1.4 ui-monospace,monospace; margin:0 0 12px; }
+.phase-12 .effect-comparison { display:grid; grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr); gap:12px; align-items:center; color:var(--ab-muted); font:12px/1.5 ui-monospace,monospace; }
+.phase-12 .effect-comparison small { display:block; font:9px/1.5 ui-monospace,monospace; color:var(--ab-muted); margin-bottom:4px; }
+.phase-12 .effect-comparison > span:last-child { color:var(--ab-ink); }
+.phase-12 .copy-meter { display:flex; gap:12px; align-items:center; margin:16px 0; flex-wrap:wrap; }
+.phase-12 .copy-dots { display:flex; gap:6px; }
+.phase-12 .copy-dots i { width:10px; height:10px; border:1px solid var(--ab-muted); border-radius:50%; background:transparent; }
+.phase-12 .copy-dots .filled { background:var(--ab-ink); border-color:var(--ab-ink); }
+.phase-12 .copy-meter strong { font:600 18px/1.4 ui-monospace,monospace; color:var(--ab-ink); margin:0; }
+.phase-12 .copy-meter strong span { color:var(--ab-muted); font-weight:400; }
+.phase-12 .inspection-details button { width:100%; margin:0; font:650 12px/1.5 ui-monospace,monospace; letter-spacing:.5px; }
+.phase-12 .inspection-details button:disabled { opacity:1; background:var(--ab-surface-2); color:var(--ab-muted); border-color:var(--ab-line); }
+.phase-12 .journal-view .deck-mobile-details { display:block; margin:20px 0; border-bottom:1px solid var(--ab-line); }
+.phase-12 .journal-view .deck-mobile-details > summary { display:flex; align-items:center; min-height:44px; color:var(--ab-muted); font:12px ui-monospace,monospace; cursor:pointer; }
+.phase-12 .journal-view .deck-mobile-details > summary::before { content:'+ '; padding-right:8px; }
+.phase-12 .journal-view .deck-mobile-details[open] > summary::before { content:'− '; }
+.phase-12 .inspection-help { margin-top:12px; color:var(--ab-muted); }
+.phase-12 .inspection-help summary { min-height:44px; display:flex; align-items:center; cursor:pointer; font:11px/1.5 system-ui,sans-serif; }
+.phase-12 .inspection-help summary::before { content:'+ '; padding-right:8px; }
+.phase-12 .inspection-help[open] summary::before { content:'− '; }
+.phase-12 .inspection-help p { font-size:12px; line-height:1.5; }
+.phase-12 .inspection-deck-state { display:block; margin-bottom:12px; font:13px/1.5 system-ui,sans-serif; color:var(--ab-muted); }
+.phase-12 .inspection-deck-state.is-equipped { color:var(--ab-ink); }
+.phase-12 .inspection-blocked { margin:12px 0 0; font:12px/1.5 system-ui,sans-serif; }
+@media(max-width:850px) {
+ .phase-12 .sidebar nav { grid-template-columns:repeat(auto-fit,minmax(0,1fr)); grid-auto-flow:column; grid-auto-columns:1fr; }
+ .phase-12 .tab-machine { min-width:0; }
+ .phase-12.tab-machine .machine-panel { display:flex; flex-direction:column; min-height:0; }
+ .phase-12.tab-machine .forest { flex:1; min-height:190px; }
+ .phase-12.tab-machine .machine-panel > :not(.forest) { flex-shrink:0; }
+ .phase-12 .mobile-machine-actions:has(> button:only-of-type) { grid-template-columns:44px minmax(0,1fr); }
+ .phase-12 .mobile-machine-actions:has(> button:only-of-type) small { grid-row:1; grid-column:2; text-align:right; }
+ .phase-12 .card-inspection[open] { grid-template-columns:minmax(0,1fr); width:100%; max-width:100%; gap:24px; padding:60px 20px 24px; }
+ .phase-12 .card-inspection .modal-close { position:fixed; top:8px; right:8px; z-index:10; }
+ .phase-12 .bottom-sheet .first-impulse .first-steps-heading { display:flex; }
+ .phase-12 .card-inspection .inspection-art { width:100%; max-width:280px; margin:0 auto; }
+ .phase-12 .inspection-art .card-art { aspect-ratio:1.15; }
+ .phase-12 .inspection-details .inspection-value { font-size:17px; }
+ .phase-12 .inspection-identity h2 { font-size:25px; }
+ .phase-12 .archive-actions { gap:8px; }
+ .phase-12 .archive-actions button { font-size:10px; padding:8px; }
+ .phase-12 .archive-actions > span { font-size:9px; }
+ .phase-12 .discovery-notice + .notice { display:none; }
+}
+@media(prefers-reduced-motion:reduce) { .phase-12 .sidebar nav button { animation:none; } }
+html[data-motion=reduce] .phase-12 .sidebar nav button { animation:none; }
+
+/* Phase 12B: clearer states, secondary information on demand. */
+.phase-12.brutal-shell { --ux-secondary:#bcc4bf; --ux-metadata:#959f99; }
+.phase-12 .discovery-notice { display:flex; align-items:center; flex-wrap:wrap; gap:8px 16px; }
+.phase-12 .discovery-notice strong { color:var(--ab-ink); font:650 12px/1.5 ui-monospace,monospace; }
+.phase-12 .discovery-tag { color:var(--type-lune); font:10px/1.5 ui-monospace,monospace; letter-spacing:1px; }
+.phase-12 :is(.stats-row small,.panel-heading .eyebrow,.archive-label small,.journal-view .eyebrow,.booster-page-recharge,.settings-modal .eyebrow,.page-footer,.save-status,.inspection-metadata,.inspection-label,.inspection-object-label) { color:var(--ux-metadata); }
+.phase-12 :is(.inspection-identity dd,.inspection-blocked,.copy-shortfall,.context-tip p,.boosters-view p) { color:var(--ux-secondary); }
+.phase-12 :is(.ux-modal,.journal-view,.boosters-view,.mobile-booster,.arcane-upgrades,.build-panel,.build-candidates) button:disabled { opacity:1; background:transparent; color:var(--ux-secondary); border-color:var(--ab-line); }
+.phase-12 .inspection-section-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+.phase-12 .inspection-section-heading h3 { margin:0; color:var(--ux-metadata); font:10px/1.5 ui-monospace,monospace; letter-spacing:1px; }
+.phase-12 .inspection-section-heading .inspection-value,.phase-12 .inspection-section-heading .inspection-deck-state { margin:0; }
+.phase-12 .copy-meter { gap:8px 12px; }
+.phase-12 .copy-meter .copy-unit { color:var(--ux-secondary); font:12px/1.5 system-ui,sans-serif; }
+.phase-12 .copy-shortfall { flex-basis:100%; font:12px/1.5 system-ui,sans-serif; }
+.phase-12 .inspection-upgrade-actions { display:grid; grid-template-columns:minmax(0,1fr) 44px; align-items:start; gap:8px; }
+.phase-12 .inspection-help.upgrade-help { margin:0; padding:0; }
+.phase-12 .upgrade-help summary { justify-content:center; width:44px; height:44px; border:1px solid var(--ab-line); font:15px ui-monospace,monospace; }
+.phase-12 .upgrade-help summary::before { content:none; }
+.phase-12 .upgrade-help[open] { grid-column:1/-1; }
+.phase-12 .inspection-upgrade-actions .card-upgrade-button:disabled { width:fit-content; min-width:140px; justify-self:start; }
+.phase-12 .inspection-deck > button:disabled { width:fit-content; min-width:140px; }
+.phase-12 .inspection-secondary { margin-top:0; padding:0; }
+.phase-12 .inspection-secondary > summary { color:var(--ux-metadata); }
+@media(max-width:850px) {
+ .phase-12 .card-inspection[open] { gap:12px; padding:52px 20px 20px; }
+ .phase-12 .card-inspection .inspection-art { max-width:260px; }
+ .phase-12 .inspection-art .card { padding:14px; }
+ .phase-12 .inspection-art .card-name strong { font-size:18px; }
+ .phase-12 .inspection-art .card-ability { min-height:48px; padding:8px 0 4px; }
+ .phase-12 .inspection-art .card-flavor { font-size:10px; padding:4px 0 8px; }
+ .phase-12 .inspection-object-label { display:none; }
+ .phase-12 .inspection-details .inspection-section { padding:12px 0; }
+ .phase-12 .inspection-capacity { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+ .phase-12 .inspection-details .inspection-capacity > h3 { margin:0; color:var(--ux-metadata); }
+ .phase-12 .inspection-capacity .inspection-value { max-width:75%; margin:0; text-align:right; font-size:16px; }
+ .phase-12 .inspection-section-heading .inspection-value { font-size:15px; }
+ .phase-12 .effect-comparison { gap:8px; font-size:11px; }
+ .phase-12 .effect-comparison small { margin-bottom:2px; }
+ .phase-12 .copy-meter { margin:8px 0; }
+ .phase-12 .copy-meter > .inspection-label { display:none; }
+ .phase-12 .copy-meter strong { font-size:16px; }
+ .phase-12 .inspection-deck-state { font-size:12px; }
+ .phase-12 .inspection-blocked { margin:8px 0 0; font-size:11px; }
+ .phase-12 .inspection-secondary .inspection-lineage .sprite { width:64px; height:64px; }
+ .phase-12 .discovery-notice { gap:4px 10px; }
+ .phase-12 .discovery-notice strong { font-size:11px; }
+}

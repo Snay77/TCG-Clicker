@@ -46,7 +46,7 @@ test('inspection sépare niveau et copies, affiche coût et effets réels après
  const s={...initialSave(),owned:{'001':6},cardLevels:{'001':2}};
  const v=cardInspection(s,'001');assert.equal(v.level,2);assert.equal(v.copies,6);assert.equal(v.cost,3);assert.equal(v.upgradeable,true);assert.equal(v.current,'+1.2 / clic');assert.equal(v.next,'+1.5 / clic');
  const after=cardInspection(upgradeCard(s,'001'),'001');assert.equal(after.copies,3);assert.equal(after.level,3);assert.equal(after.upgradeable,false);
- const html=renderToStaticMarkup(createElement(CardInspection,{save:s,id:'001',onClose(){},onEquip(){},onUpgrade(){}}));assert.match(html,/Niveau 2/);assert.match(html,/Copies disponibles : 6/);assert.match(html,/3 doublons/);assert.match(html,/Mémoire des graines/);
+ const html=renderToStaticMarkup(createElement(CardInspection,{save:s,id:'001',onClose(){},onEquip(){},onUpgrade(){}}));assert.match(html,/Niveau 2/);assert.match(html,/6 copies sur 4 nécessaires/);assert.match(html,/3 doublons/);assert.match(html,/Mémoire des graines/);
 });
 test('doublon ne promet une amélioration que lorsque son coût est atteint',()=>{
  assert.deepEqual(duplicateFeedback(2,1),{before:2,after:3,newlyUpgradeable:true});assert.equal(duplicateFeedback(3,1).newlyUpgradeable,false);assert.equal(duplicateFeedback(3,2).newlyUpgradeable,true);assert.equal(duplicateFeedback(20,5).newlyUpgradeable,false);

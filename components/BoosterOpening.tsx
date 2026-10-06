@@ -11,6 +11,7 @@ import type { Save, PackSource } from "../lib/game";
 import { savedCardLevel } from "../lib/game";
 import { openingDelay } from "../lib/exploration";
 import { trapDialogTab } from '../lib/dialog-focus';
+import { advancedDuplicateSources } from '../lib/advanced-effects';
 
 type Stage =
   | "choose"
@@ -548,6 +549,7 @@ export default function BoosterOpening({
                     {RARITIES[tier]} · {"◆".repeat(tier + 1)}
                   </span>
                   <span>Niv. {savedCardLevel(save, creature.id)} · {isNew(creature.id,index)?'Première copie':`Doublon · Copies : ${duplicate.before} → ${duplicate.after} · énergie bonus créditée`}</span>
+                  {!isNew(creature.id,index)&&advancedDuplicateSources(save,creature.id).map(source=><span className="duplicate-ready" key={source.name}>◇ {source.name} · +{source.bonus} éclats</span>)}
                   {duplicate.newlyUpgradeable&&<strong className="duplicate-ready">Amélioration disponible !</strong>}
                 </>
               ) : (
