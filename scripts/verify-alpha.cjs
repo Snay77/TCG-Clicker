@@ -69,21 +69,21 @@ async function finishOpening(page) {
       const download=await downloadEvent;const file=await download.path();assert.equal(JSON.parse(fs.readFileSync(file,'utf8')).version,4);
       await page.getByRole('button',{name:'Copier les diagnostics',exact:true}).click();
       await page.keyboard.press('Escape');
-      await page.locator('nav').getByRole('button',{name:/Collection/}).click();await page.locator('.collection-grid > .card').first().waitFor();
-      assert.equal(await page.locator('.collection-grid > .card').count(),60);
+      await page.locator('nav').getByRole('button',{name:/Collection/}).click();await page.locator('.collection-grid .card').first().waitFor();
+      assert.equal(await page.locator('.collection-grid .card').count(),60);
       await page.waitForTimeout(200);assert.ok(await page.locator('.card[data-offscreen=true]').count()>20);
       for(let i=0;i<4;i++){await page.getByRole('combobox',{name:'Type',exact:true}).selectOption('Lune');await page.getByRole('button',{name:'Effacer les filtres'}).click();}
       await page.getByRole('button',{name:'Examiner Moussillon',exact:true}).click();await page.locator('.card-inspection').waitFor();await page.keyboard.press('Escape');
       await page.locator('nav').getByRole('button',{name:/Mon deck/}).click();await page.locator('.synergy-grid').first().waitFor();
-      await page.locator('nav').getByRole('button',{name:/Progression/}).first().click();await page.getByRole('heading',{name:/Chaque rencontre/}).waitFor();
+      await page.locator('nav').getByRole('button',{name:/Progression/}).first().click();await page.getByRole('heading',{name:/Registre d’exploration/}).waitFor();
       await page.locator('nav').getByRole('button',{name:/La machine/}).click();
       // Fast click burst stays within the existing 19-particle cap.
       await page.evaluate(()=>{const b=document.querySelector('.machine-button');for(let i=0;i<200;i++)b.click();});
       assert.ok(await page.locator('.click-spark').count()<=19);await page.waitForTimeout(1300);assert.equal(await page.locator('.click-spark').count(),0);
       const writes=await page.evaluate(()=>{window.__writes=0;const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='tcg-faerie-v1')window.__writes++;return original.call(this,k,v);};return window.__writes;});
       await page.waitForTimeout(2200);assert.ok(await page.evaluate(()=>window.__writes)<=3);
-      // Another tab must neither mount the game nor overwrite the first tab's save.
-      const other=await context.newPage();await other.goto(base);await other.getByRole('heading',{name:/déjà actif/}).waitFor();assert.equal(await other.locator('.machine-button').count(),0);await other.close();
+      // Another tab loads normally, even while the first tab remains open.
+      const other=await context.newPage();await other.goto(base);await other.locator('.machine-button').waitFor();assert.equal(await other.getByText('TCG Clicker est déjà actif dans un autre onglet.',{exact:true}).count(),0);await other.close();
       // Load an interrupted paid pack and verify no duplicate grants across reload.
       let pending=reveal(openPack({...fixture(),energy:100000},['001','005','007','008','009'],'paid'));
       await page.getByRole('button',{name:'Paramètres',exact:true}).click();await page.locator('input[type=file]').setInputFiles({name:'partial.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(pending))});await page.getByRole('button',{name:'Confirmer le remplacement',exact:true}).click();await page.locator('.po-view').waitFor();await page.reload();
@@ -110,19 +110,15 @@ async function finishOpening(page) {
           const continueButton=mp.getByRole('button',{name:'Retour à la machine',exact:true});await continueButton.scrollIntoViewIfNeeded();assert.ok(await continueButton.isVisible());await continueButton.tap();
           await mp.screenshot({path:`test-results/alpha-${width}.png`});assert.deepEqual(me,[]);report.viewports.push(width);await mc.close();
         }
-        // Lease fallback and an owner suspended beyond its lease.
-        const fc=await browser.newContext();await seed(fc,fixture(),true);const {page:fp}=await start(fc);const second=await fc.newPage();await second.goto(base);await second.getByRole('heading',{name:/déjà actif/}).waitFor();
-        await fp.evaluate(()=>{const raw=JSON.parse(localStorage.getItem('tcg-faerie-v1-active-tab'));raw.until=Date.now()-1;localStorage.setItem('tcg-faerie-v1-active-tab',JSON.stringify(raw));});
-        await fp.getByRole('heading',{name:/déjà actif/}).waitFor();await fc.close();
         const ec=await browser.newContext();await seed(ec,fixture());await ec.addInitScript(()=>{const original=Number.prototype.toLocaleString;Number.prototype.toLocaleString=function(...args){if(document.querySelector('.app-shell'))throw Error('Injected render failure');return original.apply(this,args);};});const ep=await ec.newPage();await ep.goto(base);await ep.getByRole('heading',{name:'La clairière a rencontré un problème.'}).waitFor();const exportEvent=ep.waitForEvent('download');await ep.getByRole('button',{name:'Exporter la sauvegarde accessible'}).click();assert.equal(JSON.parse(fs.readFileSync(await (await exportEvent).path(),'utf8')).version,4);await ep.screenshot({path:'test-results/alpha-recovery.png'});await ec.close();
         const sc=await browser.newContext();await sc.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Blocked','SecurityError');}}));const sp=await sc.newPage();await sp.goto(base);await sp.getByRole('heading',{name:'Sauvegarde inaccessible.'}).waitFor();assert.equal(await sp.locator('.machine-button').count(),0);await sc.close();
-        const race=await browser.newContext();await seed(race,fixture(),true);const ra=await race.newPage(),rb=await race.newPage();await Promise.all([ra.goto(base),rb.goto(base)]);await ra.waitForTimeout(500);assert.equal(await ra.locator('.machine-button').count()+await rb.locator('.machine-button').count(),1);await race.close();
+        const race=await browser.newContext();await seed(race,fixture(),true);const ra=await race.newPage(),rb=await race.newPage();await Promise.all([ra.goto(base),rb.goto(base)]);await ra.waitForTimeout(500);await ra.locator('.machine-button').waitFor();await rb.locator('.machine-button').waitFor();assert.equal(await ra.locator('.machine-button').count()+await rb.locator('.machine-button').count(),2);await race.close();
         const tc=await browser.newContext({viewport:{width:430,height:844},isMobile:true,hasTouch:true});let tactile=openPack({...fixture(),ux:{...fixture().ux,motion:'system',sound:true}},['001','005','007','008','009'],'paid');await seed(tc,tactile);const tp=await tc.newPage();const te=[];tp.on('pageerror',e=>te.push(e.message));await tp.goto(base);await tp.getByRole('button',{name:'Choisir ce booster',exact:true}).click();const touch=await tc.newCDPSession(tp);
         async function swipe(locator,vertical=false,small=false){const r=await locator.boundingBox();const x=r.x+r.width-12,y=r.y+r.height*.5;await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});for(let i=1;i<=10;i++)await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-(vertical?20:r.width-24)*i/10*(small?.15:1),y:y-(vertical?160:0)*i/10*(small?.15:1),id:1}]});await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
         await swipe(tp.locator('.po-cut-track'),false,true);assert.equal(await tp.locator('.po-sealed').count(),1);await swipe(tp.locator('.po-cut-track'));await tp.locator('.po-view').waitFor();await tp.waitForTimeout(300);const copiesBefore=Object.values(tactile.owned).reduce((a,b)=>a+b,0);await swipe(tp.locator('.po-front-visible'),true,true);assert.equal(await tp.locator('.po-view').count(),1);
         for(let i=0;i<5;i++){await tp.locator('.po-view').waitFor();await swipe(tp.locator('.po-front-visible'),true);await tp.waitForTimeout(300);}
         await tp.locator('.po-summary-grid').waitFor();assert.equal(Object.values((await read(tp)).owned).reduce((a,b)=>a+b,0),copiesBefore+5);await tp.waitForFunction(()=>[...document.querySelectorAll('.po-summary-item')].every(item=>getComputedStyle(item).opacity==='1'));await tp.screenshot({path:'test-results/alpha-tactile-summary.png'});await tp.getByRole('button',{name:'Retour à la machine',exact:true}).tap();assert.equal(await tp.evaluate(()=>document.body.style.overflow),'');await tp.setViewportSize({width:844,height:390});await assertWidth(tp);await tp.getByRole('button',{name:'Paramètres',exact:true}).click();await assertWidth(tp);assert.deepEqual(te,[]);await tc.close();
-        report.checks.push('recovery, reset, lease fallback, suspended owner, simultaneous lease race, error recovery/export, storage denied, native touch normal motion, landscape');
+        report.checks.push('recovery, reset, simultaneous tabs without blocking, error recovery/export, storage denied, native touch normal motion, landscape');
       }
     }finally{await browser.close();}
   }

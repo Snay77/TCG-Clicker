@@ -1,4 +1,20 @@
-# Checklist courante — Alpha 0.2.0
+# Correctif local — 9 octobre 2026
+
+Le blocage entre onglets est désactivé. Les contrôles historiques de verrou ci-dessous décrivent les anciennes versions. Régression actuelle : `scripts/verify-save-session.cjs` vérifie le chargement malgré un ancien bail ou un Web Lock détenu, la sauvegarde et le rechargement, deux onglets accessibles et la conservation d’un JSON illisible. Utiliser un seul onglet de jeu à la fois : les écritures ne sont pas synchronisées.
+
+# Checklist courante — Phase 14 · 9 octobre 2026
+
+- [x] Les 38 points du rapport couverts ; détail dans `design/phase14-ux-fixes.md`.
+- [x] 149 tests, contrôle TypeScript et compilation de production.
+- [x] Edge desktop/mobile émulé : Deck plein, remplacement stable, achat slot, booster rapide, récap/inspection, cinq acquisitions et scroll Collection.
+- [x] Partie neuve : premier booster utile, onglets découverts conservés après dépense/rechargement.
+- [x] Captures avant/après, documentation de l'équilibrage et compatibilité v4.
+- [ ] Téléphones physiques et Safari : contrôles non rejoués dans cette phase.
+- [ ] Déploiement : aucun déploiement demandé ou effectué.
+
+Aucun nouveau playtest humain lancé, conformément au périmètre Phase 14.
+
+# Historique — Checklist Alpha 0.2.0
 
 3 octobre 2026. Préparation locale ; la checklist Alpha 0.1.0 ci-dessous reste historique.
 

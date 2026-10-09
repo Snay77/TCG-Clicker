@@ -1,10 +1,18 @@
-# Prototype visuel 11A — 4 octobre 2026
+# Vérification courante — Phase 14 · 9 octobre 2026
+
+149 tests réussis (130 existants adaptés, 19 nouveaux), `npm run typecheck` et `npm run build` réussis. Contrôles automatisés Edge, production locale, desktop 1440 × 1000 et mobile tactile émulé 390 × 844 : remplacement direct sur Deck plein et slot conservé, achat du 7e emplacement, ouverture rapide, inspection du récap sans fermer le booster, Collection en haut avec cinq acquisitions, absence de débordement horizontal et notices expirées. Partie neuve : onglet Boosters conservé après dépense/reload, première ouverture avec trois Bases équipables. Aucun nouveau playtest humain ni déploiement.
+
+Reproduction : `scripts/verify-phase14.cjs`, avec `PLAYWRIGHT_PATH` et `ALPHA_URL` selon le runtime. Captures avant/après : `test-results/phase14/`. Périmètre et ajustements exacts : `design/phase14-ux-fixes.md`. Les contrôles PWA/Firefox/Safari et appareils physiques ci-dessous restent historiques ou à réaliser ; aucune validation physique ajoutée.
+
+---
+
+# Historique — Prototype visuel 11A · 4 octobre 2026
 
 Machine et Voyage, direction Faerie Field Journal × Arcane Machine. 103 tests, TypeScript et build réussis. Parcours responsive/PWA et boosters rejoués Chrome/Edge ; Machine sans scroll sur les formats Phase 10. Voyage vérifié sur desktop 1440 × 1000 et mobile 390 × 844 : seuils existants, 42 objectifs, 14 statistiques, récompense unique et persistante, focus et reduced motion. Galerie `test-results/ui-redesign/index.html` : 85 comparaisons avec les mêmes fixtures que l’audit. Aucun moteur, carte ou format de sauvegarde modifié. Prototype local en attente de validation artistique avant 11B ; voir `design/UI_BIBLE.md` et `design/phase11a-prototype.md`. Pas de test Safari ou téléphone réel dans cette passe.
 
 ---
 
-# Vérification courante — Alpha 0.2.0 / Phase 10
+# Historique — Alpha 0.2.0 / Phase 10
 
 3 octobre 2026, build local de production. Les résultats Alpha 0.1.0 ci-dessous sont historiques, particulièrement la passe Firefox qui n’a pas été rejouée pour Phase 10.
 
@@ -244,3 +252,12 @@ Courbe, 42 objectifs, 20 lignées, récompenses, statistiques et migration : `de
 Scripts/captures locaux ignorés : `test-results/phase8-check.cjs`, `phase8-extra.cjs`, `phase8-touch.cjs`, `phase8-regression.cjs`, `phase8-intro.png`, `phase8-card.png`, `phase8-machine-390.png`, `phase8-mobile-card-390.png`, variantes 430, `phase8-duplicate.png`, `phase8-reward.png`. Référence de comportement : `design/phase8-ux.md`.
 
 Avant alpha : playtests humains depuis zéro sur 30–60 minutes pour rythme, fatigue et compréhension ; écoute Web Audio sur vrais téléphones/casques ; contrôle Safari/Firefox et lecteur d’écran. Les tests headless ne prouvent pas le comportement des onglets réellement cachés, déjà documenté en Phase 7. Sauvegarde locale prévue pour un seul onglet actif. Aucun nouvel équilibrage ni gameplay n’est ajouté pendant cette phase.
+
+
+## Correctif du 9 octobre 2026 — blocage entre onglets désactivé
+
+- 130 tests, TypeScript et build de production réussis.
+- Edge, profil temporaire : un Web Lock réellement détenu et un ancien bail localStorage non expiré n’empêchent plus le chargement du jeu. Un clic est sauvegardé et conservé après rechargement ; un deuxième onglet charge normalement.
+- Une sauvegarde JSON illisible reste intacte et ouvre toujours la récupération.
+- Régression reproductible : `scripts/verify-save-session.cjs` (PLAYWRIGHT_PATH et ALPHA_URL configurables). Les profils et le serveur temporaires sont fermés après le contrôle.
+- Les onglets ne synchronisent pas leurs parties : utiliser un seul onglet de jeu à la fois.

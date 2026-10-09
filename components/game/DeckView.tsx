@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CARDS, byId } from "../../lib/cards";
 import { changeDeck, deckCapacity, deckEffects, equipBlockedReason, Save, stats, savedCardLevel } from "../../lib/game";
-import { describeEffect } from "../../lib/effects";
+import { describeUIEffect as describeEffect } from "../../lib/effects";
 import { leveledEffect } from "../../lib/progression";
 import { BUILD_ARCHETYPES, synergies, advancedSynergies } from "../../lib/synergies";
 import Sprite from "../Sprite";
@@ -13,12 +13,20 @@ import { TYPES } from '../../lib/content/model';
 import { visibleSystems } from '../../lib/disclosure';
 import type { AdvancedContext } from '../../lib/advanced-effects';
 import AdvancedDeckEffects from './AdvancedDeckEffects';
+import {advancedDesign} from '../../lib/advanced-card-design';
+import {advancedRows} from '../../lib/advanced-effects';
+import {amount,decimal,percent,rarePlusChance,missingParent,sortDeckChoices,slotOffer} from '../../lib/game-ux';
+import EvolutionRequirement from './EvolutionRequirement';
+import DeckComparison from './DeckComparison';
+import DeckReplacement from './DeckReplacement';
 export function statImpact(before: ReturnType<typeof stats>, after: ReturnType<typeof stats>): string {
-  const delta = (n: number) => `${n >= 0 ? "+" : ""}${Number(n.toFixed(2))}`;
-  return `${delta(after.click - before.click)} / clic · ${delta(after.auto - before.auto)} / sec · ${delta((after.crit - before.crit) * 100)} points critique · ${delta(after.critMultiplier - before.critMultiplier)} × critique · ${delta((after.discount - before.discount) * 100)} points réduction booster`;
+  const fields:[string,number][]=[['/ clic',after.click-before.click],['/ sec',after.auto-before.auto],['points critique',(after.crit-before.crit)*100],['× critique',after.critMultiplier-before.critMultiplier],['points réduction booster',(after.discount-before.discount)*100]];
+  return fields.filter(([,n])=>Math.abs(n)>=.005).map(([label,n])=>(n>0?'+':'')+decimal(n)+' '+label).join(' · ');
 }
-export default function DeckView({ save, onEquip, effectContext={} }: { save: Save; onEquip: (id: string, replaceId?: string) => void; effectContext?:AdvancedContext }) {
+export default function DeckView({ save, onEquip, effectContext={},recentIds=[],onSlot }: { save: Save; onEquip: (id: string, replaceId?: string) => void; effectContext?:AdvancedContext;recentIds?:string[];onSlot?:()=>void }) {
   const mobile=useMobileLayout();
+  const [directReplacement,setDirectReplacement]=useState('');
+  const offer=slotOffer(save);
   const systems=visibleSystems(save);
   const eligible=Object.keys(save.owned).filter(id=>save.owned[id]&&!equipBlockedReason({...save,deck:[]},id));
   const typeCounts=new Map<string,number>();
@@ -30,14 +38,17 @@ export default function DeckView({ save, onEquip, effectContext={} }: { save: Sa
   const power = stats(save,effectContext);
   const bonuses = deckEffects(save,effectContext);
   const choices=CARDS.filter(c => save.owned[c.id] && (!mobile || (!save.deck.includes(c.id) && c.name.toLocaleLowerCase("fr").includes(search.toLocaleLowerCase("fr")) && (!type || c.type===type))));
-  const candidates=(!mobile || picker) ? (<div className="build-candidates">{choices.map(c => {
+  const sorted=sortDeckChoices(save,choices.map(c=>c.id),recentIds).map(byId);
+  const candidates=(!mobile || picker) ? (<div className="build-candidates">{sorted.map(c => {
       const candidate = replacement && !save.deck.includes(c.id) ? { ...save, deck: save.deck.filter(id => id !== replacement) } : save;
-      const reason = equipBlockedReason(candidate, c.id);
-      const preview = changeDeck(save, c.id, replacement);
-      return <div className="build-candidate" key={c.id}><Sprite creature={c} /><div><strong>{c.name} · niv. {savedCardLevel(save, c.id)}</strong><p>{describeEffect(leveledEffect(c.effect, savedCardLevel(save, c.id)))}</p>{reason?<small>{reason}</small>:<div className="replacement-comparison"><span>Clic <b>{power.click.toFixed(2)} → {stats(preview,effectContext).click.toFixed(2)}</b></span><span>Passif <b>{power.auto.toFixed(2)} → {stats(preview).auto.toFixed(2)} / s</b></span>{systems.statistics&&<small>{statImpact(power,stats(preview))}</small>}</div>}</div><button disabled={!!reason} onClick={() => { onEquip(c.id, replacement); setReplaceId(""); setPicker(false); }}>{save.deck.includes(c.id) ? "Retirer" : replacement ? "Remplacer" : "Équiper"}</button></div>;
+      const reason = missingParent(save,c.id)?equipBlockedReason(candidate,c.id):null;
+      const ambiguous=!replacement&&!save.deck.includes(c.id)&&save.deck.length>=deckCapacity(save);
+      const design=advancedDesign(c.design?.id),row=advancedRows({...save,deck:save.deck.includes(c.id)?save.deck:[...save.deck.filter(cid=>cid!==replacement).slice(0,deckCapacity(save)-1),c.id]},effectContext).find(r=>r.id===c.id);
+      return <div className="build-candidate" key={c.id}><Sprite creature={c} /><div><strong>{c.name} · niveau carte {savedCardLevel(save,c.id)}</strong>{recentIds.includes(c.id)&&<span className="recent-badge">NOUVEAU</span>}<p>{describeEffect(leveledEffect(c.effect,savedCardLevel(save,c.id)))}</p>{design&&<p className="candidate-advanced"><strong>{design.text}</strong><small>{ambiguous?'Condition selon le compagnon remplacé':(save.deck.includes(c.id)?row?.status:'À l’équipement')+' · '+(row?.active?'condition remplie':'condition à remplir')}</small></p>}<EvolutionRequirement save={save} id={c.id}/>{!reason&&<DeckComparison save={save} id={c.id} replaceId={replacement} context={effectContext}/>}</div><button disabled={!!reason} onClick={()=>{if(!replacement&&!save.deck.includes(c.id)&&save.deck.length>=deckCapacity(save)){setDirectReplacement(c.id);return;}onEquip(c.id,replacement);setReplaceId('');setPicker(false);}}>{save.deck.includes(c.id)?'Retirer':replacement?'Remplacer':save.deck.length>=deckCapacity(save)?'Choisir un remplacement':'Équiper'}</button></div>;
     })}</div>) : null;
   return <>
     <section className="build-panel">
+      <div className="deck-compact-summary" aria-label="Résumé du Deck"><strong>DECK / {save.deck.length}</strong><span>Clic : {decimal(power.click)}</span><span>Passif : {decimal(power.auto)}/s</span>{power.crit>0&&<span>Crit : {percent(power.crit)} · ×{decimal(power.critMultiplier)}</span>}<span>Rare+ : {percent(rarePlusChance(power.rareChance))}</span><small>SYNERGIES · {[...synergies(save.deck),...advancedSynergies(save.deck,explorationLevel(save.account.xp))].filter(x=>x.active).map(x=>x.type+' ×'+x.required).join(' · ')||'Aucune active'}</small></div>
       <div className="section-title"><div><div className="eyebrow">PUISSANCE DU DECK</div><h2>Vos compagnons · {save.deck.length} / {deckCapacity(save)}</h2><p>Sélectionnez un emplacement pour remplacer une carte, ou retirez-la directement.</p></div></div>
       <div className="deck-slots">{Array.from({ length: deckCapacity(save) }, (_, i) => {
         const c = save.deck[i] ? byId(save.deck[i]) : null;
@@ -46,19 +57,17 @@ export default function DeckView({ save, onEquip, effectContext={} }: { save: Sa
           <button className="companion-remove" onClick={() => onEquip(c.id)}>Retirer −</button>
         </div> : <button className="empty-slot" key={i} aria-label={`Choisir le compagnon ${i+1}`} onClick={()=>{setReplaceId("");setSearch("");setType("");if(mobile)setPicker(true);else document.querySelector(".build-candidates")?.scrollIntoView({block:"start"});}}><span className="companion-index" aria-hidden="true"><small>LIEN /</small>{String(i+1).padStart(2,'0')}</span><span>+</span><small>EMPLACEMENT {i + 1}</small></button>;
       })}</div>
-      <div className="build-stats"><div><small>CLIC TOTAL</small><strong>{power.click.toFixed(2)}</strong></div><div><small>PASSIF / SEC</small><strong>{power.auto.toFixed(2)}</strong></div>{power.crit>0&&<div><small>CRITIQUE</small><strong>{(power.crit * 100).toFixed(1)} % · ×{power.critMultiplier.toFixed(2)}</strong></div>}{power.discount>0&&<div><small>BOOSTER</small><strong>−{(power.discount * 100).toFixed(1)} %</strong></div>}</div>
+      <div className="build-stats"><div><small>CLIC TOTAL</small><strong>{decimal(power.click)}</strong></div><div><small>PASSIF / SEC</small><strong>{decimal(power.auto)}</strong></div>{power.crit>0&&<div><small>CRITIQUE</small><strong>{percent(power.crit)} · ×{decimal(power.critMultiplier)}</strong></div>}{power.discount>0&&<div><small>BOOSTER</small><strong>−{percent(power.discount)}</strong></div>}</div>
       <p><strong>Bonus du deck : </strong>{describeEffect(bonuses) || "Équipez votre premier compagnon."}</p>
       <AdvancedDeckEffects save={save} context={effectContext}/>
-      {systems.statistics&&<p className="progression-hint">Statistiques incluant les améliorations permanentes, hors multiplicateur combo, avec conditions et effets temporaires actifs. Rare+ : poids +{(power.rareChance * 100).toFixed(1)} % · doublon : +{power.duplicateBonus.toFixed(1)} éclats.</p>}
+      {systems.statistics&&<p className="progression-hint">Statistiques incluant les améliorations permanentes, hors multiplicateur combo, avec conditions et effets temporaires actifs. Rare+ : {percent(rarePlusChance(power.rareChance))} (cartes 1–4) · {percent(rarePlusChance(power.rareChance,true))} (carte 5) · doublon : +{decimal(power.duplicateBonus)} éclats.</p>}
     </section>
-    {systems.synergies&&<details className="deck-mobile-details" open={mobile?undefined:true}><summary>{mobile?"Synergies disponibles":"Détails des synergies"}</summary>
-    <section className="synergy-panel"><h2>Synergies de type</h2><div className="synergy-grid">{synergies(save.deck).filter(s=>s.active||(typeCounts.get(s.type)||0)>=s.required).map(s => <div data-type={s.type} className={s.active ? "synergy active" : s.count===s.required-1?"synergy almost":"synergy"} key={s.type}><strong>{TYPE_SIGNS[s.type]} {s.type} · {s.count}/{s.required}</strong><div className="synergy-links" aria-hidden="true">{Array.from({length:s.required},(_,i)=><i className={i<s.count?"linked":""} key={i}/>)}</div><small>{describeEffect(s.effect)}</small><span>{s.active ? "Active" : `Encore ${s.required - s.count} compagnon(s)`}</span></div>)}</div></section>
-    {systems.advancedSynergies&&<section className="synergy-panel"><h2>Synergies avancées · exploration niveau 3</h2><div className="synergy-grid">{advancedSynergies(save.deck,explorationLevel(save.account.xp)).filter(s=>(typeCounts.get(s.type)||0)>=3).map(s=><div data-type={s.type} className={s.active?"synergy active":s.unlocked&&s.count===2?"synergy almost":"synergy"} key={s.type}><strong>{TYPE_SIGNS[s.type]} {s.type} · {s.count}/3</strong><div className="synergy-links" aria-hidden="true">{[0,1,2].map(i=><i className={i<s.count?"linked":""} key={i}/>)}</div><small>+3 % énergie globale</small><span>{!s.unlocked?"Exploration niveau 3 requis":s.active?"Active":`Encore ${Math.max(0,3-s.count)} compagnon(s)`}</span></div>)}</div></section>
-    } {styles.length>0&&<section className="archetype-grid" aria-label="Styles de build">{styles.map(b => <div key={b.name}><h3>Build {b.name}</h3><p>{b.description}</p><small>{b.ids.map(id => byId(id).name).join(" · ")}</small></div>)}</section>}
-    </details>}
+    {systems.synergies&&<section className="synergy-panel"><h2>Synergies · deux paliers</h2><div className="synergy-grid">{synergies(save.deck).filter(row=>row.count>0||(typeCounts.get(row.type)||0)>=2).map(row=><article className={row.active?'synergy active':'synergy'} key={row.type}><strong>{TYPE_SIGNS[row.type]} {row.type} · {row.count} cartes</strong><p>2 cartes · {describeEffect(row.effect)} {row.active?'✓':''}</p><p>3 cartes · +3 % éclats supplémentaires {row.count>=3&&explorationLevel(save.account.xp)>=3?'✓':'· exploration niveau 3'}</p><small>{row.count<2?'Prochain palier : encore '+(2-row.count)+' carte(s)':row.count<3?'Prochain palier : encore 1 carte':explorationLevel(save.account.xp)<3?'Prochain palier : exploration niveau 3':'Deux paliers actifs'}</small></article>)}</div></section>}
+    {offer&&<section className="deck-slot-offer"><h3>{offer.slot}e emplacement {offer.available?'disponible':'· exploration niveau '+offer.level}</h3><p>Vos éclats : {amount(save.energy)} ✦ · Coût : {amount(offer.cost)} ✦</p><button disabled={!offer.available||save.energy<offer.cost||!!save.pending.length} onClick={onSlot}>Acheter le {offer.slot}e emplacement · {amount(offer.cost)} ✦</button></section>}
     {!mobile&&<div className="section-title"><div><h2>{replacement ? `Remplacer ${byId(replacement).name}` : "Choisir vos compagnons"}</h2><p>Impact calculé avec les niveaux de carte et les synergies.</p></div></div>}
     {!mobile&&candidates}
     {mobile&&picker&&<BottomSheet title={replacement ? `Remplacer ${byId(replacement).name}` : "Choisir un compagnon"} onClose={()=>{setPicker(false);setReplaceId("");}}><div className="deck-picker-search"><label>Recherche<input type="search" value={search} onChange={e=>setSearch(e.target.value)}/></label><label>Type<select value={type} onChange={e=>setType(e.target.value)}><option value="">Tous les types</option>{TYPES.map(t=><option key={t}>{t}</option>)}</select></label></div>{candidates}{!choices.length&&<p>Aucun compagnon disponible pour ces filtres. Effacez la recherche ou ouvrez un booster pour de nouvelles rencontres.</p>}</BottomSheet>}
+    {directReplacement&&<DeckReplacement save={save} id={directReplacement} context={effectContext} onClose={()=>setDirectReplacement('')} onReplace={cid=>{onEquip(directReplacement,cid);setDirectReplacement('');setPicker(false);setReplaceId('');}}/>}
     {!Object.keys(save.owned).length && <div className="notice deck-empty">Votre deck est vide. Ouvrez un booster pour rencontrer vos premiers compagnons.</div>}
   </>;
 }

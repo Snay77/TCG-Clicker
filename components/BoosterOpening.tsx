@@ -11,6 +11,9 @@ import type { Save, PackSource } from "../lib/game";
 import { savedCardLevel } from "../lib/game";
 import { openingDelay } from "../lib/exploration";
 import { trapDialogTab } from '../lib/dialog-focus';
+import CardInspection from './game/CardInspection';
+import EvolutionRequirement from './game/EvolutionRequirement';
+import {duplicateGain,decimal} from '../lib/game-ux';
 import { advancedDuplicateSources } from '../lib/advanced-effects';
 
 type Stage =
@@ -53,8 +56,9 @@ export default function BoosterOpening({
   economy?: {freeBoosters:number;rewardBoosters?:number;capacity:number;price:number;nextSource:PackSource|null};
 }) {
   const [stage, setStage] = useState<Stage>(
-    save.revealed === 5 ? "summary" : save.revealed > 0 ? "suspense" : "choose",
+    save.revealed === 5 ? "summary" : save.revealed > 0 ? "suspense" : fast&&!save.pending.some(id=>byId(id).rarity===5)?"sealed":"choose",
   );
+  const [inspected,setInspected]=useState('');
   const [index, setIndex] = useState(Math.min(save.revealed, 4));
   const [selected, setSelected] = useState(2);
   const [cut, setCut] = useState(0);
@@ -283,7 +287,7 @@ export default function BoosterOpening({
   const showing = ["lifting", "suspense", "view", "leaving"].includes(stage);
   const label =
     stage === "choose"
-      ? "Choisissez votre booster"
+      ? "Choisissez un sachet"
       : stage === "sealed"
         ? "Faites glisser pour ouvrir"
         : stage === "tearing"
@@ -332,6 +336,7 @@ export default function BoosterOpening({
         </h2>
         {stage === "choose" && (
           <>
+            <p className="pack-choice-help">Les cinq sachets ont les mêmes probabilités. Le contenu est déjà déterminé.</p>
             <div
               className="po-carousel"
               onPointerDown={(e) => down(e, "carousel")}
@@ -548,8 +553,9 @@ export default function BoosterOpening({
                   <span>
                     {RARITIES[tier]} · {"◆".repeat(tier + 1)}
                   </span>
-                  <span>Niv. {savedCardLevel(save, creature.id)} · {isNew(creature.id,index)?'Première copie':`Doublon · Copies : ${duplicate.before} → ${duplicate.after} · énergie bonus créditée`}</span>
-                  {!isNew(creature.id,index)&&advancedDuplicateSources(save,creature.id).map(source=><span className="duplicate-ready" key={source.name}>◇ {source.name} · +{source.bonus} éclats</span>)}
+                  <span>Niv. {savedCardLevel(save, creature.id)} · {isNew(creature.id,index)?'Première copie':`Doublon · Copies : ${duplicate.before} → ${duplicate.after} · +${decimal(duplicateGain(save,creature.id))} ✦`}</span>
+                  {!isNew(creature.id,index)&&advancedDuplicateSources(save,creature.id).map(source=><span className="duplicate-ready" key={source.name}>◇ {source.name} · +{source.bonus} éclats inclus</span>)}
+                  <EvolutionRequirement save={save} id={creature.id}/>
                   {duplicate.newlyUpgradeable&&<strong className="duplicate-ready">Amélioration disponible !</strong>}
                 </>
               ) : (
@@ -589,7 +595,7 @@ export default function BoosterOpening({
                   key={i}
                   style={{ animationDelay: `${i * 0.08}s` }}
                 >
-                  <Card card={byId(id)} owned={save.owned[id] || 1} level={savedCardLevel(save, id)} />
+                  <button className="summary-inspect" aria-label={`Examiner ${byId(id).name}`} onClick={()=>setInspected(id)}><Card card={byId(id)} owned={save.owned[id] || 1} level={savedCardLevel(save, id)} /><strong>{byId(id).name}</strong><small>{RARITIES[byId(id).rarity]} · {isNew(id,i)?'NOUVEAU':'DOUBLON · +'+decimal(duplicateGain(save,id))+' ✦'}</small></button><EvolutionRequirement save={save} id={id}/>
                   {isNew(id, i) && <span className="po-new">NOUVEAU</span>}
                 </div>
               ))}
@@ -605,6 +611,7 @@ export default function BoosterOpening({
           </>
         )}
       </div>
+      {inspected&&<CardInspection save={save} id={inspected} recent={isNew(inspected,save.pending.indexOf(inspected))} onClose={()=>setInspected('')} onUpgrade={()=>{}} onEquip={()=>{}}/>}
     </dialog>
   );
 }

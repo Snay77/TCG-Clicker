@@ -1,5 +1,21 @@
 # Changelog
 
+## Phase 14 — Correctifs locaux · 9 octobre 2026
+
+- Navigation découverte persistante, trois Bases distinctes au premier booster et prérequis d'évolution immédiatement visibles.
+- Deck : comparaison complète, effets avancés dans le choix, remplacement direct et ordre stable, achat des slots 7/8, résumé mobile et paliers de synergies réunis.
+- Boosters : CTA prioritaire, probabilité Rare+ réelle, doublons chiffrés, cinq acquisitions après ouverture et récap mobile examinable.
+- Mode rapide après huit boosters terminés ou exploration niveau 12 ; choix esthétique expliqué. Mise en scène Mythique conservée.
+- Combo : grâce 2 s, décroissance 10 points/s, premier bonus acquis renforcé ; contribution active plafonnée du passif, sans réduire le passif ni changer le clic initial de 1.
+- Upgrades, XP, objectifs, terminologie, formatage, conseils, notices et paramètres clarifiés. Sauvegarde v4 compatible, préférence optionnelle des onglets découverts.
+- 149 tests, TypeScript, build et parcours Edge desktop/mobile validés. Détail : `design/phase14-ux-fixes.md`. Aucun nouveau playtest humain ou déploiement.
+
+## Correctif local — 9 octobre 2026
+
+- Blocage entre onglets désactivé : chargement direct, sans Web Locks ni bail localStorage. Les anciens verrous ne bloquent plus le jeu.
+- Sauvegarde v4, récupération, export/import et copies de secours conservés. Les onglets ne synchronisent pas leurs écritures ; utiliser un seul onglet de jeu à la fois.
+- Vérification navigateur actualisée pour la Collection et la Progression de l’Alpha 0.3.0.
+
 ## Alpha 0.3.0 — 6 octobre 2026
 
 - Direction Arcane Brutalism : navigation, Machine, Boosters, Collection, Deck, Progression, paramètres et introduction.

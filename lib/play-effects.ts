@@ -1,14 +1,23 @@
 import { stats, type Save } from './game';
 import { recordClick, recordTick } from './exploration';
-import { comboFactor } from './progression';
+import { comboFactor, advanceCombo, type Combo } from './progression';
 import { advancedEvent, consumeAdvancedClick, periodicProgress, reconcileAdvanced, type AdvancedContext, type AdvancedRuntime } from './advanced-effects';
 
 // Pure transitions shared by the actual Machine and deterministic simulations.
+export function activeClickPower(power:ReturnType<typeof stats>,combo:number){
+ // Small, bounded active contribution from the machine; idle output is untouched.
+ return power.click+(power.comboBonus>0?Math.min(power.auto*.12,power.click)*Math.floor(Math.max(0,Math.min(100,combo))/25)/4:0);
+}
+export function previewClickGain(s:Save,runtime:AdvancedRuntime,combo:Combo,now:number){
+ const charge=advanceCombo(combo,now).charge,consumed=consumeAdvancedClick(s,runtime,now);
+ const power=stats(s,{runtime:consumed.runtime,combo:charge,now});
+ return activeClickPower(power,charge)*comboFactor(charge,power.comboBonus)*consumed.multiplier;
+}
 export function playClick(s:Save,runtime:AdvancedRuntime,combo:number,now:number,random:number,enabled=true) {
  const consumed=consumeAdvancedClick(s,runtime,now);
  const context:AdvancedContext={combo,now,runtime:consumed.runtime,enabled};
  const power=stats(s,context),critical=random<power.crit;
- const gain=power.click*comboFactor(combo,power.comboBonus)*(critical?power.critMultiplier:1)*(enabled?consumed.multiplier:1);
+ const gain=activeClickPower(power,combo)*comboFactor(combo,power.comboBonus)*(critical?power.critMultiplier:1)*(enabled?consumed.multiplier:1);
  let next=enabled?advancedEvent(s,consumed.runtime,'onClick',now):consumed.runtime;
  if(enabled&&critical)next=advancedEvent(s,next,'onCritical',now);
  const recorded=recordClick(s,gain,critical,combo);

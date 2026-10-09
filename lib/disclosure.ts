@@ -13,7 +13,8 @@ export function visibleSystems(save: Save) {
  const progression=collection&&(save.deck.length>0||explorationLevel(save.account.xp)>=3||ACHIEVEMENTS.some(a=>achievementReady(save,a)))||save.account.claimed.length>0;
  const pairs=SYNERGIES.some(s=>eligible.filter(id=>byId(id).type===s.type).length>=s.required);
  const triples=SYNERGIES.some(s=>eligible.filter(id=>byId(id).type===s.type).length>=3);
- return {
+ const known=new Set(save.ux.discoveredSystems||[]);
+ const shown={
   machine:true,
   upgrades:Object.values(save.upgrades).some(n=>n>0)||Math.max(save.energy,save.account.totals.generatedEnergy)>=Math.min(...UPGRADES.map(u=>u.base)),
   boosters:save.packs>0||freePackCount(save)>0||save.energy>=price(save),
@@ -22,4 +23,5 @@ export function visibleSystems(save: Save) {
   advancedSynergies:deck&&triples&&explorationLevel(save.account.xp)>=3,
   statistics:progression&&(explorationLevel(save.account.xp)>=3||save.packs>=5),
  };
+ return Object.fromEntries(Object.entries(shown).map(([key,value])=>[key,value||known.has(key)])) as typeof shown;
 }

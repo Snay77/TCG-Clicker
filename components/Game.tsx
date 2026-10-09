@@ -10,7 +10,7 @@ import {
   upgradeCard,
   savedCardLevel,
   type PackSource,
-  drawPack,
+  drawPackForSave,
   changeDeck,
   deckCapacity,
   equipBlockedReason,
@@ -25,7 +25,7 @@ import {
 import { rechargeFreePacks, freePackRemaining } from "../lib/booster-economy";
 import BoosterShop from "./game/BoosterShop";
 import ProgressionView from "./game/ProgressionView";
-import { ACHIEVEMENTS, achievementReady, completedLineages, explorationLevel, freePackCount, claimAchievement, buyDeckSlot, selectTitle, toggleFastOpening, recordClick, TITLES } from "../lib/exploration";
+import { ACHIEVEMENTS, achievementReady, completedLineages, explorationLevel, freePackCount, claimAchievement, buyDeckSlot, selectTitle, toggleFastOpening, recordClick, fastOpeningAvailable, TITLES } from "../lib/exploration";
 import Sprite from "./Sprite";
 import Machine from "./Machine";
 import BoosterPack from "./BoosterPack";
@@ -35,7 +35,7 @@ import DeckView, { statImpact } from "./game/DeckView";
 import UpgradesView from "./game/UpgradesView";
 import ComboBar from "./game/ComboBar";
 import { advanceCombo, decayCombo, comboFactor, initialCombo, machineTier, leveledEffect } from "../lib/progression";
-import { describeEffect } from "../lib/effects";
+import { describeUIEffect as describeEffect } from "../lib/effects";
 import Onboarding, { PortalIntro } from './game/Onboarding';
 import Settings from './game/Settings';
 import { completedSteps, contextualTip, dismissTip, markIntroSeen, type UX } from '../lib/ux';
@@ -53,8 +53,9 @@ import ArcaneMark from './game/ArcaneMark';
 import { usePWA } from './game/usePWA';
 import { visibleSystems } from '../lib/disclosure';
 import { advancedEvent, consumeAdvancedClick, initialAdvancedRuntime, reconcileAdvanced, type AdvancedRuntime } from '../lib/advanced-effects';
-import { playClick, playTick } from '../lib/play-effects';
+import { playClick, playTick, previewClickGain } from '../lib/play-effects';
 import MachineEffects from './game/MachineEffects';
+import {mergeLevelFeedback,decimal,percent} from '../lib/game-ux';
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
   const mobile = useMobileLayout();
@@ -76,6 +77,7 @@ export default function Game() {
   const session = useSaveSession(save, setSave);
   const ready = session.status === 'active';
   const [tab, setTab] = useState("machine");
+  const [recentPack,setRecentPack]=useState<string[]>([]),[recentIds,setRecentIds]=useState<string[]>([]);
   const [notice, setNotice] = useState("");
   const [discoveryNotice,setDiscoveryNotice]=useState('');
   const disclosureBaseline=useRef<ReturnType<typeof visibleSystems>|null>(null);
@@ -93,6 +95,7 @@ export default function Game() {
   const progressBaseline = useRef<{level:number;ready:Set<string>;species:number;lineages:number;free:number;claimed:string[]}|null>(null);
   const queuedFeedback = useRef<string[]>([]);
   const queuedLevels=useRef<{from:number;to:number}|null>(null);
+  const recentLevels=useRef<ReturnType<typeof mergeLevelFeedback>|null>(null);
 
 
   useEffect(() => {
@@ -135,6 +138,10 @@ export default function Game() {
   }, []);
   const opening = save.pending.length > 0;
   const systems=visibleSystems(save);
+  useEffect(()=>{if(!ready)return;const ids=Object.entries(visibleSystems(save)).filter(([key,value])=>key!=='machine'&&value).map(([key])=>key);if(ids.some(id=>!save.ux.discoveredSystems?.includes(id)))setSave(s=>({...s,ux:{...s.ux,discoveredSystems:[...new Set([...(s.ux.discoveredSystems||[]),...ids])]}}));},[ready,systems.upgrades,systems.boosters,systems.collection,systems.deck,systems.progression,systems.synergies,systems.advancedSynergies,systems.statistics,save.ux.discoveredSystems]);
+  useEffect(()=>{if(tab!=='collection')setRecentPack([]);},[tab]);
+  useEffect(()=>{if(!notice||opening)return;const timer=setTimeout(()=>setNotice(''),8000);return()=>clearTimeout(timer);},[notice,opening]);
+  useEffect(()=>{if(!discoveryNotice||opening)return;const timer=setTimeout(()=>setDiscoveryNotice(''),4500);return()=>clearTimeout(timer);},[discoveryNotice,opening]);
   useEffect(()=>{
     if(!ready||opening||!save.ux.introSeen)return;
     const current=visibleSystems(save),before=disclosureBaseline.current;
@@ -169,23 +176,24 @@ export default function Game() {
     const before=progressBaseline.current;
     if(before){
       if(snapshot.level>before.level){
-        queuedLevels.current={from:queuedLevels.current?.from??before.level,to:snapshot.level};
+        recentLevels.current=mergeLevelFeedback(recentLevels.current,before.level,snapshot.level,performance.now());
+        queuedLevels.current={from:queuedLevels.current?.from??recentLevels.current.from,to:snapshot.level};
       }
       if(snapshot.free>before.free)queuedFeedback.current.push('Un nouveau booster est disponible.');
       for(const id of snapshot.claimed.filter(id=>!before.claimed.includes(id))){const a=ACHIEVEMENTS.find(a=>a.id===id);if(a)queuedFeedback.current.push(`Récompense · ${a.title} : ${rewardDescription(a.rewards)}`);}
       const newlyReady=[...snapshot.ready].filter(id=>!before.ready.has(id));
       if(snapshot.species===60&&before.species<60)queuedFeedback.current.push('60/60 · Faerie est complète ! Récompense et titre Gardien du Portail dans les objectifs.');
       else if(snapshot.lineages>before.lineages)queuedFeedback.current.push(`Lignée complétée · ${snapshot.lineages} / 20. Votre badge et votre récompense vous attendent.`);
-      else if(newlyReady.length)queuedFeedback.current.push('Objectifs accomplis · récompenses à réclamer dans Progression.');
+      else if(newlyReady.length&&visibleSystems(state).progression)queuedFeedback.current.push('Objectifs accomplis · récompenses à réclamer dans Progression.');
     }
     progressBaseline.current=snapshot;
-    if(!opening&&state.ux.introSeen&&(queuedFeedback.current.length||queuedLevels.current)){const levels=queuedLevels.current;const unlocks=levels?UNLOCKS.filter(u=>u.level>levels.from&&u.level<=levels.to).map(u=>u.name):[];const messages=[...new Set(queuedFeedback.current)];if(levels)messages.push(`Exploration niveau ${levels.to} · ${unlocks.length?'Nouveau déblocage : '+unlocks.join(' · '):'Votre voyage continue.'}`);queuedLevels.current=null;setNotice(messages.slice(-4).join(' '));playSound(messages.some(m=>m.startsWith('Exploration niveau'))?'level':messages.some(m=>m.startsWith('Récompense'))?'goal':'ready');queuedFeedback.current=[];}
+    if(!opening&&state.ux.introSeen&&(queuedFeedback.current.length||queuedLevels.current&&visibleSystems(state).progression)){const levels=visibleSystems(state).progression?queuedLevels.current:null;const unlocks=levels?UNLOCKS.filter(u=>u.level>levels.from&&u.level<=levels.to).map(u=>u.name):[];const messages=[...new Set(queuedFeedback.current)];if(levels)messages.push(`${levels.to-levels.from>1?'+'+(levels.to-levels.from)+' NIVEAUX · ':''}Exploration niveau ${levels.from} → ${levels.to} · ${unlocks.length?'Disponible : '+unlocks.join(' · '):'Votre voyage continue.'}`);if(levels)queuedLevels.current=null;setNotice(messages.slice(-4).join(' '));playSound(messages.some(m=>m.startsWith('Exploration niveau'))?'level':messages.some(m=>m.startsWith('Récompense'))?'goal':'ready');queuedFeedback.current=[];}
   },[ready,opening,save.account.xp,save.owned,save.level,save.cardLevels,save.packs,save.account.claimed,save.freeBoosters,save.ux.introSeen,save.account.totals.maxCombo,save.account.totals.criticalClicks,Math.floor(save.account.totals.generatedEnergy/10000)]);
   function claim(id:string) { setSave(s=>claimAchievement(s,id)); }
 
   const effectContext={runtime:advancedView.runtime,now:advancedView.now,combo:combo.charge};
   const power = stats(save,effectContext);
-  const armedMultiplier=consumeAdvancedClick(save,advancedView.runtime,advancedView.now).multiplier;
+  const nextClickGain=previewClickGain(save,advancedView.runtime,combo,advancedView.now);
   const discovered = Object.keys(save.owned).length;
   function click(e: React.MouseEvent<HTMLButtonElement>) {
     if (!session.writable()) return;
@@ -221,13 +229,13 @@ export default function Game() {
     }
     const next = changeDeck(save, id, replaceId);
     publishAdvanced(reconcileAdvanced(next,advancedRef.current,performance.now()),performance.now());
-    setNotice(systems.statistics?`${byId(id).name} · ${statImpact(stats(save), stats(next))}`:`${byId(id).name} · ${next.deck.includes(id)?'rejoint votre équipe':'retiré de votre équipe'}.`);
+    setNotice(systems.statistics?`${byId(id).name} · ${statImpact(stats(save,effectContext), stats(next,effectContext))}`:`${byId(id).name} · ${next.deck.includes(id)?'rejoint votre équipe':'retiré de votre équipe'}.`);
     setSave((s) => changeDeck(s, id, replaceId));
   }
   function startPack(source:PackSource,chain=false) {
     if (!session.writable()) return;
     const now=Date.now();
-    const cards=drawPack(Math.random,stats(latest.current).rareChance);
+    const cards=drawPackForSave(latest.current);
     const before=rechargeFreePacks(latest.current,now);
     const preview=chain?chainPack(before,cards,source,now):openPack(before,cards,source,now);
     if(chain&&preview!==before)publishAdvanced(advancedEvent(preview,advancedRef.current,'onBoosterOpen',performance.now()),performance.now());
@@ -291,7 +299,7 @@ export default function Game() {
       </aside>
       <main>
         <header className="topbar">
-          <div className="mobile-resources"><strong aria-label="Énergie">✦ {fmt(save.energy)}</strong>{systems.progression&&<button onClick={() => setTab('progression')}>Nv. {explorationLevel(save.account.xp)}</button>}{systems.boosters&&<span aria-label="Boosters disponibles">▣ {freePackCount(available)}</span>}</div>
+          <div className="mobile-resources"><strong aria-label="Éclats">✦ {fmt(save.energy)}</strong>{systems.progression&&<button onClick={() => setTab('progression')}>Nv. {explorationLevel(save.account.xp)}</button>}{systems.boosters&&<span aria-label="Boosters disponibles">▣ {freePackCount(available)}</span>}</div>
           <span>
             La Clairière{" "}
             <span className="muted">
@@ -328,7 +336,7 @@ export default function Game() {
               </h1>
               <p>
                 {tab === "machine"
-                  ? "Éveillez le portail. Récoltez l’énergie. Rencontrez l’extraordinaire."
+                  ? "Éveillez le portail. Récoltez des éclats. Rencontrez l’extraordinaire."
                   : "Collectionnez, composez votre deck et faites grandir la clairière."}
               </p>
             </div>
@@ -357,7 +365,7 @@ export default function Game() {
             <div className="energy-stat">
               <span className="stat-icon">✦</span>
               <div>
-                <small>ÉNERGIE FÉERIQUE</small>
+                <small>VOS ÉCLATS</small>
                 <strong data-testid="energy">
                   {fmt(save.energy)} <em>éclats</em>
                 </strong>
@@ -366,13 +374,13 @@ export default function Game() {
             <div>
               <small>PUISSANCE DU CLIC</small>
               <strong>
-                +{Number(power.click.toFixed(2))} <em>/ clic</em>
+                +{decimal(power.click)} <em>/ clic</em>
               </strong>
             </div>
             {power.auto>0&&<div>
               <small>PRODUCTION PASSIVE</small>
               <strong>
-                {power.auto.toFixed(1)} <em>/ sec</em>
+                {decimal(power.auto)} <em>/ sec</em>
               </strong>
             </div>}
             {systems.collection&&<div>
@@ -405,7 +413,7 @@ export default function Game() {
                       className="machine-button"
                       onClick={click}
                       disabled={!ready}
-                      aria-label="Générer de l’énergie"
+                      aria-label="Récolter des éclats"
                     >
                       <span key={sparks.at(-1)?.id||0} className={`machine-recoil ${sparks.at(-1)?.crit?'critical-recoil':''}`}><Machine level={save.level} /></span>
                       {sparks.slice(-1).map((p) => (
@@ -437,7 +445,7 @@ export default function Game() {
                           key={p.id}
                           style={{ left: p.x, top: p.y }}
                         >
-                          +{Number(p.gain.toFixed(1))} ✦{p.crit && <small>CRITIQUE !</small>}
+                          +{decimal(p.gain)} ✦{p.crit && <small>CRITIQUE !</small>}
                         </span>
                       ))}
                     </button>
@@ -445,16 +453,16 @@ export default function Game() {
                     <div className="machine-prompt">
                       <span className="live-dot" /> LE PORTAIL VOUS ATTEND
                       <strong>
-                        Cliquez pour générer <b>+{Number((power.click * comboFactor(combo.charge, power.comboBonus) * armedMultiplier).toFixed(1))} ✦</b>
+                        Cliquez pour générer <b>+{decimal(nextClickGain)} ✦</b>
                       </strong>
                       {power.crit>0&&<small>
                         {Math.round(power.crit * 100)} % de chance de critique ·
-                        énergie ×{Number(power.critMultiplier.toFixed(2))}
+                        éclats ×{decimal(power.critMultiplier)}
                       </small>}
                     </div>
                   </div>
                   {power.comboBonus>0&&<ComboBar combo={combo} bonus={power.comboBonus} />}
-                  {mobile && <><div className="mobile-machine-actions">{systems.upgrades&&<button onClick={() => setUpgradesOpen(true)}><Rune/>Améliorations <span>↗</span></button>}<button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{Number(power.click.toFixed(2))} / clic{power.auto>0&&` · ${power.auto.toFixed(1)} / sec`}</small></div>{systems.boosters&&<MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/>}</>}
+                  {mobile && <><div className="mobile-machine-actions">{systems.upgrades&&<button onClick={() => setUpgradesOpen(true)}><Rune/>Améliorations <span>↗</span></button>}<button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{decimal(power.click)} / clic{power.auto>0&&` · ${decimal(power.auto)} / sec`}</small></div>{systems.boosters&&<MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/>}</>}
                 </section>
                 {systems.boosters&&<section className={`shop-panel ${nextSource?'pack-available':''}`} id="booster">
                   <div className="panel-heading">
@@ -480,10 +488,10 @@ export default function Game() {
                       {[false, true].map(guaranteed => (
                         <span className="probability-line" key={String(guaranteed)}>
                           {guaranteed ? "Carte 5" : "Cartes 1–4"} : {rarityProbabilities(power.rareChance, guaranteed)
-                            .map((p, i) => `${RARITIES[i]} ${(p * 100).toFixed(2)} %`).join(" · ")}
+                            .map((p, i) => `${RARITIES[i]} ${percent(p)}`).join(" · ")}
                         </span>
                       ))}
-                      Doublons : +{power.duplicateBonus.toFixed(1)} éclats et progression de niveau.
+                      Doublons : +{decimal(power.duplicateBonus)} éclats et progression de niveau.
                     </p>
                   </details>
                 </section>}
@@ -532,11 +540,11 @@ export default function Game() {
           ) : tab === "boosters" ? (
             <BoostersView save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onFavorite={id=>updateSettings({favoriteBooster:id})} onOpen={(id,source)=>{if(id==='faerie')startPack(source);}}/>
           ) : tab === "progression" ? (
-            <ProgressionView save={save} onClaim={claim} onSlot={()=>{if(buyDeckSlot(latest.current)!==latest.current)playSound("upgrade",true);setSave(buyDeckSlot);}} onTitle={id=>setSave(s=>selectTitle(s,id))} onFast={()=>setSave(toggleFastOpening)}/>
+            <ProgressionView save={save} onClaim={claim} onSlot={()=>{if(buyDeckSlot(latest.current)!==latest.current)playSound("upgrade",true);setSave(buyDeckSlot);}} onTitle={id=>setSave(s=>selectTitle(s,id))} onFast={()=>setSave(toggleFastOpening)} onNavigate={navigate}/>
           ) : tab === "deck" ? (
-            <DeckView save={save} onEquip={toggle} effectContext={effectContext} />
+            <DeckView save={save} onEquip={toggle} effectContext={effectContext} recentIds={recentIds} onSlot={()=>setSave(buyDeckSlot)} />
           ) : (
-            <CollectionView save={save} onEquip={toggle} onUpgrade={id => {if(upgradeCard(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>upgradeCard(s,id));}} onClaim={claim} />
+            <CollectionView save={save} effectContext={effectContext} recentPack={recentPack} recentIds={recentIds} onConsult={id=>setRecentIds(ids=>ids.filter(cid=>cid!==id))} onEquip={toggle} onUpgrade={id => {if(upgradeCard(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>upgradeCard(s,id));setNotice(latest.current.deck.includes(id)?"Carte améliorée · effet équipé renforcé.":"CARTE AMÉLIORÉE · Son effet sera renforcé lorsqu’elle sera équipée.");}} onClaim={claim} />
           )}
           {devToolsEnabled(process.env.NODE_ENV) && <><Link className="mobile-dev-link" href="/dev">
             ⌘ Atelier des sprites ↗
@@ -553,14 +561,14 @@ export default function Game() {
           </footer>
         </div>
       </main>
-      {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>{systems.deck?'Vos créatures sont prêtes à rejoindre votre équipe.':systems.collection?'Vos premières rencontres vous attendent dans Collection.':'Cliquez sur le portail pour produire de l’énergie.'}</p></BottomSheet>}
+      {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>{systems.deck?'Vos créatures sont prêtes à rejoindre votre équipe.':systems.collection?'Vos premières rencontres vous attendent dans Collection.':'Cliquez sur le portail pour récolter des éclats.'}</p></BottomSheet>}
       {ready&&!opening&&!save.ux.introSeen&&<PortalIntro onDone={()=>{playSound('level',true);setSave(markIntroSeen);}}/>}
-      {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);publishAdvanced(initialAdvancedRuntime(),performance.now());comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;disclosureBaseline.current=null;setDiscoveryNotice('');setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
+      {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);setRecentPack([]);setRecentIds([]);publishAdvanced(initialAdvancedRuntime(),performance.now());comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;recentLevels.current=null;disclosureBaseline.current=null;setDiscoveryNotice('');setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
       {opening && (
         <BoosterOpening
           key={save.packs}
           save={save}
-          fast={save.account.fastOpening && explorationLevel(save.account.xp)>=12}
+          fast={save.account.fastOpening && fastOpeningAvailable(save)}
           audioSettings={save.ux}
           onSoundChange={sound=>updateSettings({sound})}
           onSound={playSound}
@@ -568,7 +576,10 @@ export default function Game() {
           economy={{freeBoosters:available.freeBoosters,rewardBoosters:available.account.rewardBoosters,capacity:available.freeBoosterCapacity,price:price(available),nextSource}}
           onNext={source=>startPack(source,true)}
           onClose={destination => {
+            const acquisitions=[...latest.current.pending];
+            setRecentIds(acquisitions);if(destination==='collection')setRecentPack(acquisitions);
             setSave(finishPack);
+            window.scrollTo({top:0,behavior:'instant'});
             const closed=finishPack(latest.current);
             if(closed!==latest.current)publishAdvanced(advancedEvent(closed,advancedRef.current,'onBoosterOpen',performance.now()),performance.now());
             const unlocked=visibleSystems(closed);

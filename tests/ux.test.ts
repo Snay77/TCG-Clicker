@@ -10,10 +10,10 @@ import CardInspection from '../components/game/CardInspection';
 import { SOUND_NOTES } from '../lib/game-audio';
 import UpgradesView from '../components/game/UpgradesView';
 const filters:CollectionFilters={search:'',type:'',rarity:'',discovery:'',upgradeable:false,sort:'number'};
-test('sept améliorations exposent le bonus nul puis les contributions cumulées',()=>{
+test('sept améliorations exposent les valeurs réelles avant et après',()=>{
  const s=initialSave();s.upgrades.click=12;
  const html=renderToStaticMarkup(createElement(UpgradesView,{save:s,ready:true,onBuy(){},onBuyStorage(){}}));
- assert.match(html,/Actuel : \+12 \/ clic/);assert.match(html,/Prochain : \+13 \/ clic/);assert.match(html,/Actuel : \+0 \/ sec/);assert.equal((html.match(/Actuel :/g)||[]).length,7);
+ assert.match(html,/13 \/ clic → 14 \/ clic/);assert.match(html,/0 \/ s → 1,5 \/ s/);assert.equal((html.match(/Niveau composant/g)||[]).length,7);
 });
 test('première arrivée non rejouée, fermeture et conseils ignorables persistants',()=>{
  let s=initialSave(1000);assert.equal(s.ux.introSeen,false);assert.equal(contextualTip(s),null);
@@ -44,7 +44,7 @@ test('collection combine recherche, type, rareté, découverte, améliorable et 
 });
 test('inspection sépare niveau et copies, affiche coût et effets réels après consommation',()=>{
  const s={...initialSave(),owned:{'001':6},cardLevels:{'001':2}};
- const v=cardInspection(s,'001');assert.equal(v.level,2);assert.equal(v.copies,6);assert.equal(v.cost,3);assert.equal(v.upgradeable,true);assert.equal(v.current,'+1.2 / clic');assert.equal(v.next,'+1.5 / clic');
+ const v=cardInspection(s,'001');assert.equal(v.level,2);assert.equal(v.copies,6);assert.equal(v.cost,3);assert.equal(v.upgradeable,true);assert.equal(v.current,'+1,2 / clic');assert.equal(v.next,'+1,5 / clic');
  const after=cardInspection(upgradeCard(s,'001'),'001');assert.equal(after.copies,3);assert.equal(after.level,3);assert.equal(after.upgradeable,false);
  const html=renderToStaticMarkup(createElement(CardInspection,{save:s,id:'001',onClose(){},onEquip(){},onUpgrade(){}}));assert.match(html,/Niveau 2/);assert.match(html,/6 copies sur 4 nécessaires/);assert.match(html,/3 doublons/);assert.match(html,/Mémoire des graines/);
 });

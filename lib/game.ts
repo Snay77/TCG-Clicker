@@ -77,6 +77,19 @@ export function drawPack(random: () => number = Math.random, rareChance = 0): st
     return (allowed.find(c => (roll -= probabilities[c.rarity] / CARDS.filter(x => x.rarity === c.rarity).length) < 0) || allowed.at(-1)!).id;
   });
 }
+// Only the first completed opening receives an onboarding guarantee.
+export function drawPackForSave(s:Save,random:()=>number=Math.random):string[]{
+ const pack=drawPack(random,stats(s).rareChance);
+ if(s.packs>0)return pack;
+ const bases=CARDS.filter(c=>!c.evolvesFrom),useful=bases.filter(c=>c.rarity>=1);
+ const chosen=new Set<string>();
+ for(let slot=0;slot<3;slot++){
+  const pool=(slot===2?useful:bases).filter(c=>!chosen.has(c.id));
+  const card=pool[Math.min(pool.length-1,Math.floor(Math.max(0,Math.min(.999999,random()))*pool.length))];
+  pack[slot]=card.id;chosen.add(card.id);
+ }
+ return pack;
+}
 export function buyPack(s: Save, cards: string[], now = Date.now()): Save {
   return openPack(s, cards, "paid", now);
 }
@@ -134,7 +147,9 @@ export function changeDeck(s: Save, id: string, replaceId?: string): Save {
   const candidate = replaceId && !s.deck.includes(id) && s.deck.includes(replaceId)
     ? { ...s, deck: s.deck.filter(x => x !== replaceId),advancedClicks:Object.fromEntries(Object.entries(s.advancedClicks||{}).filter(([cid])=>cid!==replaceId)) } : s;
   if (equipBlockedReason(candidate, id)) return s;
-  return equip(candidate, id);
+  const equipped=equip(candidate,id);
+  if(replaceId&&s.deck.includes(replaceId)&&!s.deck.includes(id))return {...equipped,deck:s.deck.map(cid=>cid===replaceId?id:cid)};
+  return equipped;
 }
 export function parseSave(raw: string, now = Date.now()): Save {
   const s = JSON.parse(raw);

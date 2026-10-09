@@ -15,9 +15,9 @@ export const UNLOCKS = [
  {level:1,name:'Explorateur de la Clairière',description:'Machine, six compagnons, objectifs et lignées.'},
  {level:3,name:'Synergies avancées',description:'Trois compagnons du même type : un bonus supplémentaire.'},
  {level:5,name:'Objectifs experts',description:'Défis de collection et de machine à plus long terme.'},
- {level:8,name:'7e emplacement de deck',description:'Achat disponible pour 5 000 éclats.'},
+ {level:8,name:'7e emplacement disponible · 5 000 ✦',description:'Achat disponible pour 5 000 éclats.'},
  {level:12,name:'Ouverture rapide',description:'Accélérez les cartes ordinaires ; les Mythiques gardent leur mise en scène.'},
- {level:15,name:'8e emplacement de deck',description:'Achat disponible pour 25 000 éclats.'},
+ {level:15,name:'8e emplacement disponible · 25 000 ✦',description:'Achat disponible pour 25 000 éclats.'},
  {level:20,name:'Maîtrise de Faerie',description:'Complétez le set, les 20 lignées et trois cartes au niveau 5.'},
 ] as const;
 export const DECK_SLOT_UNLOCKS = [{level:8,cost:5000},{level:15,cost:25000}] as const;
@@ -78,7 +78,8 @@ export const TITLES = [
  {id:'guardian',name:'Gardien du Portail',description:'Réclamez la récompense des 60 espèces.',unlocked:(s:Save)=>s.account.claimed.includes('discover-60')},
 ];
 export function selectTitle(s:Save,id:string):Save {return TITLES.find(t=>t.id===id)?.unlocked(s)?{...s,account:{...s.account,activeTitle:id}}:s;}
-export function toggleFastOpening(s:Save):Save {return explorationLevel(s.account.xp)>=12?{...s,account:{...s.account,fastOpening:!s.account.fastOpening}}:s;}
+export const fastOpeningAvailable=(s:Save)=>explorationLevel(s.account.xp)>=12||s.packs-(s.pending.length?1:0)>=8;
+export function toggleFastOpening(s:Save):Save {return fastOpeningAvailable(s)?{...s,account:{...s.account,fastOpening:!s.account.fastOpening}}:s;}
 export function buyDeckSlot(s:Save):Save {
  const offer=DECK_SLOT_UNLOCKS[s.extraDeckSlots];
  if(!offer||s.pending.length||explorationLevel(s.account.xp)<offer.level||s.energy<offer.cost)return s;
@@ -113,7 +114,7 @@ export function parseAccount(raw:unknown,s:Save):Account {
  if(!finite(t.generatedEnergy)||!finite(t.playSeconds)||!finite(t.maxCombo)||t.maxCombo>100||!integer(t.criticalClicks)||t.criticalClicks>s.clicks||!integer(t.freeOpened)||t.freeOpened>s.packs||!integer(t.cardsObtained)||!integer(t.duplicatesObtained)||t.duplicatesObtained>t.cardsObtained)throw Error('Statistiques invalides');
  const next:Account={format:1,xp:a.xp,rewardBoosters:a.rewardBoosters,activeTitle:a.activeTitle,fastOpening:a.fastOpening,historicalEstimate:a.historicalEstimate,claimed:[...a.claimed],totals:{generatedEnergy:t.generatedEnergy,playSeconds:t.playSeconds,maxCombo:t.maxCombo,criticalClicks:t.criticalClicks,freeOpened:t.freeOpened,cardsObtained:t.cardsObtained,duplicatesObtained:t.duplicatesObtained}};
  if(!TITLES.find(t=>t.id===next.activeTitle)!.unlocked({...s,account:next}))throw Error('Titre verrouillé');
- if(next.fastOpening&&explorationLevel(next.xp)<12)throw Error('Ouverture rapide verrouillée');
+ if(next.fastOpening&&!fastOpeningAvailable({...s,account:next}))throw Error('Ouverture rapide verrouillée');
  return next;
 }
 export function openingDelay(rarity:number,fast:boolean,kind:'suspense'|'leave'|'tear',reduced=false):number {

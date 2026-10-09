@@ -2,11 +2,10 @@
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { initialSave, type Save } from '../../lib/game';
 import { loadSave, persistSave, replaceSave, type LoadedSave } from '../../lib/save-manager';
-import { acquireLease, ownsLease, refreshLease, TAB_LOCK } from '../../lib/tab-ownership';
 import { SAVE_KEY } from '../../lib/save-storage';
 
 export function useSaveSession(save: Save, setSave: Dispatch<SetStateAction<Save>>) {
-  const [status, setStatus] = useState<'loading' | 'active' | 'conflict' | 'recovery' | 'unavailable'>('loading');
+  const [status, setStatus] = useState<'loading' | 'active' | 'recovery' | 'unavailable'>('loading');
   const [recovery, setRecovery] = useState<Extract<LoadedSave, { kind: 'recovery' }> | null>(null);
   const [storageOk, setStorageOk] = useState(true);
   const latest = useRef(save); latest.current = save;
@@ -19,75 +18,23 @@ export function useSaveSession(save: Save, setSave: Dispatch<SetStateAction<Save
 
   useEffect(() => {
     let disposed = false;
-    let releaseLock: (() => void) | undefined;
-    let heartbeat: ReturnType<typeof setInterval> | undefined;
-    let leaseStart: ReturnType<typeof setTimeout> | undefined;
-    const id = crypto.randomUUID();
-    let usesLease = false;
-    function lost() { permission.current = () => false; setStatus('conflict'); }
-    function activate() {
-      if (disposed) return;
-      permission.current = () => {
-        if (disposed) return false;
-        if (usesLease) {
-          try { if (!ownsLease(localStorage, id, Date.now())) { lost(); return false; } }
-          catch { setStatus('unavailable'); return false; }
-        }
-        return true;
-      };
-      try {
-        const loaded = loadSave(localStorage);
-        if (loaded.kind === 'recovery') { setRecovery(loaded); setStatus('recovery'); }
-        else {
-          latest.current = loaded.save; setSave(loaded.save);
-          lastWritten.current = localStorage.getItem(SAVE_KEY) || '';
-          setStatus('active');
-        }
-      } catch { setStorageOk(false); setStatus('unavailable'); }
-    }
-    if (navigator.locks) {
-      // Web Locks are atomic and remain held even when a browser suspends a tab.
-      void navigator.locks.request(TAB_LOCK, { ifAvailable: true }, async lock => {
-        if (disposed) return;
-        if (!lock) { lost(); return; }
-        activate();
-        await new Promise<void>(resolve => { releaseLock = resolve; if (disposed) resolve(); });
-      }).catch(() => { if (!disposed) setStatus('unavailable'); });
-    } else {
-      usesLease = true;
-      try {
-        if (acquireLease(localStorage, id, Date.now())) {
-          // Recheck after simultaneous tabs have had time to announce ownership.
-          leaseStart = setTimeout(() => {
-            if (disposed) return;
-            try {
-              if (!ownsLease(localStorage, id, Date.now())) { lost(); return; }
-              activate();
-              heartbeat = setInterval(() => {
-                try { if (!refreshLease(localStorage, id, Date.now())) lost(); }
-                catch { setStatus('unavailable'); }
-              }, 3000);
-            } catch { setStatus('unavailable'); }
-          }, 100);
-        } else lost();
-      } catch { setStatus('unavailable'); }
-    }
-    function storageChanged(event: StorageEvent) {
-      if (usesLease && (event.key === TAB_LOCK || event.key === null)) permission.current();
-    }
+    // Sessions load directly: old Web Locks and localStorage leases are ignored.
+    permission.current = () => !disposed;
+    try {
+      const loaded = loadSave(localStorage);
+      if (loaded.kind === 'recovery') { setRecovery(loaded); setStatus('recovery'); }
+      else {
+        latest.current = loaded.save; setSave(loaded.save);
+        lastWritten.current = localStorage.getItem(SAVE_KEY) || '';
+        setStatus('active');
+      }
+    } catch { permission.current = () => false; setStorageOk(false); setStatus('unavailable'); }
     function pageShown(event: PageTransitionEvent) { if (event.persisted) window.location.reload(); }
-    window.addEventListener('storage', storageChanged);
     window.addEventListener('pageshow', pageShown);
     return () => {
       flush.current(); disposed = true;
-      clearInterval(heartbeat);
-      clearTimeout(leaseStart);
-      window.removeEventListener('storage', storageChanged);
       window.removeEventListener('pageshow', pageShown);
-      if (usesLease) try {
-        if (ownsLease(localStorage, id, Date.now())) localStorage.removeItem(TAB_LOCK);
-      } catch { /* Already blocked. */ }
-      releaseLock?.(); permission.current = () => false;
+      permission.current = () => false;
     };
   }, [setSave]);
 
@@ -128,7 +75,7 @@ export function useSaveSession(save: Save, setSave: Dispatch<SetStateAction<Save
   }, [save, status]);
 
   function replace(next: Save, recoveryAction = false) {
-    if (!permission.current()) throw Error('Cet onglet ne peut plus sauvegarder. Rechargez après avoir fermé les autres onglets.');
+    if (!permission.current()) throw Error('La sauvegarde est inaccessible. Rechargez pour réessayer.');
     const safe = replaceSave(localStorage, next, recoveryAction ? recovery?.backup || null : latest.current, recoveryAction ? recovery?.raw : undefined);
     lastWritten.current = JSON.stringify(safe); latest.current = safe; dirty.current = false;
     setSave(safe); setRecovery(null); setStorageOk(true); setStatus('active');

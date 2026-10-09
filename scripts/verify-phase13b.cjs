@@ -35,7 +35,7 @@ async function run(browser,w,h){
  await page.reload();await page.locator('.machine-button').waitFor();assert.ok(!(await effects.innerText()).includes('Songegarde'));assert.ok((await effects.innerText()).includes('20 / 25'));checks.push({viewport:[w,h],removedSourceOnly:'pass',reloadBuffs:'lost'});
  for(let i=0;i<5;i++)await page.locator('.machine-button').click();await effects.filter({hasText:'×3'}).waitFor();
  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('tcg-faerie-v1')).advancedClicks?.['F01-025']===25);await page.reload();await effects.filter({hasText:'×3'}).waitFor();
- const expected=Number((await page.locator('.machine-prompt strong b').innerText()).match(/[\d.]+/)[0]);await page.locator('.machine-button').click();const gain=Number((await page.locator('.click-spark').last().innerText()).match(/[\d.]+/)[0]);assert.equal(gain,expected);
+ const parseAmount=text=>Number(text.match(/[\d.,]+/)[0].replace(',','.'));const expected=parseAmount(await page.locator('.machine-prompt strong b').innerText());await page.locator('.machine-button').click();const gain=parseAmount(await page.locator('.click-spark').last().innerText());assert.equal(gain,expected);
  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('tcg-faerie-v1')).advancedClicks?.['F01-025']===1);await page.reload();await page.locator('.machine-button').waitFor();assert.equal(await page.locator('.machine-effects').count(),0);
  await nav(page,mobile,'deck');await page.locator('.advanced-deck-effects').scrollIntoViewIfNeeded();await shot(page,prefix+'-deck-ready','Charge consommée une fois ; compteur 1/25, autres déclencheurs PRÊT');
  checks.push({viewport:[w,h],reloadReady:'preserved',singleConsumption:'pass',gainMatchesPrompt:gain});await ctx.close();

@@ -4,7 +4,7 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { Creature, RARITIES } from "../lib/cards";
 import { FINISHES, VISUALS } from "../lib/visuals";
 import CardArt from "./CardArt";
-import { describeEffect } from "../lib/effects";
+import { describeUIEffect as describeEffect } from "../lib/effects";
 import { leveledEffect } from "../lib/progression";
 import { advancedDesign } from '../lib/advanced-card-design';
 function Card({

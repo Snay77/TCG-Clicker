@@ -24,7 +24,7 @@ test("départ à un point par clic, bonus acquis et progression 1 → 2 → 3", 
   assert.equal(stats(s).click, 3);
   assert.equal(stats(parseSave(JSON.stringify(s))).click, 3);
   assert.equal(stats(buyUpgrade(s, "critChance")).crit, 0.01);
-  near(comboFactor(100, stats(buyUpgrade(s, "combo")).comboBonus), 1.05);
+  near(comboFactor(100, stats(buyUpgrade(s, "combo")).comboBonus), 1.2);
 });
 
 test("v1 → v4 conserve énergie, copies, deck, machine et ouverture partielle", () => {
@@ -131,11 +131,11 @@ test("combo borné, délai et décroissance indépendants de la fréquence de ti
   assert.equal(comboFactor(combo.charge, 0), 1);
   assert.equal(comboFactor(combo.charge, 10), 2);
   assert.equal(decayCombo(combo, combo.lastClick + 1000).charge, 100);
-  near(decayCombo(combo, combo.lastClick + 2000).charge, 82);
+  near(decayCombo(combo, combo.lastClick + 3000).charge, 90);
   let ticked = combo;
   for (let time = combo.lastClick + 200; time <= combo.lastClick + 4000; time += 200) ticked = decayCombo(ticked, time);
   near(ticked.charge, decayCombo(combo, combo.lastClick + 4000).charge);
-  assert.equal(decayCombo(combo, combo.lastClick + 10000).charge, 0);
+  assert.equal(decayCombo(combo, combo.lastClick + 12000).charge, 0);
   assert.equal(comboFactor(-20, 0), 1);
 });
 test("paliers de machine aux niveaux 1, 5, 10, 20, 35, 50", () => {

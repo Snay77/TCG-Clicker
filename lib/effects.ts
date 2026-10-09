@@ -21,3 +21,13 @@ export function describeEffect(effect: Effect, includeZero = false): string {
     return `+${Number((value * (percentage ? 100 : 1)).toFixed(2))} ${labels[key]}`;
   }).join(" · ");
 }
+
+export function describeUIEffect(effect:Effect,includeZero=false):string {
+ return EFFECT_KEYS.filter(key=>includeZero?effect[key]!==undefined:effect[key]).map(key=>{
+  const value=effect[key]!;if(key==='rareChance'&&value)return 'Rencontres Rare+ favorisées';
+  const percentage=!['clickFlat','autoFlat','critMultiplier','duplicateBonus'].includes(key);
+  const shown=Number((value*(percentage?100:1)).toFixed(percentage?1:2));
+  if(shown===0&&!includeZero)return '';
+  return '+'+shown.toLocaleString('fr-FR',{maximumFractionDigits:percentage?1:2})+' '+labels[key].replace('énergie','éclats');
+ }).filter(Boolean).join(' · ');
+}

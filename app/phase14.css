@@ -1,0 +1,59 @@
+.deck-compact-summary { display:flex; flex-wrap:wrap; gap:8px 20px; padding:14px 0; border-block:1px solid var(--ab-line,#424947); font-variant-numeric:tabular-nums; }
+.deck-compact-summary > strong,.deck-compact-summary > small { flex-basis:100%; }
+.deck-comparison { margin:12px 0; display:grid; gap:6px; font-size:12px; line-height:1.5; }
+.deck-comparison > div { display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; }
+.deck-comparison p { margin:0; }
+.build-candidate > div { min-width:0; overflow-wrap:anywhere; }
+.candidate-advanced { border-left:2px solid #bbd999; padding-left:10px; }
+.candidate-advanced small { display:block; }
+.evolution-requirement { display:flex; gap:8px; align-items:center; padding:10px 0; font-size:12px; line-height:1.4; }
+.evolution-requirement > .sprite { width:44px; height:44px; flex-shrink:0; }
+.evolution-requirement > div { display:grid; gap:3px; min-width:0; }
+.evolution-requirement strong { font-size:10px; color:#d8bd82; }
+.evolution-requirement span { font-weight:700; }
+.recent-badge { display:inline-block; padding:4px 8px; color:#101516; background:#bbd999; font-size:10px; font-weight:800; }
+.deck-slot-offer,.booster-purchase-first { padding:16px; margin:14px 0; border:1px solid #424947; }
+.deck-slot-offer button,.deck-replacement button { min-height:44px; padding:10px 14px; color:inherit; background:#24322a; border:1px solid #bbd999; cursor:pointer; }
+.deck-slot-offer button:disabled { opacity:.5; cursor:default; }
+.deck-replacement { width:min(720px,calc(100vw - 24px)); }
+.deck-replacement section { padding:16px 0; border-bottom:1px solid #424947; }
+.recent-acquisitions > div { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }
+.recent-acquisitions button,.summary-inspect { min-width:0; width:100%; padding:0; color:inherit; background:none; border:0; cursor:pointer; text-align:center; }
+.recent-acquisitions button > strong,.recent-acquisitions button > span,.summary-inspect > strong,.summary-inspect > small { display:block; margin-top:6px; }
+.summary-inspect > strong { font-size:14px; }
+.summary-inspect > small { font-size:11px; }
+.po-summary-item .evolution-requirement { text-align:left; }
+.pack-choice-help { max-width:500px; margin:0 auto 10px; color:#c2c6bc; text-align:center; font-size:12px; }
+.installation-details { margin:20px 0; }
+.storage-section { margin-top:24px; }
+.storage-section summary,.installation-details summary { cursor:pointer; min-height:44px; padding:12px 0; }
+.purchase-balance { display:block; margin-bottom:10px; }
+@media(min-width:851px) {
+ .tab-machine.brutal-shell .page-heading { margin-bottom:14px; padding-bottom:8px; }
+ .tab-machine.brutal-shell .page-heading h1 { font-size:30px; margin:8px 0; }
+ .tab-machine.brutal-shell .page-heading > div > p,.tab-machine .page-heading .arcane-mark { display:none; }
+ .tab-machine .first-steps ul { display:none; }
+ .tab-machine .first-steps { padding:8px 14px; }
+ .tab-machine .first-steps-heading { display:none; }
+ .tab-boosters .page-heading > div > p { display:none; }
+}
+@media(max-width:850px) {
+ .deck-compact-summary { font-size:12px; gap:7px 14px; }
+ .build-panel .build-stats { display:none; }
+ .build-panel > .section-title { margin-top:16px; }
+ .tab-deck .equipped-slot > button:first-child { min-height:140px; padding:10px; }
+ .tab-deck .deck-slots { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .deck-comparison { font-size:12px; }
+ .recent-acquisitions > div { display:flex; overflow-x:auto; gap:12px; padding-bottom:12px; }
+ .recent-acquisitions button { flex:0 0 150px; }
+ .po-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+ .po-summary-grid .po-summary-item,.po-summary-grid .po-summary-item:nth-child(4),.po-summary-grid .po-summary-item:last-child { grid-column:auto; width:auto; justify-self:stretch; }
+ .po-summary-grid .card-ability,.po-summary-grid .card-flavor,.po-summary-grid .card footer,.po-summary-grid .advanced-card-description { display:none; }
+ .po-summary-grid .card { min-height:0; }
+ .po-summary-grid .po-new { display:none; }
+ .po-summary-grid .evolution-requirement { font-size:10px; }
+ .po-summary-grid .evolution-requirement > .sprite { width:30px; height:30px; }
+ .booster-purchase-first { margin-top:0; }
+ .tab-machine .mobile-machine-actions > small { font-size:10px; }
+}
+.pocket-opening.ux-reduced .po-summary-item { animation:none; }

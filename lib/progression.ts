@@ -40,13 +40,13 @@ export function machineTier(level: number) { return MACHINE_TIERS.filter(t => t.
 export type Combo = { charge: number; lastClick: number; updatedAt: number };
 export const initialCombo = (): Combo => ({ charge: 0, lastClick: 0, updatedAt: 0 });
 export function decayCombo(combo: Combo, now: number): Combo {
-  const start = Math.max(combo.updatedAt, combo.lastClick + 1000);
-  return { ...combo, charge: Math.max(0, combo.charge - Math.max(0, now - start) / 1000 * 18), updatedAt: now };
+  const start = Math.max(combo.updatedAt, combo.lastClick + 2000);
+  return { ...combo, charge: Math.max(0, combo.charge - Math.max(0, now - start) / 1000 * 10), updatedAt: now };
 }
 export function advanceCombo(combo: Combo, now: number): Combo {
   const decayed = decayCombo(combo, now);
   return { charge: Math.min(100, decayed.charge + 4), lastClick: now, updatedAt: now };
 }
 export function comboFactor(charge: number, bonus: number): number {
-  return 1 + Math.min(100, Math.max(0, charge)) / 100 * Math.min(1, Math.max(0, bonus));
+  return 1 + Math.min(100, Math.max(0, charge)) / 100 * (bonus>0?Math.min(1,.15+bonus):0);
 }

@@ -1,10 +1,14 @@
 # TCG Clicker — Art Bible
 
-**État actuel — Alpha 0.1.0 / Phase 9 (2 octobre 2026) : gameplay Phase 8 gelé, 60 cartes, progression complète et sauvegarde v4. Les sections des phases antérieures constituent l’historique.**
+**État actuel — Alpha 0.3.0 / Phase 14 (9 octobre 2026) : direction Arcane Brutalism conservée, sprites/habitats/finitions des 60 cartes inchangés. Les sections des phases antérieures constituent l’historique.**
+
+## Phase 14 — lisibilité sans refonte
+
+Résumé Deck compact, capacités avancées visibles au choix, formes manquantes nommées avec silhouette, récap booster mobile à deux colonnes et inspection au toucher. Titre Machine desktop et espaces réduits ; actions Boosters avant le catalogue. Aucun nouvel asset ni modification des cartes ou du Set 01. Captures et détail : `design/phase14-ux-fixes.md`.
 
 ## Alpha navigateur — état actuel
 
-Export/import JSON v4, reset confirmé, diagnostics et récupération sont dans Paramètres ou l’écran de secours. Les copies de sauvegarde restent locales. Une seule session peut jouer par origine : verrou Web Locks, fallback bail localStorage, second onglet en pause. L’atelier est disponible uniquement en développement. L’alpha ne crée aucun nouveau gameplay et conserve les sprites, habitats et finitions du set complet.
+Export/import JSON v4, reset confirmé, diagnostics et récupération sont dans Paramètres ou l’écran de secours. Les copies de sauvegarde restent locales. Le blocage multi-onglets est désactivé depuis le 9 octobre 2026 ; les sauvegardes des onglets ne sont pas synchronisées. L’atelier est disponible uniquement en développement. L’alpha ne crée aucun nouveau gameplay et conserve les sprites, habitats et finitions du set complet.
 
 Voir `README.md`, `ALPHA_RELEASE_CHECKLIST.md`, `ALPHA_TEST.md` et `design/alpha-audit.md` pour la préparation de publication, les contrôles et les limites. Safari/iOS et les playtests humains restent à valider.
 

@@ -69,6 +69,7 @@ async function finishOpening(page) {
         if(mobile) { await page.getByRole('button',{name:'Remplacer Moussillon',exact:true}).click(); await screen(page,`after-${name}-${w}-deck-picker`); await page.getByRole('searchbox').fill('Nacrée'); const action=page.locator('dialog .build-candidate button:not(:disabled)').first(); if(await action.count()) { await action.click(); assert.equal(await page.locator('dialog').count(),0); } else await close(page); }
         await nav.getByRole('button',{name:mobile?/Voyage/:/Progression/}).click(); await screen(page,`after-${name}-${w}-progression`);
         await page.getByRole('button',{name:'Paramètres',exact:true}).click(); await page.getByText(`Alpha ${GAME_VERSION}`,{exact:true}).waitFor();
+        await page.locator('.installation-details > summary').click();
         await page.getByRole('heading',{name:'Installer TCG Clicker',exact:true}).waitFor();
         const downloaded = page.waitForEvent('download'); await page.getByRole('button',{name:'Exporter la sauvegarde',exact:true}).click(); const file=await downloaded; assert.ok(file.suggestedFilename().endsWith('.json'));
         await close(page); assert.equal(await width(page),true); assert.deepEqual(errors,[]); await context.close();

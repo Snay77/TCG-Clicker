@@ -10,7 +10,7 @@ export function PortalIntro({onDone}:{onDone:()=>void}){
 }
 const TIPS:Record<TipId,{text:string;action:string;target:string}>={
  click:{text:'Cliquez au cœur du portail pour récolter votre premier éclat.',action:'Voir le portail',target:'machine'},
- upgrade:{text:'Luciole : énergie automatique. Amplificateur : clics plus puissants.',action:'Voir les améliorations',target:'upgrades'},
+ upgrade:{text:'Luciole : éclats automatiques. Amplificateur : clics plus puissants.',action:'Voir les améliorations',target:'upgrades'},
  booster:{text:'Cinq cartes par booster. Achetez-en un ou profitez de la recharge gratuite toutes les dix minutes.',action:'Voir le booster',target:'booster'},
  collection:{text:'Examinez vos cartes, leurs copies et leurs lignées dans la Collection.',action:'Ouvrir la Collection',target:'collection'},
  deck:{text:'Équipez un compagnon dans le Deck pour renforcer la machine.',action:'Composer le Deck',target:'deck'},
@@ -23,7 +23,7 @@ export default function Onboarding({save,onDismiss,onSkip,onNavigate}:{save:Save
  const visibleSteps=[true,systems.upgrades,systems.boosters,systems.collection,systems.deck];
  if(save.ux.skipTips||!save.ux.introSeen||(done.length===5&&!tip))return null;
  return <section className={`first-steps ${!systems.upgrades&&!systems.boosters?'first-impulse':''}`} aria-label="Premiers pas">{done.length<5&&<><div className="first-steps-heading"><strong>PREMIERS PAS / {done.length}/5</strong><UIAction onClick={onSkip}>Passer les conseils</UIAction></div>
-  <ul>{FIRST_STEPS.map((text,i)=>(visibleSteps[i]||done.includes(i))&&<li className={done.includes(i)?'done':''} key={text}><span aria-hidden="true">{done.includes(i)?'✓':'○'}</span>{text}</li>)}</ul></>}
+  <ul>{FIRST_STEPS.map((text,i)=>(visibleSteps[i]&&!done.includes(i))&&<li className={done.includes(i)?'done':''} key={text}><span aria-hidden="true">{done.includes(i)?'✓':'○'}</span>{text}</li>)}</ul></>}
   {tip&&<div className="context-tip" role="status"><p>{TIPS[tip].text}</p><UIAction onClick={()=>{onNavigate(TIPS[tip].target);if(tip!=='click')onDismiss(tip);}}>{TIPS[tip].action} →</UIAction><UIAction aria-label="Fermer ce conseil" onClick={()=>onDismiss(tip)}>×</UIAction></div>}
  </section>;
 }

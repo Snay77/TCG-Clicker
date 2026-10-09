@@ -34,7 +34,7 @@ const server=http.createServer(async(req,res)=>{
     if(await page.getByRole('button',{name:'Choisir ce booster',exact:true}).count())await page.getByRole('button',{name:'Choisir ce booster',exact:true}).click();
     if(await page.getByRole('button',{name:'Ouvrir sans glisser',exact:true}).count())await page.getByRole('button',{name:'Ouvrir sans glisser',exact:true}).click();
     for(let i=0;i<5;i++){await page.locator('.po-view,.po-summary').first().waitFor();if(await page.locator('.po-summary').count())break;await page.getByRole('button',{name:/^Carte suivante$|^Voir les cinq cartes$/}).click();await page.waitForTimeout(120);}
-    await page.getByRole('button',{name:'Retour à la machine',exact:true}).click();await page.getByRole('button',{name:'Paramètres',exact:true}).click();
+    await page.getByRole('button',{name:'Retour à la machine',exact:true}).click();await page.getByRole('button',{name:'Paramètres',exact:true}).click();await page.locator('.installation-details > summary').click();
     await page.getByRole('button',{name:'Mettre à jour',exact:true}).waitFor();
     const previous=await page.evaluate(()=>JSON.parse(localStorage.getItem('tcg-faerie-v1')));
     const reloading=page.waitForEvent('framenavigated');await page.getByRole('button',{name:'Mettre à jour',exact:true}).click();await reloading;await page.locator('.mobile-booster').waitFor();

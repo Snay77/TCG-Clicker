@@ -1,6 +1,6 @@
 import { advancedRows, type AdvancedContext } from '../../lib/advanced-effects';
 import type { Save } from '../../lib/game';
-import { describeEffect } from '../../lib/effects';
+import { describeUIEffect as describeEffect } from '../../lib/effects';
 
 export function machineEffectRows(save:Save,context:AdvancedContext) {
  return advancedRows(save,context).filter(row=>row.remaining>0||row.ready||row.kind==='nextClick'&&row.maximum>0&&row.progress>=Math.ceil(row.maximum/2))

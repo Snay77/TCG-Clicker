@@ -1,8 +1,14 @@
 # TCG Clicker — Game Design Document
 
-**État actuel — Alpha 0.2.0 / Phase 10 (3 octobre 2026) : refonte mobile et PWA, gameplay Phase 8 conservé, 60 cartes et sauvegarde v4. Les sections des phases antérieures constituent l’historique.**
+**État actuel — Alpha 0.3.0 / Phase 14 (9 octobre 2026) : correctifs UX/gameplay, Arcane Brutalism, 60 cartes et sauvegarde v4 compatible. Les sections des phases antérieures constituent l’historique.**
 
-## Phase 10 — mobile et PWA
+## Phase 14 — corrections du rapport utilisateur
+
+Navigation découverte conservée, première ouverture avec trois Bases équipables, parents manquants explicités, Deck avec comparateur complet et remplacement stable, achats des slots disponibles et acquisitions récentes. Rare+ montre la probabilité réelle ; upgrades et XP distinguent valeurs actuelles et futures. Récapitulatif mobile examinable, actions prioritaires et notices temporaires.
+
+Combo : 2 secondes de grâce, décroissance 10 points/s, bonus acquis maximal `min(1, 0,15 + bonus)`. Contribution active du passif au clic limitée à `min(passif × 0,12, clic de base) × palier / 4`, sans modifier le passif. Clic initial toujours 1 ; mode rapide après huit boosters terminés ou exploration niveau 12. Tirages normaux à partir de la deuxième ouverture inchangés. Détails : `design/phase14-ux-fixes.md`.
+
+## Historique — Phase 10, mobile et PWA
 
 La navigation comprend Machine, Boosters, Collection, Deck et Voyage. Boosters présente les paquets illustrés dans un catalogue, leur contenu et les commandes d’ouverture existantes. Le favori est une préférence de sauvegarde v4, reprise par le raccourci de la Machine mobile. Une ancienne sauvegarde sélectionne Faerie par défaut ; retirer le favori affiche une invitation à en choisir un. Seul le set Faerie existe actuellement, sans modification des tirages ni de l’économie.
 
@@ -12,7 +18,7 @@ La PWA utilise le même jeu et la même sauvegarde, sans économie distincte. Le
 
 ## Alpha navigateur — état actuel
 
-Export/import JSON v4, reset confirmé, diagnostics et récupération sont dans Paramètres ou l’écran de secours. Les copies de sauvegarde restent locales. Une seule session peut jouer par origine : verrou Web Locks, fallback bail localStorage, second onglet en pause. L’atelier est disponible uniquement en développement. L’alpha ne crée aucun nouveau gameplay et conserve les sprites, habitats et finitions du set complet.
+Export/import JSON v4, reset confirmé, diagnostics et récupération sont dans Paramètres ou l’écran de secours. Les copies de sauvegarde restent locales. Le blocage multi-onglets est désactivé depuis le 9 octobre 2026. Les onglets ne synchronisent pas leurs écritures. L’atelier est disponible uniquement en développement. L’alpha ne crée aucun nouveau gameplay et conserve les sprites, habitats et finitions du set complet.
 
 Voir `README.md`, `ALPHA_RELEASE_CHECKLIST.md`, `ALPHA_TEST.md` et `design/alpha-audit.md` pour la préparation de publication, les contrôles et les limites. Safari/iOS et les playtests humains restent à valider.
 

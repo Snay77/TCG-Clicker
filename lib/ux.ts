@@ -1,14 +1,14 @@
 import { CARDS, byId } from './cards';
 import { price, savedCardLevel, type Save } from './game';
 import { cardUpgradeCost, leveledEffect } from './progression';
-import { describeEffect } from './effects';
+import { describeUIEffect as describeEffect } from './effects';
 import { ACHIEVEMENTS, achievementProgress, achievementReady, explorationLevel, freePackCount } from './exploration';
 import { isBoosterId, type BoosterId } from './boosters';
-export const FIRST_STEPS = ['Générer de l’énergie','Acheter une amélioration','Ouvrir un booster','Découvrir 5 créatures','Équiper un compagnon'] as const;
+export const FIRST_STEPS = ['Récolter des éclats','Acheter une amélioration','Ouvrir un booster','Découvrir 5 créatures','Équiper un compagnon'] as const;
 export const TIP_IDS = ['click','upgrade','booster','collection','deck','progression'] as const;
 export type TipId = typeof TIP_IDS[number];
-export type UX = {format:1;introSeen:boolean;skipTips:boolean;dismissed:TipId[];completed:number[];sound:boolean;volume:number;motion:'system'|'reduce';favoriteBooster?:BoosterId|null};
-export const initialUX = ():UX => ({format:1,introSeen:false,skipTips:false,dismissed:[],completed:[],sound:true,volume:0.35,motion:'system',favoriteBooster:'faerie'});
+export type UX = {format:1;introSeen:boolean;skipTips:boolean;dismissed:TipId[];completed:number[];sound:boolean;volume:number;motion:'system'|'reduce';favoriteBooster?:BoosterId|null;discoveredSystems?:string[]};
+export const initialUX = ():UX => ({format:1,introSeen:false,skipTips:false,dismissed:[],completed:[],sound:true,volume:0.35,motion:'system',favoriteBooster:'faerie',discoveredSystems:[]});
 export function completedSteps(s:Save):number[] {
  const done=[s.clicks>0,Object.values(s.upgrades).some(n=>n>0),s.packs>0&&(!s.pending.length||s.revealed===5),Object.keys(s.owned).length>=5,s.deck.length>0];
  return [...new Set([...s.ux.completed,...done.flatMap((v,i)=>v?[i]:[])])].sort();
@@ -17,15 +17,16 @@ export function parseUX(value:unknown,s:Save):UX {
  if(value===undefined){const ux={...initialUX(),introSeen:true};return {...ux,completed:completedSteps({...s,ux})};}
  const v=value as UX;
  if(!v||v.format!==1||typeof v.introSeen!=='boolean'||typeof v.skipTips!=='boolean'||typeof v.sound!=='boolean'||!Number.isFinite(v.volume)||v.volume<0||v.volume>1||!['system','reduce'].includes(v.motion)||!Array.isArray(v.dismissed)||v.dismissed.some(id=>!TIP_IDS.includes(id))||!Array.isArray(v.completed)||v.completed.some(i=>!Number.isInteger(i)||i<0||i>4))throw Error('Préférences invalides');
+ if(v.discoveredSystems!==undefined&&(!Array.isArray(v.discoveredSystems)||v.discoveredSystems.some(id=>!['upgrades','boosters','collection','deck','progression','synergies','advancedSynergies','statistics'].includes(id))))throw Error('Onglets découverts invalides');
  const favorite=v.favoriteBooster===undefined?'faerie':v.favoriteBooster;
  if(favorite!==null&&!isBoosterId(favorite))throw Error('Booster favori invalide');
- return {format:1,introSeen:v.introSeen,skipTips:v.skipTips,sound:v.sound,volume:v.volume,motion:v.motion,dismissed:[...new Set(v.dismissed)],completed:[...new Set(v.completed)],favoriteBooster:favorite};
+ return {format:1,introSeen:v.introSeen,skipTips:v.skipTips,sound:v.sound,volume:v.volume,motion:v.motion,dismissed:[...new Set(v.dismissed)],completed:[...new Set(v.completed)],favoriteBooster:favorite,discoveredSystems:[...new Set(v.discoveredSystems||[])]};
 }
 export function markIntroSeen(s:Save):Save{return s.ux.introSeen?s:{...s,ux:{...s.ux,introSeen:true}};}
 export function dismissTip(s:Save,id:TipId):Save{return s.ux.dismissed.includes(id)?s:{...s,ux:{...s.ux,dismissed:[...s.ux.dismissed,id]}};}
 export function contextualTip(s:Save):TipId|null {
  if(s.ux.skipTips||!s.ux.introSeen||s.pending.length)return null;
- const eligible={click:s.clicks<5,upgrade:!Object.values(s.upgrades).some(n=>n>0)&&s.energy>=60,booster:!s.packs&&(s.energy>=price(s)*0.8||freePackCount(s)>0),collection:s.packs>0,deck:Object.keys(s.owned).length>=3,progression:s.deck.length>0||s.account.xp>=100};
+ const eligible={click:s.clicks<5,upgrade:!Object.values(s.upgrades).some(n=>n>0)&&s.energy>=60,booster:!s.packs&&(s.energy>=price(s)*0.8||freePackCount(s)>0),collection:s.packs>0&&!s.ux.completed.includes(4),deck:Object.keys(s.owned).length>=3&&!s.deck.length,progression:(s.deck.length>0||s.account.xp>=100)&&!s.account.claimed.length};
  return TIP_IDS.find(id=>eligible[id]&&!s.ux.dismissed.includes(id))||null;
 }
 export function cardInspection(s:Save,id:string){

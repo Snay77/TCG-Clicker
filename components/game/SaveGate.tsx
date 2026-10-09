@@ -8,8 +8,8 @@ export default function SaveGate({session}:{session:ReturnType<typeof useSaveSes
   function act(action: () => void) { try { action(); } catch { setError('Le stockage est inaccessible ou plein. Les données existantes sont conservées. Exportez-les avant de réessayer.'); } }
   if (session.status === 'loading') return <main className="alpha-gate brutal-shell" aria-busy="true"><h1>La clairière s’éveille…</h1><p role="status">Chargement de votre progression.</p></main>;
   return <main className="alpha-gate brutal-shell"><span className="eyebrow">TCG CLICKER · FAERIE</span>
-    <h1>{session.status === 'conflict' ? 'TCG Clicker est déjà actif dans un autre onglet.' : session.status === 'recovery' ? 'Sauvegarde principale illisible.' : 'Sauvegarde inaccessible.'}</h1>
-    {session.status === 'conflict' ? <><p>Fermez l’autre onglet, puis rechargez ici pour reprendre votre progression. Cet onglet est en pause.</p><UIAction onClick={()=>window.location.reload()}>Recharger</UIAction></> : session.status === 'recovery' ? <>
+    <h1>{session.status === 'recovery' ? 'Sauvegarde principale illisible.' : 'Sauvegarde inaccessible.'}</h1>
+    {session.status === 'recovery' ? <>
       <p>Vos données sont conservées. Aucune progression ne sera remplacée sans votre choix.</p>
       {recovery?.backup && <><p>Copie valide : niveau {saveSummary(recovery.backup).level} · {Object.keys(recovery.backup.owned).length}/60 espèces · {recovery.backup.packs} boosters.</p><UIAction onClick={()=>act(session.restore)}>Restaurer la dernière sauvegarde valide</UIAction></>}
       <UIAction disabled={!recovery?.raw} onClick={()=>downloadJSON(recovery!.raw,'tcg-clicker-donnees-problematiques.json')}>Exporter les données problématiques</UIAction>
