@@ -14,7 +14,7 @@ export function leveledEffect(effect: Effect, level: number): Effect {
 }
 export const UPGRADES = [
   { id: "click", name: "Amplificateur sylvestre", base: 75, growth: 1.17, max: 100, effect: { clickFlat: 1 } },
-  { id: "auto", name: "Luciole mécanique", base: 60, growth: 1.2, max: 100, effect: { autoFlat: 1.5 } },
+  { id: "auto", name: "Luciole mécanique", base: 60, growth: 1.25, max: 100, effect: { autoFlat: 1.5 } },
   { id: "critChance", name: "Lentille lunaire", base: 180, growth: 1.35, max: 25, effect: { critChance: 0.01 } },
   { id: "critMultiplier", name: "Prisme de résonance", base: 250, growth: 1.3, max: 30, effect: { critMultiplier: 0.15 } },
   { id: "combo", name: "Cadence du portail", base: 120, growth: 1.3, max: 20, effect: { comboMultiplier: 0.05 } },
@@ -26,10 +26,12 @@ export type UpgradeLevels = Record<UpgradeId, number>;
 export const initialUpgrades = (): UpgradeLevels => Object.fromEntries(UPGRADES.map(u => [u.id, 0])) as UpgradeLevels;
 export function upgradeCost(id: UpgradeId, levels: UpgradeLevels): number {
   const u = UPGRADES.find(u => u.id === id)!;
-  return Math.ceil(u.base * u.growth ** levels[id]);
+  const intermediate=(id==='global'||id==='faerie')?1.12**Math.min(4,Math.max(0,levels[id]-2)):1;
+  const growth=id==='auto'?1.2**Math.min(1,levels.auto)*1.25**Math.max(0,levels.auto-1):u.growth**levels[id];
+  return Math.ceil(u.base * growth*intermediate);
 }
 export function upgradeEffects(levels: UpgradeLevels): Effect[] {
-  return UPGRADES.map(u => Object.fromEntries(Object.entries(u.effect).map(([key, value]) => [key, value * levels[u.id]])));
+  return UPGRADES.map(u => Object.fromEntries(Object.entries(u.effect).map(([key, value]) => [key, u.id==='auto'?1.5*Math.min(2,levels.auto)+1.25*Math.max(0,levels.auto-2):value * levels[u.id]])));
 }
 export const MACHINE_TIERS = [
   { level: 1, name: "Portail naissant" }, { level: 5, name: "Cristaux accordés" },

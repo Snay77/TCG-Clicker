@@ -69,6 +69,7 @@ export function useSaveSession(save: Save, setSave: Dispatch<SetStateAction<Save
     if (status !== 'active') return;
     dirty.current = true;
     const before = previous.current;
+    if(before&&(before.portal?.anomaly!==save.portal?.anomaly||before.portal?.charge===100&&save.portal?.charge===0))flush.current();
     previous.current = save;
     // Purchases, reveals, deck changes and settings are durable immediately.
     if (!before || before.pending !== save.pending || before.revealed !== save.revealed || before.owned !== save.owned || before.deck !== save.deck || before.upgrades !== save.upgrades || before.ux !== save.ux || before.account.claimed !== save.account.claimed || before.extraDeckSlots !== save.extraDeckSlots || before.freeBoosterCapacity !== save.freeBoosterCapacity || before.account.fastOpening !== save.account.fastOpening || before.account.activeTitle !== save.account.activeTitle) flush.current();

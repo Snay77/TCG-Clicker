@@ -1,5 +1,23 @@
 # Changelog
 
+## Phase 16 — The Living Portal · 11 octobre 2026
+
+- Porte suspendue en SVG natif : pierre et bronze, forêt intérieure, lentilles indépendantes, gravures, fragments, paliers visuels de Machine et réactions différenciées normal/critique/charge.
+- Surface centrale exclusivement dédiée aux impulsions ; surcharge, fissure, effets, cadence, boosters et améliorations en périphérie.
+- Surcharge volontaire de 8 s, bonus additif plafonné ; une fissure persistante et facultative récompensant en charge ; accords limités à Luciolot, Flamèche et Songegarde. Les 12 effets avancés existants sont conservés.
+- Charge et progression de fissure dans un champ optionnel de sauvegarde v4 ; buffs temporaires perdus au reload, retrait de Songegarde effaçant sa préparation ; aucun revenu passif supplémentaire.
+- Règles pures, rendu et runtime séparés ; mouvement réduit, suspension invisible et réactions bornées. Vérifications et simulations décrites dans `design/phase16-living-portal.md`.
+- Aucun nouveau set, asset externe, image IA, généralisation aux 60 cartes, playtest humain, commit ou déploiement.
+
+## Phase 15 — Core Loop Refinement · 11 octobre 2026
+
+- Remplacement du Deck en lignes compactes, différences prioritaires et comparaison complète repliable ; actions de fiche rapprochées et confirmation d'amélioration avant/après.
+- États d'effets explicites : condition manquante, prêt, en charge, chargé, actif et attente de booster. Lièvrille et les conditions actives visibles discrètement sur Machine.
+- Ouverture rapide automatique des doublons ordinaires ; pauses sur découvertes et mise en scène Légendaire/Mythique préservées. Récapitulatif des gains et possibilités de renforcement.
+- Recherche prioritaire, compteur de filtres mobile, distinction NOUVEAU/RÉCENT, achat slot près du résumé et confirmation, notifications groupées et formatage français.
+- Diagnostic sur trois parcours simulés, 16 graines chacun, à 5/10/20/30 minutes. Ajustements ciblés sur croissance passive, coûts intermédiaires et courbe payante ; début et pouvoirs de clic préservés. Détail : `design/phase15-core-loop.md`.
+- Aucun nouveau set, carte ou effet avancé ; aucune généralisation aux 60 cartes, aucun nouveau playtest humain ni déploiement.
+
 ## Phase 14 — Correctifs locaux · 9 octobre 2026
 
 - Navigation découverte persistante, trois Bases distinctes au premier booster et prérequis d'évolution immédiatement visibles.

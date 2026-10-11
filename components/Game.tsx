@@ -27,7 +27,10 @@ import BoosterShop from "./game/BoosterShop";
 import ProgressionView from "./game/ProgressionView";
 import { ACHIEVEMENTS, achievementReady, completedLineages, explorationLevel, freePackCount, claimAchievement, buyDeckSlot, selectTitle, toggleFastOpening, recordClick, fastOpeningAvailable, TITLES } from "../lib/exploration";
 import Sprite from "./Sprite";
-import Machine from "./Machine";
+import PortalSurface from "./game/PortalSurface";
+import PortalControls from './game/PortalControls';
+import {useLivingPortal} from './game/useLivingPortal';
+import {activateOverload,stabilizeAnomaly,portalVisualState,portalDeck,overloadSupplement,initialPortalRuntime,reconcilePortal} from '../lib/living-portal';
 import BoosterPack from "./BoosterPack";
 import BoosterOpening from "./BoosterOpening";
 import CollectionView from "./game/CollectionView";
@@ -55,7 +58,7 @@ import { visibleSystems } from '../lib/disclosure';
 import { advancedEvent, consumeAdvancedClick, initialAdvancedRuntime, reconcileAdvanced, type AdvancedRuntime } from '../lib/advanced-effects';
 import { playClick, playTick, previewClickGain } from '../lib/play-effects';
 import MachineEffects from './game/MachineEffects';
-import {mergeLevelFeedback,decimal,percent} from '../lib/game-ux';
+import {mergeLevelFeedback,decimal,percent,upgradeFeedback,compactFeedback} from '../lib/game-ux';
 const fmt = (n: number) => Math.floor(n).toLocaleString("fr-FR");
 export default function Game() {
   const mobile = useMobileLayout();
@@ -77,7 +80,9 @@ export default function Game() {
   const session = useSaveSession(save, setSave);
   const ready = session.status === 'active';
   const [tab, setTab] = useState("machine");
-  const [recentPack,setRecentPack]=useState<string[]>([]),[recentIds,setRecentIds]=useState<string[]>([]);
+  const portal=useLivingPortal(save,setSave,ready&&tab==='machine'&&save.pending.length===0&&!settingsOpen&&!upgradesOpen&&!helpOpen&&save.ux.introSeen);
+  const [recentPack,setRecentPack]=useState<string[]>([]),[recentIds,setRecentIds]=useState<string[]>([]),[newIds,setNewIds]=useState<string[]>([]);
+  const [noticeGroup,setNoticeGroup]=useState<{title:string;items:string[]}|null>(null);
   const [notice, setNotice] = useState("");
   const [discoveryNotice,setDiscoveryNotice]=useState('');
   const disclosureBaseline=useRef<ReturnType<typeof visibleSystems>|null>(null);
@@ -87,10 +92,6 @@ export default function Game() {
   const advancedRef=useRef<AdvancedRuntime>(initialAdvancedRuntime());
   const [advancedView,setAdvancedView]=useState(()=>({runtime:initialAdvancedRuntime(),now:0}));
   function publishAdvanced(runtime:AdvancedRuntime,now:number) { advancedRef.current=runtime;setAdvancedView({runtime,now}); }
-  const [sparks, setSparks] = useState<
-    { id: number; born: number; x: number; y: number; gain: number; crit: boolean }[]
-  >([]);
-  const serial = useRef(0);
   const latest = useRef(save); latest.current = save;
   const progressBaseline = useRef<{level:number;ready:Set<string>;species:number;lineages:number;free:number;claimed:string[]}|null>(null);
   const queuedFeedback = useRef<string[]>([]);
@@ -129,13 +130,6 @@ export default function Game() {
     window.addEventListener("focus",update);document.addEventListener("visibilitychange",update);
     return ()=>{clearInterval(timer);window.removeEventListener("focus",update);document.removeEventListener("visibilitychange",update);};
   },[ready]);
-  useEffect(() => {
-    const t = setInterval(
-      () => setSparks((s) => s.length ? s.filter((x) => Date.now() - x.born < 950) : s),
-      300,
-    );
-    return () => clearInterval(t);
-  }, []);
   const opening = save.pending.length > 0;
   const systems=visibleSystems(save);
   useEffect(()=>{if(!ready)return;const ids=Object.entries(visibleSystems(save)).filter(([key,value])=>key!=='machine'&&value).map(([key])=>key);if(ids.some(id=>!save.ux.discoveredSystems?.includes(id)))setSave(s=>({...s,ux:{...s.ux,discoveredSystems:[...new Set([...(s.ux.discoveredSystems||[]),...ids])]}}));},[ready,systems.upgrades,systems.boosters,systems.collection,systems.deck,systems.progression,systems.synergies,systems.advancedSynergies,systems.statistics,save.ux.discoveredSystems]);
@@ -183,17 +177,26 @@ export default function Game() {
       for(const id of snapshot.claimed.filter(id=>!before.claimed.includes(id))){const a=ACHIEVEMENTS.find(a=>a.id===id);if(a)queuedFeedback.current.push(`Récompense · ${a.title} : ${rewardDescription(a.rewards)}`);}
       const newlyReady=[...snapshot.ready].filter(id=>!before.ready.has(id));
       if(snapshot.species===60&&before.species<60)queuedFeedback.current.push('60/60 · Faerie est complète ! Récompense et titre Gardien du Portail dans les objectifs.');
-      else if(snapshot.lineages>before.lineages)queuedFeedback.current.push(`Lignée complétée · ${snapshot.lineages} / 20. Votre badge et votre récompense vous attendent.`);
+      else if(snapshot.lineages>before.lineages)queuedFeedback.current.push(`${snapshot.lineages-before.lineages} LIGNÉE${snapshot.lineages-before.lineages===1?'':'S'} COMPLÉTÉE${snapshot.lineages-before.lineages===1?'':'S'} · Récompenses dans Progression.`);
       else if(newlyReady.length&&visibleSystems(state).progression)queuedFeedback.current.push('Objectifs accomplis · récompenses à réclamer dans Progression.');
     }
     progressBaseline.current=snapshot;
-    if(!opening&&state.ux.introSeen&&(queuedFeedback.current.length||queuedLevels.current&&visibleSystems(state).progression)){const levels=visibleSystems(state).progression?queuedLevels.current:null;const unlocks=levels?UNLOCKS.filter(u=>u.level>levels.from&&u.level<=levels.to).map(u=>u.name):[];const messages=[...new Set(queuedFeedback.current)];if(levels)messages.push(`${levels.to-levels.from>1?'+'+(levels.to-levels.from)+' NIVEAUX · ':''}Exploration niveau ${levels.from} → ${levels.to} · ${unlocks.length?'Disponible : '+unlocks.join(' · '):'Votre voyage continue.'}`);if(levels)queuedLevels.current=null;setNotice(messages.slice(-4).join(' '));playSound(messages.some(m=>m.startsWith('Exploration niveau'))?'level':messages.some(m=>m.startsWith('Récompense'))?'goal':'ready');queuedFeedback.current=[];}
+    if(!opening&&state.ux.introSeen&&(queuedFeedback.current.length||queuedLevels.current&&visibleSystems(state).progression)){
+      const levels=visibleSystems(state).progression?queuedLevels.current:null;
+      const unlocks=levels?UNLOCKS.filter(u=>u.level>levels.from&&u.level<=levels.to).map(u=>u.name):[];
+      const messages=[...new Set(queuedFeedback.current)];
+      if(levels)messages.push(`Exploration niveau ${levels.from} → ${levels.to}`,...unlocks);
+      if(levels)queuedLevels.current=null;
+      const title=compactFeedback(messages);setNoticeGroup(messages.length>1?{title,items:messages}:null);setNotice(title);
+      playSound(levels?'level':messages.some(m=>m.startsWith('Récompense'))?'goal':'ready');queuedFeedback.current=[];
+    }
   },[ready,opening,save.account.xp,save.owned,save.level,save.cardLevels,save.packs,save.account.claimed,save.freeBoosters,save.ux.introSeen,save.account.totals.maxCombo,save.account.totals.criticalClicks,Math.floor(save.account.totals.generatedEnergy/10000)]);
   function claim(id:string) { setSave(s=>claimAchievement(s,id)); }
+  function acquireSlot(){const before=latest.current,next=buyDeckSlot(before);if(next===before)return;playSound('upgrade',true);setSave(buyDeckSlot);setNotice(`${6+next.extraDeckSlots}e EMPLACEMENT ACQUIS`);}
 
   const effectContext={runtime:advancedView.runtime,now:advancedView.now,combo:combo.charge};
   const power = stats(save,effectContext);
-  const nextClickGain=previewClickGain(save,advancedView.runtime,combo,advancedView.now);
+  const nextClickGain=previewClickGain(save,advancedView.runtime,combo,portal.view.now,portal.view.runtime);
   const discovered = Object.keys(save.owned).length;
   function click(e: React.MouseEvent<HTMLButtonElement>) {
     if (!session.writable()) return;
@@ -202,24 +205,17 @@ export default function Game() {
     const nextCombo = advanceCombo(comboRef.current, now);
     comboRef.current = nextCombo;
     setCombo(nextCombo);
-    const result=playClick(current,advancedRef.current,nextCombo.charge,now,Math.random());
+    const result=playClick(current,advancedRef.current,nextCombo.charge,now,Math.random(),true,portal.runtime.current);
     const {critical,gain}=result;
     publishAdvanced(result.runtime,now);
-    playSound(critical?"critical":"click",true);
-    const box = e.currentTarget.getBoundingClientRect();
-    setSave((s) => ({...recordClick(s,gain,critical,nextCombo.charge),advancedClicks:result.save.advancedClicks}));
-    setSparks((s) => [
-      ...s.slice(-18),
-      {
-        id: serial.current++,
-        born: Date.now(),
-        x: e.detail ? e.clientX - box.left : box.width / 2,
-        y: e.detail ? e.clientY - box.top : box.height / 2,
-        gain,
-        crit: critical,
-      },
-    ]);
+    portal.publish(result.portalRuntime,now);
+    playSound(result.charged?'charged':critical?"critical":"click",true);
+
+    latest.current=result.save;setSave(result.save);
+    return {gain,critical,charged:result.charged};
   }
+  function overload(){if(!session.writable())return;const now=performance.now(),result=activateOverload(latest.current,portal.runtime.current,now);if(!result.activated)return;latest.current=result.save;setSave(result.save);portal.publish(result.runtime,now);playSound('overload',true);}
+  function stabilize(){if(!session.writable())return;const next=stabilizeAnomaly(latest.current,portal.runtime.current,performance.now());if(next===latest.current)return;latest.current=next;setSave(next);setNotice('FISSURE STABILISÉE · +15 charge');playSound('stabilize',true);}
   function toggle(id: string, replaceId?: string) {
     const candidate = replaceId && !save.deck.includes(id) ? { ...save, deck: save.deck.filter(x => x !== replaceId) } : save;
     const reason = equipBlockedReason(candidate, id);
@@ -228,6 +224,7 @@ export default function Game() {
       return;
     }
     const next = changeDeck(save, id, replaceId);
+    portal.publish(reconcilePortal(next,portal.runtime.current,performance.now()),performance.now());
     publishAdvanced(reconcileAdvanced(next,advancedRef.current,performance.now()),performance.now());
     setNotice(systems.statistics?`${byId(id).name} · ${statImpact(stats(save,effectContext), stats(next,effectContext))}`:`${byId(id).name} · ${next.deck.includes(id)?'rejoint votre équipe':'retiré de votre équipe'}.`);
     setSave((s) => changeDeck(s, id, replaceId));
@@ -327,7 +324,7 @@ export default function Game() {
               <div className="eyebrow">EXPÉDITION 001 · LE MONDE FÉERIQUE</div>
               {brutal && <ArcaneMark label={tab === "machine" ? "TCG / INSTRUMENT 001" : tab === "collection" ? "FAERIE / REGISTRE 060" : tab === "deck" ? "FAERIE / ÉQUIPE ACTIVE" : tab === "boosters" ? "FAERIE / CATALOGUE" : "TCG / REGISTRE DE VOYAGE"} index={tab === "machine" ? "SECTEUR 01" : tab === "deck" ? `${save.deck.length} / ${deckCapacity(save)} LIENS` : "SET 01"} />}
               <h1>
-                {brutal ? (tab === "machine" ? "TCG CLICKER / 01" : tab === "collection" ? "ARCHIVE / SET 01" : tab === "deck" ? "ACTIVE DECK" : tab === "boosters" ? "BOOSTERS / SET 01" : "EXPLORATION / 05") : tab === "machine"
+                {brutal ? (tab === "machine" ? "TCG CLICKER / 01" : tab === "collection" ? "COLLECTION / SET 01" : tab === "deck" ? "ÉQUIPE ACTIVE" : tab === "boosters" ? "BOOSTERS / SET 01" : "EXPLORATION / 05") : tab === "machine"
                   ? "Un passage vers l’inconnu."
                   : tab === "boosters" ? "Une rencontre dans chaque paquet."
                   : tab === "deck"
@@ -352,6 +349,7 @@ export default function Game() {
           {notice && (
             <div key={notice} className={`notice ${notice.includes("60/60")?"completion-notice":""}`} role="status">
               {notice}
+              {noticeGroup?.title===notice&&<details className="notice-details"><summary>Voir le détail</summary>{noticeGroup.items.map((text,i)=><p key={i}>{text}</p>)}</details>}
               <button
                 onClick={() => setNotice("")}
                 aria-label="Fermer le message"
@@ -404,63 +402,13 @@ export default function Game() {
                     </div>
                     <span className="level">NIV. {save.level + 1} · {machineTier(save.level).name}</span>
                   </div>
-                  <div className="forest">
-                    {brutal && <div className="portal-readout" aria-hidden="true"><span>⌖ FAERIE / 01</span><span>{combo.charge >= 100 ? "◇ RÉSONANCE" : combo.charge > 0 ? "◇ CHARGE ACTIVE" : "◇ EN VEILLE"}</span></div>}
-                    <div className="forest-trees" />
-                    <div className="orbital orbit-one" />
-                    <div className="orbital orbit-two" />
-                    <button
-                      className="machine-button"
-                      onClick={click}
-                      disabled={!ready}
-                      aria-label="Récolter des éclats"
-                    >
-                      <span key={sparks.at(-1)?.id||0} className={`machine-recoil ${sparks.at(-1)?.crit?'critical-recoil':''}`}><Machine level={save.level} /></span>
-                      {sparks.slice(-1).map((p) => (
-                        <span
-                          key={p.id}
-                          className={`machine-impact ${p.crit ? "impact-critical" : ""}`}
-                          aria-hidden="true"
-                        >
-                          <span className="impact-ring" />
-                          <span className="impact-ring second" />
-                          <span className="impact-light" />
-                          {Array.from({ length: p.crit ? 20 : 10 }, (_, i) => (
-                            <span
-                              className="impact-mote"
-                              key={i}
-                              style={
-                                {
-                                  "--angle": `${i * 137.5}deg`,
-                                  "--distance": `${65 + (i % 5) * 18}px`,
-                                } as React.CSSProperties
-                              }
-                            />
-                          ))}
-                        </span>
-                      ))}
-                      {sparks.map((p) => (
-                        <span
-                          className={`click-spark ${p.crit ? "critical" : ""}`}
-                          key={p.id}
-                          style={{ left: p.x, top: p.y }}
-                        >
-                          +{decimal(p.gain)} ✦{p.crit && <small>CRITIQUE !</small>}
-                        </span>
-                      ))}
-                    </button>
-                    <MachineEffects save={save} context={effectContext}/>
-                    <div className="machine-prompt">
-                      <span className="live-dot" /> LE PORTAIL VOUS ATTEND
-                      <strong>
-                        Cliquez pour générer <b>+{decimal(nextClickGain)} ✦</b>
-                      </strong>
-                      {power.crit>0&&<small>
-                        {Math.round(power.crit * 100)} % de chance de critique ·
-                        éclats ×{decimal(power.critMultiplier)}
-                      </small>}
-                    </div>
+                  <div className={`forest living-field ${!portal.visible?'portal-paused':''}`}>
+                    <div className="portal-coordinates" aria-hidden="true"><span>FAERIE / 01</span><span>{portalVisualState(save,portal.view.runtime,portal.view.now)==='overload'?'PASSAGE EN SURCHARGE':portalVisualState(save,portal.view.runtime,portal.view.now)==='resonance'?'RÉSONANCE DIMENSIONNELLE':'PASSAGE STABLE'}</span></div>
+                    <PortalSurface level={save.level} state={portalVisualState(save,portal.view.runtime,portal.view.now)} attunement={portal.view.runtime.preparedUntil>portal.view.now?'astral':portalDeck(save).some(c=>c.kind==='critical')?'spark':'none'} onImpulse={click} reduced={portal.reduced} />
+                    <span className="portal-touch-label" aria-hidden="true">IMPULSION · +{decimal(nextClickGain)} ✦</span>
                   </div>
+                  <PortalControls save={save} runtime={portal.view.runtime} now={portal.view.now} onActivate={overload} onStabilize={stabilize}/>
+                  <MachineEffects save={save} context={effectContext}/>
                   {power.comboBonus>0&&<ComboBar combo={combo} bonus={power.comboBonus} />}
                   {mobile && <><div className="mobile-machine-actions">{systems.upgrades&&<button onClick={() => setUpgradesOpen(true)}><Rune/>Améliorations <span>↗</span></button>}<button aria-label="Conseils" onClick={() => setHelpOpen(true)}>?</button><small>+{decimal(power.click)} / clic{power.auto>0&&` · ${decimal(power.auto)} / sec`}</small></div>{systems.boosters&&<MobileBooster save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onBrowse={()=>{setTab("boosters");window.scrollTo({top:0});}} onOpen={source => startPack(source)}/>}</>}
                 </section>
@@ -540,11 +488,11 @@ export default function Game() {
           ) : tab === "boosters" ? (
             <BoostersView save={available} remaining={freePackRemaining(available,wallTime || Date.now())} rareChance={power.rareChance} onFavorite={id=>updateSettings({favoriteBooster:id})} onOpen={(id,source)=>{if(id==='faerie')startPack(source);}}/>
           ) : tab === "progression" ? (
-            <ProgressionView save={save} onClaim={claim} onSlot={()=>{if(buyDeckSlot(latest.current)!==latest.current)playSound("upgrade",true);setSave(buyDeckSlot);}} onTitle={id=>setSave(s=>selectTitle(s,id))} onFast={()=>setSave(toggleFastOpening)} onNavigate={navigate}/>
+            <ProgressionView save={save} onClaim={claim} onSlot={acquireSlot} onTitle={id=>setSave(s=>selectTitle(s,id))} onFast={()=>setSave(toggleFastOpening)} onNavigate={navigate}/>
           ) : tab === "deck" ? (
-            <DeckView save={save} onEquip={toggle} effectContext={effectContext} recentIds={recentIds} onSlot={()=>setSave(buyDeckSlot)} />
+            <DeckView save={save} onEquip={toggle} effectContext={effectContext} recentIds={recentIds} newIds={newIds} onSlot={acquireSlot} />
           ) : (
-            <CollectionView save={save} effectContext={effectContext} recentPack={recentPack} recentIds={recentIds} onConsult={id=>setRecentIds(ids=>ids.filter(cid=>cid!==id))} onEquip={toggle} onUpgrade={id => {if(upgradeCard(latest.current,id)!==latest.current)playSound("upgrade",true);setSave(s=>upgradeCard(s,id));setNotice(latest.current.deck.includes(id)?"Carte améliorée · effet équipé renforcé.":"CARTE AMÉLIORÉE · Son effet sera renforcé lorsqu’elle sera équipée.");}} onClaim={claim} />
+            <CollectionView save={save} effectContext={effectContext} recentPack={recentPack} recentIds={recentIds} newIds={newIds} onConsult={id=>{setRecentIds(ids=>ids.filter(cid=>cid!==id));setNewIds(ids=>ids.filter(cid=>cid!==id));}} onEquip={toggle} onUpgrade={id => {const before=latest.current,next=upgradeCard(before,id),feedback=upgradeFeedback(before,next,id);if(feedback){playSound("upgrade",true);setSave(s=>upgradeCard(s,id));setNotice(feedback.text);}}} onClaim={claim} />
           )}
           {devToolsEnabled(process.env.NODE_ENV) && <><Link className="mobile-dev-link" href="/dev">
             ⌘ Atelier des sprites ↗
@@ -563,7 +511,7 @@ export default function Game() {
       </main>
       {mobile && helpOpen && !opening && <BottomSheet title="Premiers pas" onClose={() => setHelpOpen(false)}><Onboarding save={save} onDismiss={id=>setSave(s=>dismissTip(s,id))} onSkip={()=>setSave(s=>({...s,ux:{...s.ux,skipTips:true}}))} onNavigate={target=>{setHelpOpen(false);navigate(target);}}/><p>{systems.deck?'Vos créatures sont prêtes à rejoindre votre équipe.':systems.collection?'Vos premières rencontres vous attendent dans Collection.':'Cliquez sur le portail pour récolter des éclats.'}</p></BottomSheet>}
       {ready&&!opening&&!save.ux.introSeen&&<PortalIntro onDone={()=>{playSound('level',true);setSave(markIntroSeen);}}/>}
-      {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);setRecentPack([]);setRecentIds([]);publishAdvanced(initialAdvancedRuntime(),performance.now());comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;recentLevels.current=null;disclosureBaseline.current=null;setDiscoveryNotice('');setSparks([]);setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
+      {settingsOpen&&!opening&&<Settings save={save} pwa={pwa} beforeReload={session.saveBeforeReload} onReplace={next=>{session.replace(next);setRecentPack([]);setRecentIds([]);setNewIds([]);publishAdvanced(initialAdvancedRuntime(),performance.now());comboRef.current=initialCombo();setCombo(initialCombo());progressBaseline.current=null;queuedFeedback.current=[];queuedLevels.current=null;recentLevels.current=null;disclosureBaseline.current=null;setDiscoveryNotice('');portal.publish(initialPortalRuntime(),performance.now());setNotice('Sauvegarde remplacée.');setTab('machine');}} onChange={updateSettings} onFast={()=>setSave(toggleFastOpening)} onClose={()=>setSettingsOpen(false)}/>}
       {opening && (
         <BoosterOpening
           key={save.packs}
@@ -577,7 +525,7 @@ export default function Game() {
           onNext={source=>startPack(source,true)}
           onClose={destination => {
             const acquisitions=[...latest.current.pending];
-            setRecentIds(acquisitions);if(destination==='collection')setRecentPack(acquisitions);
+            setRecentIds(acquisitions);setNewIds([...new Set(acquisitions)].filter(id=>latest.current.owned[id]===acquisitions.filter(cid=>cid===id).length));if(destination==='collection')setRecentPack(acquisitions);
             setSave(finishPack);
             window.scrollTo({top:0,behavior:'instant'});
             const closed=finishPack(latest.current);

@@ -22,7 +22,7 @@ test('consommation gratuite conserve reliquat, énergie et compteur payant',()=>
  assert.equal(openPack(opened,pack,'free',start+20*60000),opened);assert.equal(openPack(s,pack,'free',start),s);
 });
 test('débit payant unique, prix progressif stable et discount limité à cinquante pour cent',()=>{
- assert.deepEqual([1,2,5,10,20,30,50].map(n=>progressivePackPrice(n-1)),[100,112,158,278,862,2675,25804]);
+ assert.deepEqual([1,2,5,10,20,30,50].map(n=>progressivePackPrice(n-1)),[100,112,158,342,1789,6688,64510]);
  for(const rate of [1.08,1.10,1.12,1.15]){let last=0;for(let i=0;i<70;i++){const cost=progressivePackPrice(i,0,rate);assert.ok(cost>=last);last=cost;}}
  assert.equal(progressivePackPrice(1,1),56);assert.equal(progressivePackPrice(0,-1),100);assert.equal(progressivePackPrice(10000),Number.MAX_SAFE_INTEGER);
  const s={...initialSave(start),energy:1000};const p=buyPack(s,pack,start);assert.equal(p.energy,900);assert.equal(p.paidBoostersPurchased,1);assert.equal(price(p),112);assert.equal(p.pendingSource,'paid');assert.equal(buyPack(p,pack,start),p);

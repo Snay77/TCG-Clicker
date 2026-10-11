@@ -42,8 +42,8 @@ test('Machine : compteur utile à partir de la moitié ; trois lignes et seconde
  let current=reconcileAdvanced(s,runtime,0);current={...current,counters:{[id(25)]:12}};
  assert.equal(machineEffectRows(s,{runtime:current,now:0}).length,0);
  current={...current,counters:{[id(25)]:18}};
- assert.equal(machineEffectRows(s,{runtime:current,now:0})[0].status,'18/25');
+ assert.equal(machineEffectRows(s,{runtime:current,now:0})[0].status,'EN CHARGE · 18/25 clics');
  current=advancedEvent(s,current,'onCritical',100);current=advancedEvent(s,current,'onBoosterOpen',100);
  assert.equal(machineEffectRows(s,{runtime:current,now:900}).length,3);
- assert.equal(advancedRows(s,{runtime:current,now:900}).find(r=>r.id===id(39))!.status,'3.2 s');
+ assert.equal(advancedRows(s,{runtime:current,now:900}).find(r=>r.id===id(39))!.status,'ACTIF · 3,2 s');
 });

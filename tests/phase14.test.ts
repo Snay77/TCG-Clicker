@@ -60,13 +60,13 @@ test('fiche plein Deck : bouton de remplacement et comparaison de chaque slot',(
  const dialog=renderToStaticMarkup(createElement(DeckReplacement,{save:s,id:id(18),onClose(){},onReplace(){}}));assert.equal((dialog.match(/Comparaison du Deck/g)||[]).length,6);
 });
 test('slot : disponible au niveau 8, coût et achat accessibles depuis Deck',()=>{
- const s=fixture(25);s.account.xp=1750;s.energy=5000;assert.equal(slotOffer(s)?.available,true);
+ const s=fixture(25);s.account.xp=1750;s.energy=15000;assert.equal(slotOffer(s)?.available,true);
  const html=renderToStaticMarkup(createElement(DeckView,{save:s,onEquip(){},onSlot(){}}));assert.match(html,/Acheter le 7e emplacement/);assert.match(html,/Vos éclats/);
  assert.equal(buyDeckSlot(s).extraDeckSlots,1);assert.equal(buyDeckSlot(s).energy,0);
 });
 test('acquisitions : cinq cartes examinables même avec des doublons',()=>{
  const s=fixture(1),pack=[1,1,10,19,25].map(id),html=renderToStaticMarkup(createElement(CollectionView,{save:s,recentPack:pack,recentIds:pack,onEquip(){},onUpgrade(){},onClaim(){}}));
- assert.match(html,/NOUVELLES ACQUISITIONS/);assert.equal((html.match(/Examiner ↗/g)||[]).length,5);
+ assert.match(html,/ACQUISITIONS RÉCENTES/);assert.equal((html.match(/Examiner ↗/g)||[]).length,5);
 });
 test('Rare+ : probabilité réelle normalisée, carte garantie calculée séparément',()=>{
  assert.equal(rarePlusChance(0),.23);assert.ok(rarePlusChance(.12)>.23);assert.ok(rarePlusChance(.12,true)>rarePlusChance(.12));assert.ok(rarePlusChance(.75)<1);

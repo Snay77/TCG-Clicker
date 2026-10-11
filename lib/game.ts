@@ -7,8 +7,10 @@ import { synergies, advancedSynergies } from "./synergies";
 import { initialAccount, parseAccount, explorationLevel, freePackCount, XP, type Account } from "./exploration";
 import { initialUX, parseUX, type UX } from './ux';
 import { advancedBonuses, advancedDuplicateBonus, parseAdvancedProgress, type AdvancedContext } from './advanced-effects';
+import {parsePortal,type PortalProgress} from './living-portal';
 export type PackSource = "free" | "paid";
 export type Save = FreePackState & {
+  portal?:PortalProgress;
   advancedClicks?:Record<string,number>;
   account: Account;
   ux: UX;
@@ -191,6 +193,7 @@ export function parseSave(raw: string, now = Date.now()): Save {
   // Keep already-equipped v1 evolutions: prerequisites apply to future equipment.
   migrated.deck = [...new Set<string>(s.deck.filter((id: unknown) => typeof id === "string" && owned[id]))].slice(0, deckCapacity(migrated));
   if(s.advancedClicks!==undefined)migrated.advancedClicks=parseAdvancedProgress(s.advancedClicks,migrated);
+  if(s.portal!==undefined)migrated.portal=parsePortal(s.portal);
   migrated.account = parseAccount(s.version===4?s.account:undefined,migrated);
   migrated.ux = parseUX(s.ux,migrated);
   return rechargeFreePacks(migrated,now);

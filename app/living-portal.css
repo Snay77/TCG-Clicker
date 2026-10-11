@@ -1,0 +1,96 @@
+.living-portal-art{width:100%;height:100%;display:block;overflow:visible;pointer-events:none;--portal-energy:#b8f0c1}
+.portal-world{transform-box:fill-box;transform-origin:center}
+.portal-faerie-heart{opacity:0}.living-portal-art[data-tier="6"] .portal-faerie-heart{opacity:1}
+.portal-lens,.portal-glyph-wheel,.portal-extra-orbit{transform-box:view-box;transform-origin:300px 257px}
+.lens-back{transform:rotate(-17deg);animation:portal-tilt-back 24s ease-in-out infinite alternate}
+.lens-front{transform:rotate(-28deg);animation:portal-tilt-front 18s ease-in-out infinite alternate}
+.portal-glyph-wheel{animation:portal-glyphs 100s linear infinite}
+.portal-directed-motes circle{animation:portal-flow 7s linear infinite}
+.portal-filaments{animation:portal-breathe 6s ease-in-out infinite alternate}
+.portal-fragments{animation:portal-float 8s ease-in-out infinite alternate}
+.portal-refraction{animation:portal-breathe 9s ease-in-out infinite alternate}
+.portal-vines,.portal-leaves,.portal-crown,.portal-high-runes,.portal-extra-orbit{opacity:0;transition:opacity .8s}
+.living-portal-art[data-tier="2"] .portal-crown,.living-portal-art[data-tier="3"] :is(.portal-crown,.portal-vines,.portal-leaves),.living-portal-art[data-tier="4"] :is(.portal-crown,.portal-vines,.portal-leaves,.portal-high-runes),.living-portal-art[data-tier="5"] :is(.portal-crown,.portal-vines,.portal-leaves,.portal-high-runes,.portal-extra-orbit),.living-portal-art[data-tier="6"] :is(.portal-crown,.portal-vines,.portal-leaves,.portal-high-runes,.portal-extra-orbit){opacity:1}
+.portal-overload-spires{opacity:0;transition:opacity .3s}
+.portal-resonance-circuit{opacity:0;transition:opacity .5s}.living-portal-art[data-state="resonance"] .portal-resonance-circuit{opacity:1}
+.living-portal-art[data-state="resonance"] .portal-fragments{transform:translateY(-8px);animation:portal-float-resonance 5s ease-in-out infinite alternate}
+.living-portal-art[data-state="resonance"] .portal-crown{opacity:1;transform:translateY(-7px)}
+.living-click-surface[data-visible="0"] .living-portal-art *{animation-play-state:paused!important}
+.living-portal-art[data-state="resonance"] .portal-gems{fill:#f7df9e}
+.living-portal-art[data-state="resonance"] .portal-high-runes{opacity:1;stroke:#edcf96}
+.living-portal-art[data-state="resonance"] .portal-glyph-wheel{stroke:#e9d5a3;animation-duration:50s}
+.living-portal-art[data-state="overload"] .portal-overload-spires{opacity:1}
+.living-portal-art[data-state="overload"] .lens-front{animation:portal-open-front .65s ease-out forwards}
+.living-portal-art[data-state="overload"] .lens-back{animation:portal-open-back .65s ease-out forwards}
+.living-portal-art[data-state="overload"] .portal-glyph-wheel{stroke:#ffe9aa;animation-duration:16s}
+.living-portal-art[data-state="overload"] .portal-world{filter:brightness(1.3) saturate(1.2)}
+.living-portal-art[data-attunement="astral"] .portal-gems{fill:#b4d6ff}
+.living-portal-art[data-attunement="spark"] .portal-filaments{stroke:#ffe0a1;opacity:.9}
+.living-click-surface{position:relative;display:block;border:0!important;background:none!important;padding:0!important;border-radius:0!important;box-shadow:none!important;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.living-click-surface:focus-visible{outline:2px solid #f3dfa0;outline-offset:2px}
+.portal-hit{position:absolute;left:50%;top:46%;width:32%;height:43%;transform:translate(-50%,-50%);pointer-events:none}
+.portal-hit i{position:absolute;inset:0;width:100%;height:100%;margin:0;background:none;border:2px solid #c5f8de;border-radius:45% 45% 35% 35%;animation:portal-wave .45s ease-out forwards}
+.portal-hit i:nth-child(2){animation-delay:.045s;opacity:.6}.portal-hit i:nth-child(3){display:none}
+.hit-critical{width:58%;height:10%;transform:translate(-50%,-50%) rotate(-28deg)}
+.hit-critical i{border-radius:0;border-color:#fff0a6;animation:portal-critical .34s ease-out forwards}
+.hit-charged{height:65%;width:10%}.hit-charged i{border-radius:0;border-color:#b2eaff;border-width:0 2px;animation:portal-charged .45s ease-out forwards}.hit-charged i:nth-child(3){display:block;transform:rotate(90deg)}
+.hit-overload i{border-color:#ffe9a3;border-width:3px}.hit-overload{width:42%;height:56%}
+.portal-gain{position:absolute;pointer-events:none;z-index:5;color:#e2ffe5;font:700 18px ui-monospace,monospace;text-shadow:0 2px 5px #000;animation:portal-number .85s ease-out forwards;white-space:nowrap}
+.portal-gain.critical{color:#ffeba5}.portal-gain.charged{color:#c7e9ff}.portal-gain small{display:block;font:9px system-ui;letter-spacing:1px;margin-top:4px}
+@keyframes portal-tilt-back{to{transform:rotate(10deg)}}
+@keyframes portal-tilt-front{to{transform:rotate(-12deg)}}
+@keyframes portal-glyphs{to{transform:rotate(360deg)}}
+@keyframes portal-flow{0%{transform:translate(0,30px);opacity:0}40%{opacity:.9}100%{transform:translate(12px,-60px);opacity:0}}
+@keyframes portal-breathe{to{opacity:.3}}
+@keyframes portal-float{to{transform:translateY(-5px)}}
+@keyframes portal-float-resonance{to{transform:translateY(-14px)}}
+@keyframes portal-open-front{to{transform:rotate(20deg) scale(1.12)}}
+@keyframes portal-open-back{to{transform:rotate(-30deg) scale(1.07)}}
+@keyframes portal-wave{to{transform:scale(1.6);opacity:0}}
+@keyframes portal-critical{to{transform:scaleX(1.7) scaleY(4);opacity:0}}
+@keyframes portal-charged{to{transform:scaleX(4);opacity:0}}
+@keyframes portal-number{to{transform:translate(-12px,-52px);opacity:0}}
+[data-motion="reduce"] :is(.living-portal-art *,.portal-hit i,.portal-gain){animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){:is(.living-portal-art *,.portal-hit i,.portal-gain){animation:none!important;transition:none!important}}
+.portal-paused .living-portal-art *{animation-play-state:paused!important}
+.phase-12.tab-machine .play-grid{grid-template-columns:minmax(0,1fr) 290px;gap:28px}
+.phase-12.tab-machine .machine-panel .panel-heading{padding:8px 0 14px}.phase-12.tab-machine .machine-panel .panel-heading h2{font-size:22px}
+.phase-12.tab-machine .forest.living-field{position:relative;display:block;min-height:0;height:auto;padding:0;background:radial-gradient(ellipse at 50% 45%,#1b3030 0,#101919 45%,#0b0e0f 75%);border:1px solid #2d3934;border-radius:0;overflow:hidden;isolation:isolate}
+.phase-12.tab-machine .forest.living-field:before,.phase-12.tab-machine .forest.living-field:after{display:none}
+.phase-12.tab-machine .living-click-surface{width:100%;height:auto;aspect-ratio:600/510;margin:0;max-height:540px}
+.living-field .portal-coordinates{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;color:#8fa49b;font:9px ui-monospace;letter-spacing:1px;pointer-events:none;z-index:2}
+.living-field .portal-touch-label{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#b1c8b7;font:10px ui-monospace;letter-spacing:2px;pointer-events:none}
+.phase-12.tab-machine .machine-panel{min-width:0}
+.phase-12.tab-machine .shop-panel{border-left:1px solid #37433c;padding-left:24px}
+.phase-12.tab-machine .shop-panel .pack-stage{height:190px;min-height:0}
+.phase-12.tab-machine .stats-row{margin-bottom:18px}
+.phase-12.tab-machine .page-heading{padding:16px 0 12px;margin:0 0 12px}.phase-12.tab-machine .page-heading h1{font-size:20px;line-height:1.2;margin:8px 0}.phase-12.tab-machine .stats-row{padding:12px 0}.phase-12.tab-machine .stats-row strong{font-size:25px}
+.phase-12.tab-machine .living-click-surface{max-height:410px;aspect-ratio:600/470}
+.phase-12.tab-machine .exploration-strip{display:none}
+.phase-12.tab-machine .onboarding-container{margin:0 0 10px}
+.phase-12.tab-machine .combo-panel{margin:8px 0;padding:8px 0;background:none;border:0;border-top:1px solid #303d34;color:#b1c2b7;border-radius:0;box-shadow:none}.phase-12.tab-machine .combo-panel strong{font:10px ui-monospace;color:#a5b8aa}.phase-12.tab-machine .combo-panel p{font:10px ui-monospace;color:#85988d;margin:6px 0}.phase-12.tab-machine .combo-panel details{font:9px system-ui;color:#8ea294}.phase-12.tab-machine .combo-panel .combo-track{height:3px;background:#28362d}.phase-12.tab-machine .combo-panel .combo-track i{background:#7b9784;box-shadow:none}
+.portal-periphery+.machine-effects{margin-top:8px}
+.portal-periphery{padding:14px 0 0;display:grid;gap:10px}
+.portal-charge{padding:0;color:#c3cfc5;font:10px ui-monospace,monospace}
+.portal-charge>div{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;letter-spacing:1px}.portal-charge strong{color:#f4e3b4;font-size:12px}
+.portal-charge progress{display:block;appearance:none;width:100%;height:4px;border:0;background:#26342c}.portal-charge progress::-webkit-progress-bar{background:#26342c}.portal-charge progress::-webkit-progress-value{background:#b9c68f}.portal-charge.is-active progress::-webkit-progress-value{background:#f2d193}
+.portal-charge small{display:block;margin-top:8px;color:#98afa1;font:11px/1.4 system-ui}
+.portal-charge button{width:100%;margin-top:10px;display:flex;justify-content:space-between;align-items:center;min-height:44px;padding:10px 14px;border:1px solid #c9be90;background:#d8d5b6;color:#15201b;font:700 12px ui-monospace;letter-spacing:1px;cursor:pointer}
+.portal-charge button:hover{background:#f1e8c4}
+.portal-anomaly{display:flex;align-items:center;gap:12px;border:1px solid #606853;background:#172520;color:#dfebc9;min-height:62px;padding:5px 12px;width:100%;text-align:left;cursor:pointer}
+.portal-anomaly svg{width:44px;height:44px;flex:none;stroke:#eee0a2;stroke-width:2;fill:none;filter:drop-shadow(0 0 4px #9bab62);animation:portal-breathe 3s ease-in-out infinite alternate}
+.portal-anomaly strong{font:700 10px ui-monospace;letter-spacing:1px}.portal-anomaly small{display:block;color:#a9bfad;font:11px system-ui;margin-top:5px}.portal-anomaly b{margin-left:auto}.portal-anomaly:disabled{opacity:.65;cursor:default}
+.portal-connections{color:#94a599;font:10px/1.5 system-ui}.portal-connections summary{cursor:pointer;padding:4px 0}.portal-connections p{margin:6px 0}
+.phase-12.tab-machine .machine-effects{position:static!important;max-width:none;margin:12px 0 0;border:0;border-top:1px solid #303f36;background:none;padding:8px 0}
+.phase-12.tab-machine .shop-panel .pack-stage{height:260px}.phase-12.tab-machine .shop-panel .pack-stage svg{max-height:250px;width:auto;max-width:100%}
+.living-click-surface[data-impulse="critical"] .portal-gems{fill:#fff2aa}.living-click-surface[data-impulse="charged"] .portal-gems{fill:#c7efff}
+@media(max-width:1050px){.phase-12.tab-machine .play-grid{grid-template-columns:minmax(0,1fr) 240px;gap:20px}.phase-12.tab-machine .shop-panel{padding-left:16px}}
+@media(max-width:850px){
+ .phase-12.tab-machine .play-grid{display:block}.phase-12.tab-machine .machine-panel .panel-heading{padding:4px 0 10px}.phase-12.tab-machine .machine-panel .panel-heading h2{font-size:14px}
+ .phase-12.tab-machine .forest.living-field{flex:none;min-height:0}.phase-12.tab-machine .living-click-surface{height:auto;aspect-ratio:600/550;max-height:370px}
+ .living-field .portal-coordinates{font-size:8px;top:10px;left:10px;right:10px}.living-field .portal-touch-label{font-size:8px;bottom:7px}
+ .phase-12.tab-machine .stats-row{margin-bottom:8px}.phase-12.tab-machine .exploration-strip{display:none}
+ .phase-12.tab-machine .page-title{padding-bottom:8px;margin-bottom:8px}
+ .phase-12.tab-machine .mobile-machine-actions{margin-top:10px}
+ .phase-12.tab-machine .notice{max-height:75px;overflow:auto}
+}

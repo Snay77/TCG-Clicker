@@ -12,28 +12,32 @@ import DeckReplacement from './DeckReplacement';
 import EvolutionRequirement from './EvolutionRequirement';
 import type {AdvancedContext} from '../../lib/advanced-effects';
 import { advancedDesign } from '../../lib/advanced-card-design';
+import {upgradeFeedback} from '../../lib/game-ux';
+import {upgradeCard} from '../../lib/game';
 
 export function CardUpgrade({save,id,onUpgrade}:{save:Save;id:string;onUpgrade:(id:string)=>void}){
+ const [celebration,setCelebration]=useState<ReturnType<typeof upgradeFeedback>>(null);
  const v=cardInspection(save,id);
  if(!v.copies)return null;
  const required=v.cost===null?null:v.cost+1;
  return <section className={`inspection-section card-progression ${v.upgradeable?'available':''}`} aria-label="Progression de la carte">
-  <div className="inspection-section-heading"><h3>PROGRESSION</h3><strong className="inspection-value">{v.cost===null?`Niveau ${v.level} · MAX`:`Niveau ${v.level} → ${v.level+1}`}</strong></div>
-  {v.next&&<div className="effect-comparison"><span><small>APRÈS AMÉLIORATION</small>{v.next}</span></div>}
+  {celebration&&<div className="upgrade-celebration" role="status"><strong>CARTE AMÉLIORÉE · {celebration.name}</strong><span>Niveau {celebration.from} → {celebration.to}</span><span>{celebration.before} → {celebration.after}</span><button aria-label="Fermer la confirmation d’amélioration" onClick={()=>setCelebration(null)}>×</button></div>}
+  <div className="inspection-section-heading"><h3>PROGRESSION</h3><strong className="inspection-value">{celebration?`Niveau ${celebration.to}`:v.cost===null?`Niveau ${v.level} · MAX`:`Niveau ${v.level} → ${v.level+1}`}</strong></div>
+  {v.next&&<div className="effect-comparison"><span><small>{celebration?'PROCHAIN RENFORCEMENT':'APRÈS AMÉLIORATION'}</small>{v.next}</span></div>}
   <div className="copy-meter"><span className="inspection-label">COPIES</span>
    {required!==null&&<span className="copy-dots" aria-hidden="true">{Array.from({length:required},(_,i)=><i key={i} className={i<v.copies?'filled':''}/>)}</span>}
    <strong aria-label={required===null?`${v.copies} copies`:`${v.copies} copies sur ${required} nécessaires`}>{v.copies}{required!==null&&<span> / {required}</span>} <span className="copy-unit">{v.copies===1&&required===null?'copie':'copies'}</span></strong>
    {required!==null&&v.copies<required&&<small className="copy-shortfall" role="status">{required-v.copies} {required-v.copies===1?'manquante':'manquantes'}</small>}
   </div>
-  {v.cost!==null&&<div className="inspection-upgrade-actions"><UIAction variant={v.upgradeable?'primary':'secondary'} className="card-upgrade-button" disabled={!v.upgradeable||!!save.pending.length} aria-label={`Améliorer ${v.card.name} au niveau ${v.level+1} : consommer ${v.cost} doublons`} onClick={()=>onUpgrade(id)}>AMÉLIORER</UIAction><details className="inspection-help upgrade-help"><summary aria-label="Règles d’amélioration">?</summary><p>{v.cost} doublons consommés · une copie conservée. Chaque forme évolue indépendamment.</p></details></div>}
+  {v.cost!==null&&<div className="inspection-upgrade-actions"><UIAction variant={v.upgradeable?'primary':'secondary'} className="card-upgrade-button" disabled={!v.upgradeable||!!save.pending.length} aria-label={`Améliorer ${v.card.name} au niveau ${v.level+1} : consommer ${v.cost} doublons`} onClick={()=>{setCelebration(upgradeFeedback(save,upgradeCard(save,id),id));onUpgrade(id);}}>AMÉLIORER</UIAction><details className="inspection-help upgrade-help"><summary aria-label="Règles d’amélioration">?</summary><p>{v.cost} doublons consommés · une copie conservée. Chaque forme évolue indépendamment.</p></details></div>}
  </section>;
 }
-export default function CardInspection({save,id,onClose,onUpgrade,onEquip,recent=false,context={}}:{save:Save;id:string;onClose:()=>void;onUpgrade:(id:string)=>void;onEquip:(id:string,replaceId?:string)=>void;recent?:boolean;context?:AdvancedContext}){
+export default function CardInspection({save,id,onClose,onUpgrade,onEquip,recent=false,isNew=false,context={}}:{save:Save;id:string;onClose:()=>void;onUpgrade:(id:string)=>void;onEquip:(id:string,replaceId?:string)=>void;recent?:boolean;isNew?:boolean;context?:AdvancedContext}){
  const [replacing,setReplacing]=useState(false);
  const v=cardInspection(save,id),lineage=LINEAGES.find(l=>l.ids.includes(id)),reason=equipBlockedReason(save,id),equipped=save.deck.includes(id);
  const evolutionLocked=!!v.card.evolvesFrom&&!save.owned[v.card.evolvesFrom]&&!equipped;
  return <Modal title={`Examiner ${v.copies?v.card.name:'une rencontre inconnue'}`} onClose={onClose} className="card-inspection">
-  {recent&&<span className="recent-badge">NOUVEAU</span>}
+  {recent&&<span className="recent-badge">{isNew?'NOUVEAU':'RÉCENT'}</span>}
   <div className="inspection-art"><Card card={v.card} owned={v.copies} level={v.level}/><span className="inspection-object-label">FAERIE / OBJET TCG</span></div>
   <div className="inspection-details">
    <EvolutionRequirement save={save} id={id}/>

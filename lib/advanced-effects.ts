@@ -2,7 +2,8 @@ import { byId } from './cards';
 import type { Save } from './game';
 import { advancedDesign, type AdvancedCondition } from './advanced-card-design';
 import { resolveEffects, type Effect } from './effects';
-import { leveledEffect } from './progression';
+import { leveledEffect,upgradeEffects } from './progression';
+import {synergies} from './synergies';
 
 export type AdvancedRuntime = {
  deckKey:string;
@@ -97,17 +98,33 @@ export function advancedDuplicateSources(s:Save,duplicateId:string) {
  return designs(s).flatMap(({rule,card})=>rule.kind==='duplicate'&&byId(duplicateId)?.type===rule.type?[{name:card.name,bonus:rule.bonus}]:[]);
 }
 export function advancedRows(s:Save,context:AdvancedContext={}) {
- const now=context.now??0,runtime=context.runtime?reconcileAdvanced(s,context.runtime,now):initialAdvancedRuntime();
+ const now=context.now??0,runtime=reconcileAdvanced(s,context.runtime||initialAdvancedRuntime(),now);
  return designs(s).map(({id,card,text,rule})=>{
-  let active=true,status='ACTIF',remaining=0,progress=0,maximum=0,ready=false;
-  if(rule.kind==='conditional')active=conditionMet(s,id,rule.condition,context.combo??0);
-  if(rule.kind==='lineage')active=conditionMet(s,id,{kind:'lineageCount',minimum:rule.minimum},0);
-  if(rule.kind==='scaled'&&rule.metric==='speciesDiscovered')active=Object.values(s.owned).filter(n=>n>0).length>=rule.per;
-  if(rule.kind==='temporary'){remaining=Math.max(0,((runtime.expires[id]??0)-now)/1000);maximum=rule.durationMs/1000;status=remaining>0?`${remaining.toFixed(1)} s`:'PRÊT';}
-  if(rule.kind==='nextClick'){ready=!!runtime.charged[id];progress=runtime.counters[id]||0;maximum=rule.trigger==='onClick'?rule.every:0;status=ready?`PRÊT · ×${runtime.charged[id]}`:maximum?`${progress}/${maximum}`:'PRÊT';}
-  return {id,name:card.name,text,active,status,remaining,progress,maximum,ready,kind:rule.kind,bonus:rule.kind==='temporary'?rule.bonus:undefined};
+  let active=true,state='ACTIF',detail='',remaining=0,progress=0,maximum=0,ready=false;
+  if(rule.kind==='conditional'){
+   const c=rule.condition,deck=equipped(s);
+   active=conditionMet(s,id,c,context.combo??0);
+   detail=c.kind==='deckTypeCount'?`${c.minimum} ${c.type} requis · ${deck.filter(cid=>byId(cid).type===c.type).length}/${c.minimum}`:c.kind==='comboAbove'?`Combo >${c.threshold}`:c.kind==='uniqueTypes'?`${c.minimum} types requis · ${new Set(deck.map(cid=>byId(cid).type)).size}/${c.minimum}`:`${c.minimum} membres de lignée requis`;
+  }
+  if(rule.kind==='lineage'){active=conditionMet(s,id,{kind:'lineageCount',minimum:rule.minimum},0);detail=`${rule.minimum} membres requis · ${equipped(s).filter(cid=>byId(cid).design?.lineage===card.design?.lineage).length}/${rule.minimum}`;}
+  if(rule.kind==='scaled'&&rule.metric==='speciesDiscovered'){const count=Object.values(s.owned).filter(n=>n>0).length;active=count>=rule.per;detail=`${count} espèces · palier de ${rule.per}`;}
+  if(!active)state='CONDITION MANQUANTE';
+  if(rule.kind==='temporary'){
+   remaining=Math.max(0,((runtime.expires[id]??0)-now)/1000);maximum=rule.durationMs/1000;active=remaining>0;
+   state=active?'ACTIF':rule.trigger==='onCritical'?'PRÊT':'EN ATTENTE D’UN BOOSTER';detail=active?`${remaining.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})} s`:rule.trigger==='onCritical'?'Au prochain critique':'';
+   if(!active&&rule.trigger==='onCritical'&&statsCriticalChance(s)===0){state='CONDITION MANQUANTE';detail='Une chance critique est requise';}
+  }
+  if(rule.kind==='nextClick'){
+   ready=!!runtime.charged[id];active=false;progress=runtime.counters[id]||0;maximum=rule.trigger==='onClick'?rule.every:0;
+   state=ready?'CHARGÉ':maximum?'EN CHARGE':'EN ATTENTE D’UN BOOSTER';detail=ready?`Prochain clic ×${runtime.charged[id]}`:maximum?`${progress}/${maximum} clics`:'';
+  }
+  if(rule.kind==='duplicate'){active=false;state='PRÊT';detail=`Au prochain doublon ${rule.type}`;}
+  const bonus=rule.kind==='temporary'||rule.kind==='conditional'?rule.bonus:undefined;
+  return {id,name:card.name,text,active,state,detail,status:[state,detail].filter(Boolean).join(' · '),remaining,progress,maximum,ready,kind:rule.kind,bonus};
  });
 }
+// Avoid a game.ts dependency/cycle: critical probability uses the same additive base layer.
+function statsCriticalChance(s:Save){return resolveEffects([...equipped(s).map(id=>leveledEffect(byId(id).effect,s.cardLevels[id]||1)),...synergies(s.deck).filter(x=>x.active).map(x=>x.effect),...upgradeEffects(s.upgrades),advancedBonuses(s)]).critChance;}
 export function periodicProgress(s:Save,runtime:AdvancedRuntime):Record<string,number> {
  return Object.fromEntries(designs(s).flatMap(({id,rule})=>rule.kind==='nextClick'&&rule.trigger==='onClick'?[[id,runtime.charged[id]?rule.every:runtime.counters[id]||0]]:[]));
 }

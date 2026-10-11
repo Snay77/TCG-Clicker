@@ -13,7 +13,7 @@ import { openingDelay } from "../lib/exploration";
 import { trapDialogTab } from '../lib/dialog-focus';
 import CardInspection from './game/CardInspection';
 import EvolutionRequirement from './game/EvolutionRequirement';
-import {duplicateGain,decimal} from '../lib/game-ux';
+import {duplicateGain,decimal,boosterSummary,fastRevealPolicy} from '../lib/game-ux';
 import { advancedDuplicateSources } from '../lib/advanced-effects';
 
 type Stage =
@@ -56,7 +56,7 @@ export default function BoosterOpening({
   economy?: {freeBoosters:number;rewardBoosters?:number;capacity:number;price:number;nextSource:PackSource|null};
 }) {
   const [stage, setStage] = useState<Stage>(
-    save.revealed === 5 ? "summary" : save.revealed > 0 ? "suspense" : fast&&!save.pending.some(id=>byId(id).rarity===5)?"sealed":"choose",
+    save.revealed === 5 ? "summary" : save.revealed > 0 || fast ? "suspense" : "choose",
   );
   const [inspected,setInspected]=useState('');
   const [index, setIndex] = useState(Math.min(save.revealed, 4));
@@ -87,9 +87,11 @@ export default function BoosterOpening({
   const creature = byId(save.pending[index]);
   const nextCreature = index < 4 ? byId(save.pending[index + 1]) : null;
   const tier = creature.rarity;
-  const packFast = fast && !save.pending.some(id => byId(id).rarity === 5);
+  const packFast = fast;
   const isNew = (id: string, i: number) =>
     !originalOwned[id] && save.pending.indexOf(id) === i;
+  const quick=fastRevealPolicy(tier,isNew(creature.id,index),fast);
+  const summary=boosterSummary(save,originalOwned);
   function play(kind:SoundKind,rarity=tier) {
     if(!enabled.current)return;
     const soundKind=kind==='rare'?raritySound(rarity):kind;
@@ -148,24 +150,20 @@ export default function BoosterOpening({
         () => {
           exiting.current = false;
           if (index === 4) setStage("summary");
-          else if (fast) {
+          else {
             setIndex(i => i + 1);
             setStage("suspense");
-          } else {
-            // The next face is already visible beneath the departing card.
-            if (credited.current < index + 1) {
-              credited.current = index + 1;
-              callbacks.current.onReveal();
-              if(nextCreature&&nextCreature.rarity>=2)play('rare',nextCreature.rarity);
-            }
-            setIndex((i) => i + 1);
-            setStage("view");
           }
         },
         openingDelay(tier,fast,"leave",reduced),
       );
     return () => clearTimeout(timer);
   }, [stage, index, tier, reduced, nextCreature, fast, packFast]);
+  useEffect(()=>{
+    if(stage!=='view'||!quick.automatic)return;
+    const timer=setTimeout(()=>advance(),quick.holdMs);
+    return()=>clearTimeout(timer);
+  },[stage,index,quick.automatic,quick.holdMs]);
   function toggleSound(){
     const next=!enabled.current;enabled.current=next;setSound(next);onSoundChange?.(next);
     if(next&&!onSound){audio.current??=new GameAudio();audio.current.play('swipe',{sound:true,volume:audioSettings?.volume??0.35},true);}
@@ -588,6 +586,7 @@ export default function BoosterOpening({
             <p className="po-summary-caption">
               5 cartes ajoutées à votre collection
             </p>
+            {summary.duplicates>0&&<section className="duplicate-summary" aria-label="Utilité des doublons"><strong>{summary.duplicates} DOUBLON{summary.duplicates===1?'':'S'}</strong><b>+{decimal(summary.shards)} éclats</b>{summary.upgrades>0&&<span>{summary.upgrades} amélioration{summary.upgrades===1?'':'s'} disponible{summary.upgrades===1?'':'s'}</span>}{summary.close>0&&<span>{summary.close} carte{summary.close===1?'':'s'} à une copie du niveau suivant</span>}<small>Progression des cartes obtenues dans ce booster.</small></section>}
             <div className="po-summary-grid">
               {save.pending.map((id, i) => (
                 <div
@@ -603,7 +602,7 @@ export default function BoosterOpening({
             <div className="po-controls">
               {economy ? <>
                 <p>{economy.freeBoosters} / {economy.capacity} boosters gratuits disponibles</p>
-                {!!economy.rewardBoosters && <p>+{economy.rewardBoosters} booster(s) de récompense · hors stockage</p>}
+                {!!economy.rewardBoosters && <p>+{economy.rewardBoosters} booster{economy.rewardBoosters===1?'':'s'} de récompense · hors stockage</p>}
                 {economy.nextSource && onNext && <button className="po-primary" data-opening-focus onClick={()=>onNext(economy.nextSource!)}>{economy.nextSource==="free"?"Ouvrir le booster suivant":`Acheter et ouvrir un autre · ${economy.price.toLocaleString("fr-FR")} ✦`}</button>}
                 <div className="po-summary-actions"><button className="po-secondary" data-opening-focus={!economy.nextSource?"":undefined} onClick={()=>callbacks.current.onClose("machine")}>Retour à la machine</button><button className="po-secondary" onClick={()=>callbacks.current.onClose("collection")}>Voir ma collection</button></div>
               </> : <button className="po-primary" data-opening-focus onClick={()=>callbacks.current.onClose()}>Continuer</button>}
@@ -611,7 +610,7 @@ export default function BoosterOpening({
           </>
         )}
       </div>
-      {inspected&&<CardInspection save={save} id={inspected} recent={isNew(inspected,save.pending.indexOf(inspected))} onClose={()=>setInspected('')} onUpgrade={()=>{}} onEquip={()=>{}}/>}
+      {inspected&&<CardInspection save={save} id={inspected} recent isNew={isNew(inspected,save.pending.indexOf(inspected))} onClose={()=>setInspected('')} onUpgrade={()=>{}} onEquip={()=>{}}/>}
     </dialog>
   );
 }

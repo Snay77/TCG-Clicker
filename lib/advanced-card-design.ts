@@ -25,7 +25,7 @@ export const ADVANCED_CARDS: readonly AdvancedCardDesign[] = [
  {designId:'F01-018',text:'Après un critique : +10 % clic pendant 4 s.',rule:{kind:'temporary',trigger:'onCritical',durationMs:4000,bonus:{clickMultiplier:.1}}},
  {designId:'F01-019',text:'Lignée ×2 : +15 % aux bonus de base de la lignée.',rule:{kind:'lineage',minimum:2,multiplier:.15}},
  {designId:'F01-025',text:'Tous les 25 clics : prochain clic ×3.',rule:{kind:'nextClick',trigger:'onClick',every:25,multiplier:3}},
- {designId:'F01-028',text:'+1,5 % énergie par type équipé.',rule:{kind:'scaled',metric:'uniqueTypes',per:1,maximum:7,bonus:{energyMultiplier:.015}}},
+ {designId:'F01-028',text:'+1,5 % éclats par type équipé.',rule:{kind:'scaled',metric:'uniqueTypes',per:1,maximum:7,bonus:{energyMultiplier:.015}}},
  {designId:'F01-039',text:'Après un critique : +15 % clic pendant 4 s.',rule:{kind:'temporary',trigger:'onCritical',durationMs:4000,bonus:{clickMultiplier:.15}}},
  {designId:'F01-050',text:'Après un booster : +20 % passif pendant 8 s.',rule:{kind:'temporary',trigger:'onBoosterOpen',durationMs:8000,bonus:{autoMultiplier:.2}}},
  {designId:'F01-059',text:'Après un booster : prochain clic ×2.',rule:{kind:'nextClick',trigger:'onBoosterOpen',multiplier:2}},

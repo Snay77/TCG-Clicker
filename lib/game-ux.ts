@@ -6,6 +6,8 @@ import { advancedSynergies, synergies } from './synergies';
 import { achievementProgress, explorationLevel, DECK_SLOT_UNLOCKS, type Achievement } from './exploration';
 import { describeUIEffect as describeEffect } from './effects';
 import { comboFactor } from './progression';
+import {cardInspection,type CollectionFilters} from './ux';
+import {cardUpgradeCost} from './progression';
 
 const numberFormat=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2});
 const integerFormat=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0});
@@ -13,6 +15,24 @@ const percentageFormat=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1});
 export const amount=(n:number)=>integerFormat.format(Math.floor(n));
 export const decimal=(n:number)=>numberFormat.format(n);
 export const percent=(n:number)=>percentageFormat.format(n*100)+' %';
+export const timer=(seconds:number)=>Math.max(0,seconds).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' s';
+export const filterCount=(f:CollectionFilters)=>Number(!!f.search.trim())+Number(!!f.type)+Number(!!f.rarity)+Number(!!f.discovery)+Number(f.upgradeable)+Number(f.sort!=='number');
+export const acquisitionLabel=(id:string,recent:string[],discovered:string[])=>discovered.includes(id)?'NOUVEAU':recent.includes(id)?'RÉCENT':null;
+export function boosterSummary(s:Save,originalOwned:Record<string,number>){
+ const seen={...originalOwned};let duplicates=0,shards=0;
+ for(const id of s.pending){if(seen[id]){duplicates++;shards+=duplicateGain(s,id);}seen[id]=(seen[id]||0)+1;}
+ const obtained=[...new Set(s.pending)];
+ const upgrades=obtained.filter(id=>cardInspection(s,id).upgradeable).length;
+ const close=obtained.filter(id=>{const cost=cardUpgradeCost(s.cardLevels[id]||1);return cost!==null&&s.owned[id]===cost;}).length;
+ return {duplicates,shards,upgrades,close};
+}
+export function upgradeFeedback(before:Save,after:Save,id:string){
+ if(before===after)return null;
+ const a=cardInspection(before,id),b=cardInspection(after,id);
+ return {name:a.card.name,from:a.level,to:b.level,before:a.current,after:b.current,text:`CARTE AMÉLIORÉE · ${a.card.name} · Niveau ${a.level} → ${b.level} · ${a.current} → ${b.current}`};
+}
+export const compactFeedback=(messages:string[])=>messages.length<=1?messages.join(''):`${messages.length} RÉCOMPENSES / DÉCOUVERTES`;
+export function fastRevealPolicy(rarity:number,discovery:boolean,fast:boolean){return {automatic:fast&&!discovery&&rarity<4,holdMs:rarity<2?0:rarity===2?500:750,special:rarity>=4};}
 export const rarePlusChance=(bonus:number,guaranteed=false)=>rarityProbabilities(bonus,guaranteed).slice(2).reduce((a,b)=>a+b,0);
 export const missingParent=(s:Save,id:string)=>{
  const c=byId(id);return s.owned[id]&&c?.evolvesFrom&&!s.owned[c.evolvesFrom]&&!s.deck.includes(id)?byId(c.evolvesFrom):null;

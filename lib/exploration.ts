@@ -3,6 +3,7 @@ import { CARDS, byId, runtimeId } from './cards';
 import data from '../design/set01-faerie.json';
 import type { Save } from './game';
 import { CARD_UPGRADE_COSTS } from './progression';
+import {synergies} from './synergies';
 
 export type Totals = { generatedEnergy:number; criticalClicks:number; freeOpened:number; cardsObtained:number; duplicatesObtained:number; playSeconds:number; maxCombo:number };
 export type Account = { format:1; xp:number; claimed:string[]; rewardBoosters:number; activeTitle:string; fastOpening:boolean; totals:Totals; historicalEstimate:boolean };
@@ -15,12 +16,12 @@ export const UNLOCKS = [
  {level:1,name:'Explorateur de la Clairière',description:'Machine, six compagnons, objectifs et lignées.'},
  {level:3,name:'Synergies avancées',description:'Trois compagnons du même type : un bonus supplémentaire.'},
  {level:5,name:'Objectifs experts',description:'Défis de collection et de machine à plus long terme.'},
- {level:8,name:'7e emplacement disponible · 5 000 ✦',description:'Achat disponible pour 5 000 éclats.'},
+ {level:8,name:'7e emplacement disponible · 15 000 ✦',description:'Achat disponible pour 15 000 éclats.'},
  {level:12,name:'Ouverture rapide',description:'Accélérez les cartes ordinaires ; les Mythiques gardent leur mise en scène.'},
- {level:15,name:'8e emplacement disponible · 25 000 ✦',description:'Achat disponible pour 25 000 éclats.'},
+ {level:15,name:'8e emplacement disponible · 30 000 ✦',description:'Achat disponible pour 30 000 éclats.'},
  {level:20,name:'Maîtrise de Faerie',description:'Complétez le set, les 20 lignées et trois cartes au niveau 5.'},
 ] as const;
-export const DECK_SLOT_UNLOCKS = [{level:8,cost:5000},{level:15,cost:25000}] as const;
+export const DECK_SLOT_UNLOCKS = [{level:8,cost:15000},{level:15,cost:30000}] as const;
 export const freePackCount = (s:Save) => s.freeBoosters+s.account.rewardBoosters;
 export const LINEAGES = data.lineages.map(l=>({...l,ids:l.cardIds.map(runtimeId)}));
 export function lineageProgress(s:Save) {return LINEAGES.map(l=>({...l,count:l.ids.filter(id=>s.owned[id]).length,complete:l.ids.every(id=>s.owned[id])}));}
@@ -38,7 +39,7 @@ export const ACHIEVEMENTS:Achievement[] = [
  {id:'card-level-5',category:'Collection',title:'Compagnon accompli',description:'Améliorez une carte au niveau 5.',metric:'level5',target:1,rewards:rewards(500,250,1)},
  {id:'mastery',category:'Collection',title:'Maîtrise de Faerie',description:'60 espèces, 20 lignées et trois cartes au niveau 5.',metric:'mastery',target:1,minLevel:20,rewards:rewards(15000,1500,3)},
  ...[10000,100000].map((target,i)=>({id:`energy-${target}`,category:'Clicker' as const,title:i?'La forêt rayonne':'Énergie de la clairière',description:`Générez ${target.toLocaleString('fr-FR')} éclats par clic ou production passive.`,metric:'energy' as const,target,rewards:rewards(i?500:100,i?200:75)})),
- {id:'combo-100',category:'Clicker',title:'Cadence parfaite',description:'Remplissez la jauge de combo à 100.',metric:'combo',target:100,rewards:rewards(50,50)},
+ {id:'combo-100',category:'Clicker',title:'Cadence parfaite',description:'Après avoir acquis un bonus combo, remplissez sa jauge à 100.',metric:'combo',target:100,rewards:rewards(50,50)},
  {id:'criticals-100',category:'Clicker',title:'Éclats de lune',description:'Effectuez 100 clics critiques.',metric:'criticals',target:100,rewards:rewards(200,150)},
  ...[5,20,50].map((target,i)=>({id:`machine-${target}`,category:'Clicker' as const,title:`Portail niveau ${target}`,description:`Atteignez le niveau de machine ${target}.`,metric:'machine' as const,target,minLevel:i?5:1,rewards:rewards([100,500,1500][i],[75,200,500][i])})),
  ...[5,25,100].map((target,i)=>({id:`packs-${target}`,category:'Booster' as const,title:`${target} passages`,description:`Ouvrez ${target} boosters, gratuits ou achetés.`,metric:'packs' as const,target,rewards:rewards([100,300,1000][i],[75,200,500][i],1)})),
@@ -61,7 +62,9 @@ export function achievementProgress(s:Save,a:Achievement):number {
  case 'mastery':return Object.keys(s.owned).length===60&&completedLineages(s)===20&&CARDS.filter(c=>(s.cardLevels[c.id]||1)===5).length>=3?1:0;
  }
 }
-export const achievementReady = (s:Save,a:Achievement) => explorationLevel(s.account.xp)>=(a.minLevel||1)&&achievementProgress(s,a)>=a.target&&!s.account.claimed.includes(a.id);
+export const comboUnderstood=(s:Save)=>s.account.claimed.includes('combo-100')||s.upgrades.combo>0||s.deck.some(id=>(byId(id).effect.comboMultiplier||0)>0)||synergies(s.deck).some(x=>x.active&&(x.effect.comboMultiplier||0)>0);
+export const achievementVisible=(s:Save,a:Achievement)=>a.metric!=='combo'||comboUnderstood(s);
+export const achievementReady = (s:Save,a:Achievement) => achievementVisible(s,a)&&explorationLevel(s.account.xp)>=(a.minLevel||1)&&achievementProgress(s,a)>=a.target&&!s.account.claimed.includes(a.id);
 export function claimAchievement(s:Save,id:string):Save {
  const a=ACHIEVEMENTS.find(a=>a.id===id);
  if(!a||s.pending.length||!achievementReady(s,a))return s;
@@ -87,7 +90,7 @@ export function buyDeckSlot(s:Save):Save {
 }
 export function recordClick(s:Save,gain:number,critical:boolean,combo:number):Save {
  if(!Number.isFinite(gain)||gain<0)return s;
- return {...s,energy:boundedTotal(s.energy+gain),clicks:boundedTotal(s.clicks+1),account:{...s.account,totals:{...s.account.totals,generatedEnergy:boundedTotal(s.account.totals.generatedEnergy+gain),criticalClicks:boundedTotal(s.account.totals.criticalClicks+(critical?1:0)),maxCombo:Math.max(s.account.totals.maxCombo,Math.min(100,Math.max(0,combo)))}}};
+  return {...s,energy:boundedTotal(s.energy+gain),clicks:boundedTotal(s.clicks+1),account:{...s.account,totals:{...s.account.totals,generatedEnergy:boundedTotal(s.account.totals.generatedEnergy+gain),criticalClicks:boundedTotal(s.account.totals.criticalClicks+(critical?1:0)),maxCombo:Math.max(s.account.totals.maxCombo,comboUnderstood(s)?Math.min(100,Math.max(0,combo)):0)}}};
 }
 export function recordTick(s:Save,seconds:number,passive:number,visible:boolean):Save {
  if(!Number.isFinite(passive))return s;
@@ -120,7 +123,7 @@ export function parseAccount(raw:unknown,s:Save):Account {
 export function openingDelay(rarity:number,fast:boolean,kind:'suspense'|'leave'|'tear',reduced=false):number {
  if(reduced)return kind==='leave'?40:50;
  if(kind==='tear')return fast&&rarity<5?180:620;
- if(kind==='leave')return fast&&rarity<2?80:260;
+ if(kind==='leave')return fast&&rarity<4?60:260;
  const normal=[160,280,1000,1500,2100,2700][rarity]*.65;
- return Math.max(100,normal*(fast&&rarity<5?(rarity<2?.25:.7):1));
+ return fast&&rarity<4?[0,0,140,240][rarity]:normal;
 }

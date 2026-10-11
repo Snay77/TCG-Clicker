@@ -2,7 +2,7 @@ import { CARDS, byId } from './cards';
 import { price, savedCardLevel, type Save } from './game';
 import { cardUpgradeCost, leveledEffect } from './progression';
 import { describeUIEffect as describeEffect } from './effects';
-import { ACHIEVEMENTS, achievementProgress, achievementReady, explorationLevel, freePackCount } from './exploration';
+import { ACHIEVEMENTS, achievementProgress, achievementReady, achievementVisible, explorationLevel, freePackCount } from './exploration';
 import { isBoosterId, type BoosterId } from './boosters';
 export const FIRST_STEPS = ['Récolter des éclats','Acheter une amélioration','Ouvrir un booster','Découvrir 5 créatures','Équiper un compagnon'] as const;
 export const TIP_IDS = ['click','upgrade','booster','collection','deck','progression'] as const;
@@ -40,6 +40,6 @@ export function filterCollection(s:Save,f:CollectionFilters){
 export function duplicateFeedback(before:number,level:number){const after=before+1,cost=cardUpgradeCost(level);return {before,after,newlyUpgradeable:before>0&&cost!==null&&before-1<cost&&after-1>=cost};}
 export function sortedAchievements(s:Save){
  const rank=(a:typeof ACHIEVEMENTS[number])=>s.account.claimed.includes(a.id)?3:achievementReady(s,a)?0:explorationLevel(s.account.xp)<(a.minLevel||1)?2:1;
- return [...ACHIEVEMENTS].sort((a,b)=>rank(a)-rank(b)||achievementProgress(s,b)/b.target-achievementProgress(s,a)/a.target);
+ return ACHIEVEMENTS.filter(a=>achievementVisible(s,a)).sort((a,b)=>rank(a)-rank(b)||achievementProgress(s,b)/b.target-achievementProgress(s,a)/a.target);
 }
 export const TYPE_SIGNS:Record<string,string>={Sylve:'❧',Mycète:'♧',Lune:'☾',Rosée:'◒',Étincelle:'ϟ',Aurore:'☀',Astral:'✧'};

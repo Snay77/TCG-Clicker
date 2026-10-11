@@ -23,7 +23,9 @@ export function freePackRemaining(s:FreePackState,now:number):number|null {
 export const storageCost=(s:FreePackState)=>STORAGE_COSTS[s.freeBoosterCapacity-INITIAL_FREE_CAPACITY] ?? null;
 export const PAID_PACK_GROWTH = 1.12;
 // Chosen after comparing 1.08 / 1.10 / 1.12 / 1.15; retune after human playtests.
-export function progressivePackPrice(purchased:number,discount=0,growth=PAID_PACK_GROWTH):number {
- const raw=100*growth**purchased;
+export function progressivePackPrice(purchased:number,discount=0,growth?:number):number {
+ // First six prices preserved; later purchases increase gradually, not the free clock.
+ const premium=Math.min(2.5,(1.18/PAID_PACK_GROWTH)**Math.max(0,purchased-5));
+ const raw=100*(growth===undefined?PAID_PACK_GROWTH**purchased*premium:growth**purchased);
  return Math.min(Number.MAX_SAFE_INTEGER,Math.ceil(Number((raw*(1-Math.min(.5,Math.max(0,discount)))).toPrecision(14))));
 }

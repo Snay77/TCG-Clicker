@@ -28,6 +28,6 @@ export function describeUIEffect(effect:Effect,includeZero=false):string {
   const percentage=!['clickFlat','autoFlat','critMultiplier','duplicateBonus'].includes(key);
   const shown=Number((value*(percentage?100:1)).toFixed(percentage?1:2));
   if(shown===0&&!includeZero)return '';
-  return '+'+shown.toLocaleString('fr-FR',{maximumFractionDigits:percentage?1:2})+' '+labels[key].replace('énergie','éclats');
+  return '+'+shown.toLocaleString('fr-FR',{maximumFractionDigits:percentage?1:2})+' '+labels[key].replace('énergie globale','éclats (clic et passif)').replace('énergie Faerie','éclats de Faerie').replace('énergie','éclats');
  }).filter(Boolean).join(' · ');
 }

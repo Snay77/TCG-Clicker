@@ -42,8 +42,8 @@ test('lignées et raretés : 60/60, badge, titre cosmétique, limites et maître
 });
 test('slots 7/8 : niveau minimum, débit unique, persistance et maximum',()=>{
  const low={...atLevel(7),energy:1e6};assert.equal(buyDeckSlot(low),low);
- let s={...atLevel(8),energy:50000};s=buyDeckSlot(s);assert.equal(deckCapacity(s),7);assert.equal(s.energy,45000);assert.equal(buyDeckSlot(s),s);
- s={...s,account:{...s.account,xp:levelThreshold(15)}};s=buyDeckSlot(s);assert.equal(deckCapacity(s),8);assert.equal(s.energy,20000);assert.equal(buyDeckSlot(s),s);assert.deepEqual(parseSave(JSON.stringify(s),100000),s);
+ let s={...atLevel(8),energy:50000};s=buyDeckSlot(s);assert.equal(deckCapacity(s),7);assert.equal(s.energy,35000);assert.equal(buyDeckSlot(s),s);
+ s={...s,account:{...s.account,xp:levelThreshold(15)}};s=buyDeckSlot(s);assert.equal(deckCapacity(s),8);assert.equal(s.energy,5000);assert.equal(buyDeckSlot(s),s);assert.deepEqual(parseSave(JSON.stringify(s),100000),s);
  const poor={...atLevel(15),energy:4999};assert.equal(buyDeckSlot(poor),poor);
 });
 test('synergies avancées : trois espèces et niveau 3, paires inchangées',()=>{
@@ -52,7 +52,8 @@ test('synergies avancées : trois espèces et niveau 3, paires inchangées',()=>
  const pair={...s,deck:ids.slice(0,2)};assert.deepEqual(stats({...pair,account:{...pair.account,xp:levelThreshold(3)}}),stats(pair));
 });
 test('totaux cumulatifs : dépenses, doublons consommés, clics critiques et temps visible',()=>{
- let s=recordClick(initialSave(),100,true,100);assert.equal(s.account.totals.criticalClicks,1);assert.equal(s.account.totals.maxCombo,100);
+ const start=initialSave();start.upgrades.combo=1;
+ let s=recordClick(start,100,true,100);assert.equal(s.account.totals.criticalClicks,1);assert.equal(s.account.totals.maxCombo,100);
  s=buyUpgrade(s,'click');assert.equal(s.account.totals.generatedEnergy,100);
  s=recordTick(s,2,3,true);assert.equal(s.account.totals.playSeconds,2);assert.equal(s.account.totals.generatedEnergy,106);
  s=recordTick(s,20,3,false);assert.equal(s.account.totals.playSeconds,2);assert.equal(s.account.totals.generatedEnergy,121);
@@ -70,5 +71,5 @@ test('v4 comptes invalides refusés sans migration silencieuse et récompenses p
 test('ouverture rapide : verrou niveau 12, préférence persistante, Mythique complète',()=>{
  const low=atLevel(11);assert.equal(toggleFastOpening(low),low);
  const fast=toggleFastOpening(atLevel(12));assert.equal(fast.account.fastOpening,true);assert.equal(parseSave(JSON.stringify(fast),100000).account.fastOpening,true);
- assert.ok(openingDelay(1,true,'suspense')<openingDelay(1,false,'suspense'));assert.ok(openingDelay(3,true,'suspense')>=400);assert.equal(openingDelay(5,true,'suspense'),openingDelay(5,false,'suspense'));assert.equal(openingDelay(5,true,'leave'),openingDelay(5,false,'leave'));assert.equal(openingDelay(5,true,'tear'),openingDelay(5,false,'tear'));assert.equal(openingDelay(5,true,'suspense',true),50);
+ assert.ok(openingDelay(1,true,'suspense')<openingDelay(1,false,'suspense'));assert.ok(openingDelay(3,true,'suspense')<400);assert.equal(openingDelay(5,true,'suspense'),openingDelay(5,false,'suspense'));assert.equal(openingDelay(5,true,'leave'),openingDelay(5,false,'leave'));assert.equal(openingDelay(5,true,'tear'),openingDelay(5,false,'tear'));assert.equal(openingDelay(5,true,'suspense',true),50);
 });

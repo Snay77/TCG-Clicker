@@ -1,0 +1,50 @@
+/* Refinement of the existing Arcane Brutalism layouts. */
+.build-candidates:has(.compact-candidate) { display:grid; grid-template-columns:minmax(0,1fr); gap:0; }
+.build-candidate.compact-candidate,.replacement-row { display:grid; grid-template-columns:48px minmax(0,1fr) auto; gap:10px; padding:10px 0; border-bottom:1px solid var(--ab-line,#424947); align-items:start; }
+.build-candidate.compact-candidate > .sprite,.replacement-row > .sprite { width:48px; height:48px; }
+.compact-candidate > div > strong,.compact-candidate > div > small { display:block; }
+.compact-candidate p,.replacement-row p { margin:4px 0; font-size:12px; line-height:1.35; }
+.compact-candidate small,.replacement-row small { font-size:11px; color:var(--ux-secondary,#bcc4bf); }
+.compact-candidate > button { min-height:44px; padding:8px; font-size:11px; }
+.compact-candidate .candidate-advanced { padding-left:6px; font-size:11px; line-height:1.3; margin:4px 0; }
+.comparison-compact { margin:4px 0 0; gap:2px; font-size:11px; }
+.comparison-main { display:flex; flex-wrap:wrap; gap:2px 12px; }
+.comparison-main > div { display:flex; gap:5px; }
+.comparison-compact summary { cursor:pointer; padding:5px 0; font-size:11px; }
+.replacement-row h3 { margin:0; font-size:14px; }
+.replacement-row button { font-size:11px; max-width:112px; }
+.deck-replacement[open] { padding-top:52px; }
+.deck-replacement > h2 { font-size:20px; margin:0 0 8px; }
+.deck-replacement > p { margin:0 0 12px; font-size:12px; }
+.filters-active { border-color:#bbd999!important; color:#d6e7c4!important; }
+.duplicate-summary { display:flex; flex-wrap:wrap; justify-content:center; gap:8px 20px; padding:12px; margin-bottom:18px; border:1px solid #779382; background:#21312a; color:#eef5e8; font-size:13px; }
+.duplicate-summary > strong,.duplicate-summary > small { flex-basis:100%; text-align:center; }
+.upgrade-celebration { position:relative; display:grid; gap:5px; padding:12px 38px 12px 12px; margin-bottom:12px; color:#d6e7c4; border-left:3px solid #bbd999; background:#21312a; font-size:12px; }
+.upgrade-celebration button { position:absolute; right:0; top:0; min-width:32px; min-height:44px; background:none; color:inherit; border:0; cursor:pointer; }
+.notice-details { flex-basis:100%; font-size:12px; }
+.notice-details summary { cursor:pointer; padding:5px 0; }
+.notice-details p { margin:4px 0; }
+.phase-12 .card-inspection[open] { gap:22px; padding-top:52px; }
+.phase-12 .inspection-details .inspection-section { margin:0; padding:12px 0; }
+.phase-12 .inspection-details .inspection-deck-state { margin-bottom:0; }
+.phase-12 .inspection-details .inspection-section-heading { margin-bottom:10px; }
+.phase-12 .inspection-details .copy-meter { margin:8px 0; }
+.phase-12 .inspection-details .inspection-help { margin-top:6px; }
+@media(min-width:851px) {
+ .phase-12 .card-inspection[open] { width:820px; grid-template-columns:300px minmax(0,1fr); }
+ .phase-12 .inspection-art .card-art { aspect-ratio:1.15; }
+}
+@media(max-width:850px) {
+ .phase-12 .card-inspection[open] { gap:14px; padding:54px 16px 18px; grid-template-columns:minmax(0,1fr); }
+ .phase-12 .build-candidate.compact-candidate > button,.replacement-row > button { grid-column:3; grid-row:1; justify-self:end; margin-top:0; padding:6px; width:72px; min-width:0; font-size:10px; box-sizing:border-box; white-space:normal; }
+ .build-candidate.compact-candidate,.replacement-row { grid-template-columns:32px minmax(0,1fr) 72px; gap:4px 7px; padding:7px 0; }
+ .build-candidate.compact-candidate > .sprite,.replacement-row > .sprite { width:32px; height:32px; }
+ .compact-candidate .evolution-requirement { padding:4px 0; }
+ .deck-picker-search { gap:8px; margin-bottom:8px; }
+ .compact-candidate .comparison-main { gap:2px 8px; }
+ .compact-candidate > div > strong { font-size:13px; }
+ .compact-candidate p { font-size:11px; }
+ .compact-candidate .candidate-advanced { font-size:10px; }
+ .compact-candidate .candidate-advanced small { font-size:10px; }
+ .duplicate-summary { font-size:12px; gap:6px 12px; }
+}

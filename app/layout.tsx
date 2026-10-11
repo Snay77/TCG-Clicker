@@ -16,6 +16,8 @@ import "./arcane-full-ui.css";
 import "./disclosure-card-ux.css";
 import "./advanced-effects.css";
 import "./phase14.css";
+import "./phase15.css";
+import "./living-portal.css";
 export const metadata: Metadata = {
   applicationName: 'TCG Clicker',
   appleWebApp: { capable: true, title: 'TCG Clicker', statusBarStyle: 'black-translucent' },

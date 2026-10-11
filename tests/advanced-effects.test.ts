@@ -89,7 +89,7 @@ test('coûts, recharge, XP et probabilités conservés ; aucune carte hors écha
 test('affichage : conditions inactives séparées et compteur explicite',()=>{
  const s=fixture(1,25);const rows=advancedRows(s);
  assert.equal(rows.find(r=>r.id===id(1))!.active,false);
- assert.equal(rows.find(r=>r.id===id(25))!.status,'0/25');
+ assert.equal(rows.find(r=>r.id===id(25))!.status,'EN CHARGE · 0/25 clics');
 });
 test('huit emplacements : les combinaisons critiques et passives respectent les plafonds',()=>{
  const click={...fixture(1,4,5,25,39,18,28,60),extraDeckSlots:2};

@@ -65,7 +65,7 @@ test('ouverture rapide réglable reste soumise au niveau 12 et sauvegardée',()=
  let s=initialSave(1000);assert.equal(toggleFastOpening(s),s);s.account.xp=levelThreshold(12);s=toggleFastOpening(s);assert.equal(parseSave(JSON.stringify(s),1000).account.fastOpening,true);assert.equal(toggleFastOpening(s).account.fastOpening,false);
 });
 test('récompenses prêtes prioritaires et sons distincts pour les quatre raretés hautes',()=>{
- const s=initialSave();s.account.totals.maxCombo=100;s.account.totals.generatedEnergy=9000;
+ const s=initialSave();s.upgrades.combo=1;s.account.totals.maxCombo=100;s.account.totals.generatedEnergy=9000;
  const ordered=sortedAchievements(s);assert.equal(ordered[0].id,'combo-100');assert.ok(achievementReady(s,ordered[0]));assert.equal(ordered[1].id,'energy-10000');
  assert.equal(new Set(['rare','epic','legendary','mythic'].map(k=>SOUND_NOTES[k as keyof typeof SOUND_NOTES].join())).size,4);
 });
